@@ -10,7 +10,6 @@ export const api = {
         const res = await fetch(url);
         return res.json();
     },
-    getGenres: (type, lang) => api._fetch(`genre/${type}/list`, { language: lang }),
     discoverMedia: (type, params) => api._fetch(`discover/${type}`, params),
     getFullDetails: (type, id, lang) => api._fetch(`${type}/${id}`, { language: lang, append_to_response: 'videos' })
 };
