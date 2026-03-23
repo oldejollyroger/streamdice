@@ -1,15 +1,27 @@
 import { TMDB_API_KEY, TMDB_BASE_URL } from './config.js';
 
 export const api = {
-    _fetch: async (path, params = {}) => {
-        const url = new URL(`${TMDB_BASE_URL}/${path}`);
-        url.searchParams.append('api_key', TMDB_API_KEY);
-        Object.entries(params).forEach(([key, val]) => {
-            if (val !== undefined) url.searchParams.append(key, val);
-        });
-        const res = await fetch(url);
-        return res.json();
+    _fetch: async function(path, queryParams = {}) {
+        const params = new URLSearchParams(queryParams);
+        const url = `${TMDB_BASE_URL}/${path}?api_key=${TMDB_API_KEY}&${params.toString()}`;
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`API error: ${response.status}`);
+            return response.json();
+        } catch (err) {
+            console.error("Error en API:", err);
+            throw err;
+        }
     },
-    discoverMedia: (type, params) => api._fetch(`discover/${type}`, params),
-    getFullDetails: (type, id, lang) => api._fetch(`${type}/${id}`, { language: lang, append_to_response: 'videos' })
+
+    getGenres: (mediaType, language) => api._fetch(`genre/${mediaType}/list`, { language }),
+    getPlatforms: (mediaType, region) => api._fetch(`watch/providers/${mediaType}`, { watch_region: region }),
+    discoverMedia: (mediaType, queryParams) => api._fetch(`discover/${mediaType}`, queryParams),
+    getFullDetails: (mediaType, mediaId, language) => {
+        const append = mediaType === 'movie' 
+            ? 'credits,videos,watch/providers,similar,release_dates' 
+            : 'credits,videos,watch/providers,similar,content_ratings';
+        return api._fetch(`${mediaType}/${mediaId}`, { language, append_to_response: append });
+    },
+    getCountries: () => api._fetch('configuration/countries')
 };

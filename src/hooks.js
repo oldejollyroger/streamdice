@@ -1,14 +1,30 @@
 import { useState, useEffect } from 'react';
 
-export function useLocalStorage(key, initialValue) {
-    const [value, setValue] = useState(() => {
-        const item = window.localStorage.getItem(key);
-        return item ? JSON.parse(item) : initialValue;
+export function useLocalStorageState(key, defaultValue) {
+    const [state, setState] = useState(() => {
+        const storedValue = window.localStorage.getItem(key);
+        if (storedValue) {
+            try {
+                return JSON.parse(storedValue);
+            } catch (e) {
+                return defaultValue;
+            }
+        }
+        return typeof defaultValue === 'function' ? defaultValue() : defaultValue;
     });
 
     useEffect(() => {
-        window.localStorage.setItem(key, JSON.stringify(value));
-    }, [key, value]);
+        window.localStorage.setItem(key, JSON.stringify(state));
+    }, [key, state]);
 
-    return [value, setValue];
-}   
+    return [state, setState];
+}
+
+export function useDebounce(value, delay) {
+    const [debouncedValue, setDebouncedValue] = useState(value);
+    useEffect(() => {
+        const handler = setTimeout(() => { setDebouncedValue(value); }, delay);
+        return () => { clearTimeout(handler); };
+    }, [value, delay]);
+    return debouncedValue;
+}
