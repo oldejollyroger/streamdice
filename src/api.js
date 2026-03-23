@@ -4,25 +4,13 @@ export const api = {
     _fetch: async (path, params = {}) => {
         const url = new URL(`${TMDB_BASE_URL}/${path}`);
         url.searchParams.append('api_key', TMDB_API_KEY);
-        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-        
+        Object.entries(params).forEach(([key, val]) => {
+            if (val !== undefined) url.searchParams.append(key, val);
+        });
         const res = await fetch(url);
-        if (!res.ok) throw new Error('Error de conexión con TMDB');
         return res.json();
     },
-
-    getGenres: (type) => api._fetch(`genre/${type}/list`),
-
-    discoverMedia: (type, params) => 
-        api._fetch(`discover/${type}`, { 
-            ...params, 
-            with_watch_monetization_types: 'flatrate',
-            include_adult: false,
-            sort_by: 'popularity.desc'
-        }),
-
-    getFullDetails: (type, id) => {
-        const append = type === 'movie' ? 'videos,release_dates' : 'videos,content_ratings';
-        return api._fetch(`${type}/${id}`, { append_to_response: append });
-    }
+    getGenres: (type, lang) => api._fetch(`genre/${type}/list`, { language: lang }),
+    discoverMedia: (type, params) => api._fetch(`discover/${type}`, params),
+    getFullDetails: (type, id, lang) => api._fetch(`${type}/${id}`, { language: lang, append_to_response: 'videos' })
 };
