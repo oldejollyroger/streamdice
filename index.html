@@ -1,13 +1,49 @@
 <!DOCTYPE html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MoviePicker | What to Watch</title>
+<html lang="en"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamDice</title>
+
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#111827"> <!-- This should match your dark mode bg -->
+
     <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body>
+    
+    <!-- CHANGED: Use production-ready React for better performance -->
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js" defer></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" defer></script>
+    
+    <!-- Babel is still required for this setup, but `defer` helps -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js" defer></script>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="antialiased bg-[var(--color-bg)] text-[var(--color-text-primary)] transition-colors duration-300">
+    
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+<!-- Your API key is loaded first, which is correct -->
+<script src="config.js" defer></script>
+    
+<!-- Your new, organized scripts. The order is CRITICAL. -->
+<script src="helpers.js" defer></script>
+<script src="hooks.js" defer></script>
+<script type="text/babel" src="components.js" defer></script>
+<script type="text/babel" src="app.js" defer></script>
+<script type="text/babel" src="script.js" defer></script>
+
+    <script>
+      // Service worker registration is fine as is.
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').then(registration => {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          }, err => {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+        });
+      }
+    </script>
+</body>
 </html>
