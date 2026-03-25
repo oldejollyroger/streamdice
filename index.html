@@ -6,8 +6,13 @@
 <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" defer></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js" defer></script>
 
+<script type="text/babel">
+  console.log("Babel está funcionando");
+  const Test = () => <h1>¡Babel funciona!</h1>;
+  ReactDOM.render(<Test />, document.getElementById('root'));
+</script>
+
 <script src="config.js" defer></script>
 <script type="text/babel" src="app-bundle.js" defer></script>
 </head>
-<script src="config.js" defer></script>
-<script type="text/babel" src="app-bundle.js" defer></script>
+

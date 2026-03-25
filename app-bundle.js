@@ -173,8 +173,6 @@ const CookieConsentModal = ({ isOpen, onAccept, t }) => {
 // app.js (v0.0.7 - Final Corrected)
 
 const App = () => {
-    const { useState, useEffect, useCallback, useMemo, useRef } = React;
-
     const [mode, setMode] = useLocalStorageState('movieRandomizerMode', 'dark');
     const [accent, setAccent] = useLocalStorageState('movieRandomizerAccent', ACCENT_COLORS[0]);
     const [language, setLanguage] = useLocalStorageState('movieRandomizerLang', 'en');
