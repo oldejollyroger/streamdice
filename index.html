@@ -4,15 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StreamDice</title>
-
+<link rel="preconnect" href="https://unpkg.com">
+<link rel="preconnect" href="https://cdn.tailwindcss.com">
+<link rel="preconnect" href="https://image.tmdb.org">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#111827"> <!-- This should match your dark mode bg -->
 
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- CHANGED: Use production-ready React for better performance -->
-    <script src="https://unpkg.com/react@17/umd/react.production.min.js" defer></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" defer></script>
+   <script src="https://unpkg.com/react@17/umd/react.production.min.js" defer></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" defer></script>
     
     <!-- Babel is still required for this setup, but `defer` helps -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js" defer></script>
@@ -25,8 +27,6 @@
 
 <!-- Your API key is loaded first, which is correct -->
 <script src="config.js" defer></script>
-    
-<!-- Your new, organized scripts. The order is CRITICAL. -->
 <script src="helpers.js" defer></script>
 <script src="hooks.js" defer></script>
 <script type="text/babel" src="components.js" defer></script>
