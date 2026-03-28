@@ -40,30 +40,70 @@ const App = () => {
         <p className="text-xl text-gray-400">Click "Surprise Me" to discover a movie!</p>
       </div>
 
-      {/* Region Selector Modal */}
-      {showRegionSelector && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
-          <div className="w-full max-w-md bg-gray-900 border border-gray-700 p-6 rounded-xl text-center">
-            <h1 className="text-2xl font-bold text-white mb-4">Select Your Region</h1>
-            <select 
-              onChange={(e) => handleRegionChange(e.target.value)} 
-              defaultValue=""
-              className="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg text-white"
-            >
-              <option value="" disabled>-- Choose Region --</option>
-              <option value="US">United States</option>
-              <option value="GB">United Kingdom</option>
-              <option value="ES">Spain</option>
-              <option value="MX">Mexico</option>
-            </select>
-          </div>
-        </div>
+      {/* Region Selector Modal - FIXED */}
+{(showRegionSelector || !userRegion) && (
+  <div style={{
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 9999,
+    padding: '1rem'
+  }}>
+    <div style={{
+      width: '100%',
+      maxWidth: '400px',
+      backgroundColor: '#1f2937',
+      border: '1px solid #374151',
+      borderRadius: '1rem',
+      padding: '2rem',
+      textAlign: 'center'
+    }}>
+      <h1 style={{
+        fontSize: '1.5rem',
+        fontWeight: 'bold',
+        color: '#ffffff',
+        marginBottom: '1.5rem'
+      }}>
+        {t.selectRegionPrompt || 'Select Your Region'}
+      </h1>
+      {availableRegions.length > 0 ? (
+        <select 
+          onChange={(e) => handleRegionChange(e.target.value)} 
+          defaultValue=""
+          style={{
+            width: '100%',
+            padding: '0.75rem',
+            backgroundColor: '#374151',
+            border: '1px solid #4b5563',
+            borderRadius: '0.5rem',
+            color: '#ffffff',
+            fontSize: '1rem'
+          }}
+        >
+          <option value="" disabled>-- {t.region || 'Region'} --</option>
+          {availableRegions.map(region => (
+            <option key={region.iso_3166_1} value={region.iso_3166_1}>
+              {region.english_name}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <span className="loader"></span>
       )}
+    </div>
+  </div>
+)}
     </div>
   );
 };
 
-// Simple render without ToastProvider
+// Simple renders without ToastProvider
 const AppWithProviders = () => {
   return React.createElement(App);
 };

@@ -963,3 +963,31 @@ body {
     transition: none !important;
   }
 }
+/* Ensure all text is visible */
+.quick-filter-btn {
+  color: #9ca3af !important;
+}
+
+.quick-filter-btn-active {
+  color: #ffffff !important;
+}
+
+.surprise-btn {
+  color: #ffffff !important;
+}
+
+/* Ensure filter labels are visible */
+.filter-label {
+  color: #9ca3af !important;
+}
+
+/* Ensure select dropdowns are visible */
+select {
+  color: #e5e7eb !important;
+  background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+select option {
+  color: #000000;
+  background-color: #ffffff;
+}
