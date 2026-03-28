@@ -14,12 +14,6 @@
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any maskable"
-    },
-{
-      "src": "/icon-maskable-512.png",
-      "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "any maskable"
     }
   ],
   "screenshots": [
@@ -39,6 +33,7 @@
     }
   ],
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "theme_color": "#D946EF",
   "background_color": "#111827"

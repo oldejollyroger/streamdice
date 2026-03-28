@@ -1,4 +1,9 @@
 /* --- v0.0.5: "Neon Noir" Theme (Stable) --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+/* Global box-sizing for consistent layouts */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
 :root {
     --color-bg: #000000;
     --color-text-primary: #e5e7eb;
@@ -29,17 +34,32 @@ body { background-color: var(--color-bg); font-family: 'Inter', system-ui, -appl
 .media-type-switcher { background-color: var(--color-card-bg); border: 1px solid var(--color-card-border); }
 .media-type-btn { transition: all 0.2s ease-in-out; color: var(--color-text-secondary); font-weight: 600; }
 .media-type-btn:hover { color: var(--color-text-primary); }
+.media-type-btn:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
 .media-type-btn-active { background-image: linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to)); color: white !important; box-shadow: 0 4px 15px -5px rgba(168, 85, 247, 0.6); }
 .quick-filter-btn { border: 1px solid var(--color-card-border); background-color: var(--color-card-bg); color: var(--color-text-secondary); transition: all 0.2s ease-in-out; }
 .quick-filter-btn:hover { border-color: var(--color-accent); color: var(--color-accent-text); transform: translateY(-2px); }
+.quick-filter-btn:focus {outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
 .light-mode .quick-filter-btn:hover { color: var(--color-accent); }
 .quick-filter-btn-active { background-image: linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to)); border-color: transparent; color: white !important; box-shadow: 0 4px 15px -5px rgba(168, 85, 247, 0.6); }
 .loader, .small-loader { border-radius: 50%; display: inline-block; box-sizing: border-box; animation: rotation 1s linear infinite; }
 .loader { width: 48px; height: 48px; border: 5px solid var(--color-text-primary); border-bottom-color: var(--color-accent); }
 .small-loader { width: 20px; height: 20px; margin-left: 8px; border: 3px solid var(--color-text-secondary); border-bottom-color: var(--color-accent); }
 @keyframes rotation { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-.modal-backdrop { background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-.light-mode .modal-backdrop { background-color: rgba(244, 244, 245, 0.7); }
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.8); /* Fallback for older browsers */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+@supports not (backdrop-filter: blur(8px)) {
+  .modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.95);
+  }
+}.light-mode .modal-backdrop { background-color: rgba(244, 244, 245, 0.7); }
 .modal-content { background: var(--color-bg); border: 1px solid var(--color-card-border); border-radius: 1rem; }
 .user-list-item { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 1rem; padding: 0.75rem; border-radius: 0.75rem; background-color: var(--color-bg); border: 1px solid var(--color-card-border); transition: all 0.2s ease; }
 .user-list-item:hover { transform: translateY(-2px); border-color: var(--color-card-hover-border); }
