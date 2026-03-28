@@ -40,7 +40,9 @@ const App = () => {
         <p className="text-xl text-gray-400">Click "Surprise Me" to discover a movie!</p>
       </div>
 
-      {/* Region Selector Modal - FIXED */}
+    Replace the region selector code with this (no t references):
+
+{/* Region Selector Modal - FIXED */}
 {(showRegionSelector || !userRegion) && (
   <div style={{
     position: 'fixed',
@@ -70,7 +72,7 @@ const App = () => {
         color: '#ffffff',
         marginBottom: '1.5rem'
       }}>
-        {t.selectRegionPrompt || 'Select Your Region'}
+        Select Your Region
       </h1>
       {availableRegions.length > 0 ? (
         <select 
@@ -86,7 +88,7 @@ const App = () => {
             fontSize: '1rem'
           }}
         >
-          <option value="" disabled>-- {t.region || 'Region'} --</option>
+          <option value="" disabled>-- Select Region --</option>
           {availableRegions.map(region => (
             <option key={region.iso_3166_1} value={region.iso_3166_1}>
               {region.english_name}
@@ -102,6 +104,9 @@ const App = () => {
     </div>
   );
 };
+
+// Render the app
+ReactDOM.render(<AppWithProviders />, document.getElementById('root'));
 
 // Simple renders without ToastProvider
 const AppWithProviders = () => {
