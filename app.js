@@ -1,7 +1,16 @@
-// app.js (v1.3.0 - Full UX Polish)
+// app.js (v1.3.1 - Debug Version)
 
 const App = () => {
   const { useState, useEffect, useCallback, useMemo, useRef } = React;
+
+  // Get toast function safely
+  let addToast;
+  try {
+    const toastContext = useToast();
+    addToast = toastContext.addToast;
+  } catch (e) {
+    addToast = (msg) => console.log('Toast:', msg);
+  }
 
   // ============================================
   // STATE MANAGEMENT
@@ -12,7 +21,13 @@ const App = () => {
   const [tmdbLanguage, setTmdbLanguage] = useLocalStorageState('tmdbContentLang', 'en-US');
   const [userRegion, setUserRegion] = useLocalStorageState('movieRandomizerRegion', null);
   const [mediaType, setMediaType] = useLocalStorageState('mediaPickerType_v1', 'movie');
-  const [showRegionSelector, setShowRegionSelector] = useState(() => !localStorage.getItem('movieRandomizerRegion'));
+  const [showRegionSelector, setShowRegionSelector] = useState(() => {
+    try {
+      return !localStorage.getItem('movieRandomizerRegion');
+    } catch (e) {
+      return true;
+    }
+  });
 
   const initialFilters = { genre: [], excludeGenres: [], decade: 'todos', platform: [], minRating: 0, actor: null, creator: null, duration: 0, ageRating: 0 };
   const [filters, setFilters] = useLocalStorageState('mediaPickerFilters_v4', initialFilters);
@@ -54,21 +69,12 @@ const App = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
-  // ============================================
-  // UX POLISH STATE
-  // ============================================
+  // UX State
   const [showConfetti, setShowConfetti] = useState(false);
-  const [isCardRevealing, setIsCardRevealing] = useState(false);
-  const [showSwipeHint, setShowSwipeHint] = useState(false);
-  const [posterGlow, setPosterGlow] = useState(false);
-
-  // Get toast function from context
-  const { addToast } = useToast();
 
   const t = translations[language];
   const cardRef = useRef(null);
   const searchRef = useRef(null);
-  const mediaCardRef = useRef(null);
 
   // ============================================
   // MEMOIZED VALUES
@@ -106,35 +112,6 @@ const App = () => {
   const showInstallButton = installPrompt && !isIos && !isStandalone;
   const showIosInstallInstructions = isIos && !isStandalone;
   const isCurrentMediaWatched = selectedMedia && watchedMedia[selectedMedia.id];
-
-  // ============================================
-  // SWIPE GESTURE INTEGRATION
-  // ============================================
-  const handleSwipeLeft = useCallback(() => {
-    if (mediaHistory.length > 0) {
-      handleGoBack();
-      addToast(t.swipedBack || 'Previous movie', 'info');
-    }
-  }, [mediaHistory.length]);
-
-  const handleSwipeRight = useCallback(() => {
-    if (!isDiscovering && userRegion && Object.keys(genresMap).length) {
-      handleSurpriseMe();
-    }
-  }, [isDiscovering, userRegion, genresMap]);
-
-  const handleSwipeUp = useCallback(() => {
-    if (selectedMedia && !watchList[selectedMedia.id]) {
-      handleToggleWatchlist(selectedMedia);
-    }
-  }, [selectedMedia, watchList]);
-
-  const swipeHandlers = useSwipeGesture(
-    handleSwipeLeft,
-    handleSwipeRight,
-    handleSwipeUp,
-    { enabled: !!selectedMedia && !isDiscovering && !isTrailerModalOpen && !isFilterModalOpen }
-  );
 
   // ============================================
   // API FUNCTIONS
@@ -201,16 +178,6 @@ const App = () => {
     return () => window.removeEventListener('beforeinstallprompt', p);
   }, []);
 
-  // Show swipe hint on mobile (first time only)
-  useEffect(() => {
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    const hasSeenSwipeHint = localStorage.getItem('hasSeenSwipeHint');
-    if (isMobile && !hasSeenSwipeHint && selectedMedia && !showSwipeHint) {
-      setTimeout(() => setShowSwipeHint(true), 2000);
-      localStorage.setItem('hasSeenSwipeHint', 'true');
-    }
-  }, [selectedMedia]);
-
   // ============================================
   // MODAL HANDLERS
   // ============================================
@@ -232,23 +199,10 @@ const App = () => {
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') closeModal();
-      // Keyboard shortcuts
-      if (!isTrailerModalOpen && !isFilterModalOpen && !isActorModalOpen && !isWatchedModalOpen && !isWatchlistModalOpen) {
-        if (event.code === 'Space' && !isDiscovering && selectedMedia) {
-          event.preventDefault();
-          handleSurpriseMe();
-        }
-        if (event.key === 'ArrowLeft' && mediaHistory.length > 0) {
-          handleGoBack();
-        }
-        if (event.key === 'ArrowRight' && !isDiscovering) {
-          handleSurpriseMe();
-        }
-      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isDiscovering, selectedMedia, mediaHistory.length, isTrailerModalOpen, isFilterModalOpen, isActorModalOpen, isWatchedModalOpen, isWatchlistModalOpen]);
+  }, []);
 
   // ============================================
   // DATA FETCHING
@@ -332,7 +286,7 @@ const App = () => {
   const fetchFullMediaDetails = useCallback(async (mediaId, type) => {
     if (!mediaId || !type) return null;
     try {
-      const endpoint = type === 'movie' ? `${type}/${mediaId}` : `${type}/${mediaId}`;
+      const endpoint = `${type}/${mediaId}`;
       const append_to_response = type === 'movie'
         ? 'credits,videos,watch/providers,similar,recommendations,release_dates'
         : 'credits,videos,watch/providers,similar,recommendations,content_ratings';
@@ -379,7 +333,7 @@ const App = () => {
         seasons: data.number_of_seasons,
         trailerKey: (data.videos?.results?.filter(v => v.type === 'Trailer' && v.site === 'YouTube') || [])[0]?.key || null,
         similar: similarMedia,
-        certification: certification
+        certification
       };
     } catch (err) {
       console.error(`Error fetching details for ${type} ${mediaId}`, err);
@@ -416,13 +370,12 @@ const App = () => {
   }, [watchList, cookieConsent]);
 
   // ============================================
-  // MAIN ACTION HANDLERS
+  // ACTION HANDLERS
   // ============================================
   const handleSurpriseMe = useCallback(async () => {
     if (!userRegion || !Object.keys(genresMap).length) return;
 
     setIsDiscovering(true);
-    setIsCardRevealing(true);
     setError(null);
 
     if (selectedMedia) setMediaHistory(prev => [...prev, selectedMedia]);
@@ -470,8 +423,7 @@ const App = () => {
         setAllMedia([]);
         setSelectedMedia(null);
         setIsDiscovering(false);
-        setIsCardRevealing(false);
-        addToast(t.noMoviesFound || 'No movies found with these filters', 'info');
+        addToast(t.noMoviesFound || 'No movies found', 'info');
         return;
       }
 
@@ -482,25 +434,17 @@ const App = () => {
 
       setAllMedia(unwatchedMedia);
 
-      // Delay for card reveal animation
-      setTimeout(() => {
-        if (unwatchedMedia.length > 0) {
-          const newMedia = unwatchedMedia[Math.floor(Math.random() * unwatchedMedia.length)];
-          setSelectedMedia(newMedia);
-          setPosterGlow(true);
-          setTimeout(() => setPosterGlow(false), 1500);
-        } else {
-          setSelectedMedia(null);
-          addToast(t.noMoviesFound || 'No unwatched movies found', 'info');
-        }
-        setIsCardRevealing(false);
-      }, 800);
+      if (unwatchedMedia.length > 0) {
+        const newMedia = unwatchedMedia[Math.floor(Math.random() * unwatchedMedia.length)];
+        setSelectedMedia(newMedia);
+      } else {
+        setSelectedMedia(null);
+        addToast(t.noMoviesFound || 'No movies found', 'info');
+      }
 
     } catch (err) {
       console.error("Error discovering media:", err);
       setError(err.message);
-      setIsCardRevealing(false);
-      addToast('Error loading movies', 'error');
     } finally {
       setIsDiscovering(false);
     }
@@ -562,14 +506,11 @@ const App = () => {
     });
   };
 
-  // ============================================
-  // WATCHED & WATCHLIST WITH TOASTS
-  // ============================================
   const handleMarkAsWatched = (media) => {
     const newWatched = { ...watchedMedia };
     if (newWatched[media.id]) {
       delete newWatched[media.id];
-      addToast(t.toastUnwatched || 'Removed from watched', 'info');
+      addToast('Removed from watched', 'info');
     } else {
       newWatched[media.id] = {
         id: media.id,
@@ -578,9 +519,8 @@ const App = () => {
         mediaType: media.mediaType,
         year: media.year
       };
-      addToast(t.toastWatched || 'Marked as watched! ✓', 'watched');
-
-      // Confetti celebration on milestones
+      addToast('Marked as watched! ✓', 'watched');
+      
       const newCount = Object.keys(newWatched).length;
       if (newCount > 0 && newCount % 10 === 0) {
         setShowConfetti(true);
@@ -593,14 +533,14 @@ const App = () => {
     const newWatched = { ...watchedMedia };
     delete newWatched[mediaId];
     setWatchedMedia(newWatched);
-    addToast(t.toastUnwatched || 'Removed from watched', 'info');
+    addToast('Removed from watched', 'info');
   };
 
   const handleToggleWatchlist = (media) => {
     const newWatchlist = { ...watchList };
     if (newWatchlist[media.id]) {
       delete newWatchlist[media.id];
-      addToast(t.toastRemovedFromWatchlist || 'Removed from watchlist', 'info');
+      addToast('Removed from watchlist', 'info');
     } else {
       newWatchlist[media.id] = {
         id: media.id,
@@ -609,7 +549,7 @@ const App = () => {
         mediaType: media.mediaType,
         year: media.year
       };
-      addToast(t.toastAddedToWatchlist || 'Added to watchlist! ♡', 'watchlist');
+      addToast('Added to watchlist! ♡', 'watchlist');
     }
     setWatchList(newWatchlist);
   };
@@ -629,10 +569,10 @@ const App = () => {
       navigator.share({ title: selectedMedia.title, url }).catch(err => console.error(err));
     } else {
       navigator.clipboard.writeText(url).then(() => {
-        addToast(t.shareSuccess || 'Link copied!', 'success');
+        addToast('Link copied!', 'success');
       });
     }
-  }, [selectedMedia, addToast, t]);
+  }, [selectedMedia, addToast]);
 
   const handleInstallClick = async () => {
     if (!installPrompt) return;
@@ -663,12 +603,9 @@ const App = () => {
         creator: isCreator ? result : null
       }));
       resetAllState();
-      addToast(`Filtering by ${result.title}`, 'info');
     } else {
       if (selectedMedia) setMediaHistory(prev => [...prev, selectedMedia]);
       setSelectedMedia(result);
-      setPosterGlow(true);
-      setTimeout(() => setPosterGlow(false), 1500);
     }
     setSearchQuery('');
     setSearchResults([]);
@@ -694,15 +631,9 @@ const App = () => {
   }
 
   return (
-    <div 
-      className="min-h-screen p-4 md:p-8 max-w-6xl mx-auto"
-      {...swipeHandlers}
-    >
-      {/* Confetti Celebration */}
+    <div className="min-h-screen p-4 md:p-8 max-w-6xl mx-auto">
+      {/* Confetti */}
       <Confetti active={showConfetti} onComplete={() => setShowConfetti(false)} />
-
-      {/* Swipe Hint for Mobile */}
-      <SwipeHint show={showSwipeHint} onDismiss={() => setShowSwipeHint(false)} />
 
       {/* Header */}
       <header className="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
@@ -744,7 +675,7 @@ const App = () => {
             </svg>
             {isSearching && <span className="small-loader absolute right-3 top-1/2 -translate-y-1/2"></span>}
 
-            {/* Search Results Dropdown */}
+            {/* Search Results */}
             {searchResults.length > 0 && (
               <div className="absolute top-full mt-2 w-full md:w-72 right-0 bg-[var(--color-bg)] border border-[var(--color-card-border)] rounded-xl shadow-2xl z-50 overflow-hidden">
                 <button onClick={() => { setSearchQuery(''); setSearchResults([]); }} className="search-results-close">
@@ -763,20 +694,15 @@ const App = () => {
                     />
                     <div className="flex-1 overflow-hidden">
                       <p className="font-semibold text-[var(--color-text-primary)] truncate">{result.title}</p>
-                      <p className="text-xs text-[var(--color-text-secondary)]">
-                        {result.resultType === 'person' ? result.year : result.year}
-                      </p>
+                      <p className="text-xs text-[var(--color-text-secondary)]">{result.year}</p>
                     </div>
-                    {result.resultType === 'person' && (
-                      <span className="text-xs px-2 py-1 bg-[var(--color-accent)]/20 text-[var(--color-accent-text)] rounded-full">Person</span>
-                    )}
                   </button>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Settings Dropdown */}
+          {/* Settings */}
           <SettingsDropdown
             mode={mode} setMode={setMode}
             accent={accent} setAccent={setAccent}
@@ -808,7 +734,7 @@ const App = () => {
         ))}
       </div>
 
-      {/* Platform Quick Filters */}
+      {/* Platform Filters */}
       {userRegion && quickPlatformOptions.length > 0 && (
         <div className="flex flex-wrap justify-center gap-2 mb-6">
           {quickPlatformOptions.map(p => (
@@ -841,45 +767,20 @@ const App = () => {
 
         <div>
           <label className="filter-label text-xs text-[var(--color-text-secondary)]">{t.minRating} {Number(filters.minRating).toFixed(1)}</label>
-          <input
-            type="range"
-            min="0"
-            max="9"
-            step="0.5"
-            value={filters.minRating}
-            onChange={(e) => handleFilterChange('minRating', e.target.value)}
-            className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-[var(--color-accent)]"
-          />
+          <input type="range" min="0" max="9" step="0.5" value={filters.minRating} onChange={(e) => handleFilterChange('minRating', e.target.value)} className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-[var(--color-accent)]" />
         </div>
 
         <div>
           <label className="filter-label text-xs text-[var(--color-text-secondary)]">{t.duration}<span className="text-[var(--color-accent-text)]">{durationOptions[filters.duration].label}</span></label>
-          <input
-            type="range"
-            min="0"
-            max="3"
-            value={filters.duration}
-            onChange={(e) => handleFilterChange('duration', e.target.value)}
-            className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-[var(--color-accent)]"
-          />
+          <input type="range" min="0" max="3" value={filters.duration} onChange={(e) => handleFilterChange('duration', e.target.value)} className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-[var(--color-accent)]" />
         </div>
 
         <div>
           <label className="filter-label text-xs text-[var(--color-text-secondary)]">{t.ageRating}<span className="text-[var(--color-accent-text)]">{ageRatingOptions[filters.ageRating]}</span></label>
-          <input
-            type="range"
-            min="0"
-            max={ageRatingOptions.length - 1}
-            value={filters.ageRating}
-            onChange={(e) => handleFilterChange('ageRating', e.target.value)}
-            className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-[var(--color-accent)]"
-          />
+          <input type="range" min="0" max={ageRatingOptions.length - 1} value={filters.ageRating} onChange={(e) => handleFilterChange('ageRating', e.target.value)} className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-[var(--color-accent)]" />
         </div>
 
-        <button
-          onClick={() => setIsFilterModalOpen(true)}
-          className="w-full sm:col-span-2 md:col-span-2 lg:col-span-1 p-2 bg-white/10 dark:bg-black/20 hover:border-slate-300 dark:hover:border-slate-700 border border-slate-200 dark:border-slate-800 text-[var(--color-text-primary)] font-semibold rounded-full transition-colors flex items-center justify-center gap-2"
-        >
+        <button onClick={() => setIsFilterModalOpen(true)} className="w-full sm:col-span-2 md:col-span-2 lg:col-span-1 p-2 bg-white/10 dark:bg-black/20 hover:border-slate-300 dark:hover:border-slate-700 border border-slate-200 dark:border-slate-800 text-[var(--color-text-primary)] font-semibold rounded-full transition-colors flex items-center justify-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg>
           {t.showFilters}
         </button>
@@ -887,10 +788,10 @@ const App = () => {
 
       {/* Surprise Me Button */}
       <div className="flex justify-center mb-6">
-        <RippleButton
+        <button
           onClick={handleSurpriseMe}
           disabled={isDiscovering || !userRegion}
-          className="surprise-btn px-8 py-3 bg-gradient-to-r from-[var(--color-accent-gradient-from)] to-[var(--color-accent-gradient-to)] text-white font-bold rounded-full shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-lg"
+          className="surprise-btn px-8 py-3 bg-gradient-to-r from-[var(--color-accent-gradient-from)] to-[var(--color-accent-gradient-to)] text-white font-bold rounded-full shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-lg flex items-center gap-2"
         >
           {isDiscovering ? (
             <>
@@ -899,17 +800,17 @@ const App = () => {
             </>
           ) : (
             <>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 inline mr-2">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
                 <path fillRule="evenodd" d="M9.315 7.584C12.195 3.883 16.695 1.5 21.75 1.5a.75.75 0 01.75.75c0 5.056-2.383 9.555-6.084 12.436A6.75 6.75 0 019.75 22.5a.75.75 0 01-.75-.75v-4.131A15.838 15.838 0 016.382 15H2.25a.75.75 0 01-.75-.75 6.75 6.75 0 017.815-6.666zM15 6.75a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z" clipRule="evenodd" />
                 <path d="M5.26 17.242a.75.75 0 10-.897-1.203 5.243 5.243 0 00-2.05 5.022.75.75 0 00.625.627 5.243 5.243 0 005.022-2.051.75.75 0 10-1.202-.897 3.744 3.744 0 01-3.008 1.51c0-1.23.592-2.323 1.51-3.008z" />
               </svg>
               {t.surpriseMe}
             </>
           )}
-        </RippleButton>
+        </button>
       </div>
 
-      {/* Active Filter Pills */}
+      {/* Active Filters */}
       <div className="flex flex-wrap justify-center gap-2 mb-6">
         {filters.actor && (
           <span className="filter-pill">
@@ -949,29 +850,22 @@ const App = () => {
       </div>
 
       {/* Main Content */}
-      <main className="flex flex-col items-center" ref={mediaCardRef}>
+      <main className="flex flex-col items-center">
         {isDiscovering ? (
           <DiceRollAnimation isRolling={true} />
         ) : selectedMedia ? (
-          <div className="w-full max-w-4xl container-style p-6 movie-card-reveal">
+          <div className="w-full max-w-4xl container-style p-6 movie-card-enter">
             <div className="flex flex-col lg:flex-row gap-6">
               {/* Poster */}
               <div className="flex flex-col items-center gap-4 flex-shrink-0">
-                <div className={`poster-glow rounded-lg overflow-hidden ${posterGlow ? 'glow-active' : ''}`}>
-                  <img
-                    src={selectedMedia.poster ? `${TMDB_IMAGE_BASE_URL}${selectedMedia.poster}` : 'https://placehold.co/300x450/1f2937/9ca3af?text=No+Poster'}
-                    alt={`Poster for ${selectedMedia.title}`}
-                    className="w-48 md:w-56 rounded-lg shadow-xl"
-                    onError={(e) => { e.target.src = 'https://placehold.co/300x450/1f2937/9ca3af?text=No+Poster'; }}
-                  />
-                </div>
-
-                {/* Trailer Button */}
+                <img
+                  src={selectedMedia.poster ? `${TMDB_IMAGE_BASE_URL}${selectedMedia.poster}` : 'https://placehold.co/300x450/1f2937/9ca3af?text=No+Poster'}
+                  alt={`Poster for ${selectedMedia.title}`}
+                  className="w-48 md:w-56 rounded-lg shadow-xl"
+                  onError={(e) => { e.target.src = 'https://placehold.co/300x450/1f2937/9ca3af?text=No+Poster'; }}
+                />
                 {!isFetchingDetails && mediaDetails.trailerKey && (
-                  <button
-                    onClick={() => openTrailerModal(mediaDetails.trailerKey)}
-                    className="w-full max-w-[220px] flex items-center justify-center gap-2 py-3 px-4 bg-[var(--color-accent)]/20 text-[var(--color-accent-text)] font-bold rounded-lg shadow-md transition-all hover:bg-[var(--color-accent)]/30 hover:scale-105"
-                  >
+                  <button onClick={() => openTrailerModal(mediaDetails.trailerKey)} className="w-full max-w-[220px] flex items-center justify-center gap-2 py-3 px-4 bg-[var(--color-accent)]/20 text-[var(--color-accent-text)] font-bold rounded-lg shadow-md transition-all hover:bg-[var(--color-accent)]/30 hover:scale-105">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" /></svg>
                     {t.cardTrailer}
                   </button>
@@ -985,53 +879,37 @@ const App = () => {
 
                 {/* Action Buttons */}
                 <div className="flex flex-wrap gap-3">
-                  <RippleButton
-                    onClick={() => handleMarkAsWatched(selectedMedia)}
-                    className={`flex-1 min-w-[140px] py-3 px-4 text-white font-bold rounded-lg shadow-md transition-all flex items-center justify-center gap-2 ${isCurrentMediaWatched ? 'bg-green-600/80 hover:bg-green-600' : 'bg-red-600/80 hover:bg-red-600'}`}
-                  >
+                  <button onClick={() => handleMarkAsWatched(selectedMedia)} className={`flex-1 min-w-[140px] py-3 px-4 text-white font-bold rounded-lg shadow-md transition-all flex items-center justify-center gap-2 ${isCurrentMediaWatched ? 'bg-green-600/80 hover:bg-green-600' : 'bg-red-600/80 hover:bg-red-600'}`}>
                     {isCurrentMediaWatched ? (
                       <>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" /></svg>
                         {t.cardIsWatched}
                       </>
                     ) : t.cardMarkAsWatched}
-                  </RippleButton>
+                  </button>
 
-                  <RippleButton
-                    onClick={() => handleToggleWatchlist(selectedMedia)}
-                    className="flex-1 min-w-[140px] py-3 px-4 bg-sky-600/80 hover:bg-sky-600 text-white font-bold rounded-lg shadow-md transition-all flex items-center justify-center gap-2"
-                  >
+                  <button onClick={() => handleToggleWatchlist(selectedMedia)} className="flex-1 min-w-[140px] py-3 px-4 bg-sky-600/80 hover:bg-sky-600 text-white font-bold rounded-lg shadow-md transition-all flex items-center justify-center gap-2">
                     {watchList[selectedMedia.id] ? (
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path fillRule="evenodd" d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z" clipRule="evenodd" /></svg>
                     ) : (
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" /></svg>
                     )}
                     {t.saveForLater}
-                  </RippleButton>
+                  </button>
 
-                  <RippleButton
-                    onClick={handleShare}
-                    className="py-3 px-4 bg-slate-600/80 hover:bg-slate-600 text-white font-bold rounded-lg shadow-md transition-all flex items-center justify-center gap-2"
-                  >
+                  <button onClick={handleShare} className="py-3 px-4 bg-slate-600/80 hover:bg-slate-600 text-white font-bold rounded-lg shadow-md transition-all flex items-center justify-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg>
                     {t.shareButton}
-                  </RippleButton>
+                  </button>
                 </div>
 
-                {/* Movie Details */}
+                {/* Details Section */}
                 <div className="pt-4 border-t border-[var(--color-card-border)]">
                   <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-3">{t.details}</h3>
-                  <MediaCardContent
-                    media={selectedMedia}
-                    details={mediaDetails}
-                    isFetching={isFetchingDetails}
-                    t={t}
-                    userRegion={userRegion}
-                    handleActorClick={handleActorClick}
-                  />
+                  <MediaCardContent media={selectedMedia} details={mediaDetails} isFetching={isFetchingDetails} t={t} userRegion={userRegion} handleActorClick={handleActorClick} />
                 </div>
 
-                {/* Similar Movies */}
+                {/* Similar */}
                 <div className="pt-4 border-t border-[var(--color-card-border)]">
                   <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-3">{t.cardSimilarMovies}</h3>
                   {isFetchingDetails ? (
@@ -1039,17 +917,8 @@ const App = () => {
                   ) : mediaDetails.similar?.length > 0 ? (
                     <div className="horizontal-scroll-container">
                       {mediaDetails.similar.map(media => (
-                        <button
-                          key={media.id}
-                          onClick={() => handleSimilarMediaClick(media)}
-                          className="flex-shrink-0 w-32 text-center group hover:scale-105 transition-transform duration-150"
-                        >
-                          <img
-                            src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : 'https://placehold.co/128x192/1f2937/9ca3af?text=?'}
-                            alt={media.title}
-                            className="w-full rounded-lg shadow-md"
-                            onError={(e) => { e.target.src = 'https://placehold.co/128x192/1f2937/9ca3af?text=?'; }}
-                          />
+                        <button key={media.id} onClick={() => handleSimilarMediaClick(media)} className="flex-shrink-0 w-32 text-center group hover:scale-105 transition-transform duration-150">
+                          <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : 'https://placehold.co/128x192/1f2937/9ca3af?text=?'} alt={media.title} className="w-full rounded-lg shadow-md" onError={(e) => { e.target.src = 'https://placehold.co/128x192/1f2937/9ca3af?text=?'; }} />
                           <p className="text-xs mt-1 text-[var(--color-text-secondary)] truncate group-hover:text-[var(--color-accent-text)]">{media.title}</p>
                         </button>
                       ))}
@@ -1061,24 +930,16 @@ const App = () => {
               </div>
             </div>
 
-            {/* Navigation Buttons */}
+            {/* Navigation */}
             <div className="flex justify-center gap-4 mt-6 pt-6 border-t border-[var(--color-card-border)]">
-              <RippleButton
-                onClick={handleGoBack}
-                disabled={mediaHistory.length === 0}
-                className="px-6 py-2 bg-slate-600/80 hover:bg-slate-600 text-white font-bold rounded-full disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-              >
+              <button onClick={handleGoBack} disabled={mediaHistory.length === 0} className="px-6 py-2 bg-slate-600/80 hover:bg-slate-600 text-white font-bold rounded-full disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
-                {t.goBack || 'Back'}
-              </RippleButton>
-              <RippleButton
-                onClick={handleSurpriseMe}
-                disabled={isDiscovering}
-                className="px-6 py-2 bg-gradient-to-r from-[var(--color-accent-gradient-from)] to-[var(--color-accent-gradient-to)] text-white font-bold rounded-full disabled:opacity-50 flex items-center gap-2"
-              >
-                {t.next || 'Next'}
+                Back
+              </button>
+              <button onClick={handleSurpriseMe} disabled={isDiscovering} className="px-6 py-2 bg-gradient-to-r from-[var(--color-accent-gradient-from)] to-[var(--color-accent-gradient-to)] text-white font-bold rounded-full disabled:opacity-50 flex items-center gap-2">
+                Next
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
-              </RippleButton>
+              </button>
             </div>
           </div>
         ) : (
@@ -1086,10 +947,7 @@ const App = () => {
             {hasSearched && allMedia.length === 0 && !isDiscovering ? (
               <div className="space-y-4">
                 <p className="text-xl text-[var(--color-text-secondary)]">{t.noMoviesFound}</p>
-                <button
-                  onClick={resetAndClearFilters}
-                  className="px-6 py-2 bg-[var(--color-accent)] text-white font-bold rounded-full hover:opacity-90"
-                >
+                <button onClick={resetAndClearFilters} className="px-6 py-2 bg-[var(--color-accent)] text-white font-bold rounded-full hover:opacity-90">
                   {t.clearAllFilters}
                 </button>
               </div>
@@ -1102,71 +960,20 @@ const App = () => {
 
       {/* Modals */}
       <TrailerModal isOpen={isTrailerModalOpen} close={closeModal} trailerKey={modalTrailerKey} />
-      <FilterModal
-        isOpen={isFilterModalOpen}
-        close={() => setIsFilterModalOpen(false)}
-        handleClearFilters={resetAndClearFilters}
-        filters={filters}
-        handleGenreChangeInModal={handleGenreChangeInModal}
-        handlePlatformChange={handlePlatformChange}
-        genresMap={genresMap}
-        allPlatformOptions={allPlatformOptions}
-        platformSearchQuery={platformSearchQuery}
-        setPlatformSearchQuery={setPlatformSearchQuery}
-        t={t}
-      />
-      <WatchedMediaModal
-        isOpen={isWatchedModalOpen}
-        close={() => setIsWatchedModalOpen(false)}
-        watchedMedia={watchedMedia}
-        handleUnwatchMedia={handleUnwatchMedia}
-        mediaType={mediaType}
-        t={t}
-        cookieConsent={cookieConsent}
-      />
-      <WatchlistModal
-        isOpen={isWatchlistModalOpen}
-        close={() => setIsWatchlistModalOpen(false)}
-        watchlist={watchList}
-        handleToggleWatchlist={handleToggleWatchlist}
-        mediaType={mediaType}
-        t={t}
-        cookieConsent={cookieConsent}
-      />
-      <ActorDetailsModal
-        isOpen={isActorModalOpen}
-        close={closeModal}
-        actorDetails={actorDetails}
-        isFetching={isFetchingActorDetails}
-        t={t}
-      />
-      <SimilarMediaModal
-        media={modalMedia}
-        close={closeModal}
-        fetchFullMediaDetails={fetchFullMediaDetails}
-        handleActorClick={handleActorClick}
-        handleSimilarMediaClick={handleSimilarMediaClick}
-        t={t}
-        userRegion={userRegion}
-        openTrailerModal={openTrailerModal}
-      />
-      <CookieConsentModal
-        isOpen={!cookieConsent}
-        onAccept={() => setCookieConsent(true)}
-        t={t}
-      />
+      <FilterModal isOpen={isFilterModalOpen} close={() => setIsFilterModalOpen(false)} handleClearFilters={resetAndClearFilters} filters={filters} handleGenreChangeInModal={handleGenreChangeInModal} handlePlatformChange={handlePlatformChange} genresMap={genresMap} allPlatformOptions={allPlatformOptions} platformSearchQuery={platformSearchQuery} setPlatformSearchQuery={setPlatformSearchQuery} t={t} />
+      <WatchedMediaModal isOpen={isWatchedModalOpen} close={() => setIsWatchedModalOpen(false)} watchedMedia={watchedMedia} handleUnwatchMedia={handleUnwatchMedia} mediaType={mediaType} t={t} cookieConsent={cookieConsent} />
+      <WatchlistModal isOpen={isWatchlistModalOpen} close={() => setIsWatchlistModalOpen(false)} watchlist={watchList} handleToggleWatchlist={handleToggleWatchlist} mediaType={mediaType} t={t} cookieConsent={cookieConsent} />
+      <ActorDetailsModal isOpen={isActorModalOpen} close={closeModal} actorDetails={actorDetails} isFetching={isFetchingActorDetails} t={t} />
+      <SimilarMediaModal media={modalMedia} close={closeModal} fetchFullMediaDetails={fetchFullMediaDetails} handleActorClick={handleActorClick} handleSimilarMediaClick={handleSimilarMediaClick} t={t} userRegion={userRegion} openTrailerModal={openTrailerModal} />
+      <CookieConsentModal isOpen={!cookieConsent} onAccept={() => setCookieConsent(true)} t={t} />
 
-      {/* Region Selector Modal */}
+      {/* Region Selector */}
       {(showRegionSelector || !userRegion) && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
           <div className="w-full max-w-md modal-content p-6 text-center">
             <h1 className="text-2xl font-bold text-[var(--color-text-primary)] mb-4">{t.selectRegionPrompt}</h1>
             {availableRegions.length > 0 ? (
-              <select
-                onChange={(e) => handleRegionChange(e.target.value)}
-                defaultValue=""
-                className="w-full p-3 bg-white/10 dark:bg-black/20 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] text-[var(--color-text-primary)]"
-              >
+              <select onChange={(e) => handleRegionChange(e.target.value)} defaultValue="" className="w-full p-3 bg-white/10 dark:bg-black/20 border border-slate-200 dark:border-slate-800 rounded-lg focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] text-[var(--color-text-primary)]">
                 <option value="" disabled>-- {t.region} --</option>
                 {availableRegions.map(region => (
                   <option key={region.iso_3166_1} value={region.iso_3166_1}>{region.english_name}</option>
@@ -1182,11 +989,7 @@ const App = () => {
   );
 };
 
-// ============================================
-// APP WITH PROVIDERS (Toast Context)
-// ============================================
+// Wrap with Toast Provider
 const AppWithProviders = () => {
-  return React.createElement(ToastProvider, null,
-    React.createElement(App, null)
-  );
+  return React.createElement(ToastProvider, null, React.createElement(App, null));
 };
