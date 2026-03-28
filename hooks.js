@@ -1,4 +1,4 @@
-// hooks.js - v1.1.0 (Fixed)
+// hooks.js
 
 function useLocalStorageState(key, defaultValue) {
   const { useState, useEffect } = React;
@@ -9,14 +9,12 @@ function useLocalStorageState(key, defaultValue) {
       if (storedValue) {
         try {
           return JSON.parse(storedValue);
-        } catch (parseError) {
-          console.error(`Error parsing localStorage key "${key}":`, parseError);
+        } catch (e) {
           return typeof defaultValue === 'function' ? defaultValue() : defaultValue;
         }
       }
-    } catch (accessError) {
-      // localStorage not available (incognito mode, Safari private, etc.)
-      console.warn(`localStorage not available for key "${key}":`, accessError.message);
+    } catch (e) {
+      console.warn('localStorage not available');
     }
     return typeof defaultValue === 'function' ? defaultValue() : defaultValue;
   });
@@ -25,7 +23,7 @@ function useLocalStorageState(key, defaultValue) {
     try {
       localStorage.setItem(key, JSON.stringify(state));
     } catch (e) {
-      console.error(`Error setting localStorage key "${key}":`, e);
+      console.error('Error saving to localStorage:', e);
     }
   }, [key, state]);
 
@@ -40,9 +38,7 @@ function useDebounce(value, delay) {
     const handler = setTimeout(() => {
       setDebouncedValue(value);
     }, delay);
-    return () => {
-      clearTimeout(handler);
-    };
+    return () => clearTimeout(handler);
   }, [value, delay]);
   
   return debouncedValue;

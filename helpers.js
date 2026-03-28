@@ -1,4 +1,4 @@
-// helpers.js - v1.1.0 (Fixed)
+// helpers.js
 
 function formatDuration(totalMinutes) {
   if (!totalMinutes || totalMinutes <= 0) return null;
@@ -14,14 +14,12 @@ function normalizeMediaData(media, mediaType, genresMap) {
   const isMovie = type === 'movie';
   const releaseDate = isMovie ? media.release_date : media.first_air_date;
   
-  // Safe year extraction - handles null/undefined dates
   let year = null;
   if (releaseDate && typeof releaseDate === 'string' && releaseDate.length >= 4) {
     const parsed = parseInt(releaseDate.substring(0, 4), 10);
     year = isNaN(parsed) ? null : parsed;
   }
   
-  // Safe rating extraction - handles 0, null, undefined
   let imdbRating = 'N/A';
   if (media.vote_average !== null && media.vote_average !== undefined && media.vote_average > 0) {
     imdbRating = media.vote_average.toFixed(1);

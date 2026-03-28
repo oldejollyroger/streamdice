@@ -16,25 +16,9 @@
       "purpose": "any maskable"
     }
   ],
-  "screenshots": [
-    {
-      "src": "/screenshot-desktop.png",
-      "sizes": "1920x1080",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Movie Details on Desktop"
-    },
-    {
-      "src": "/screenshot-mobile.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Movie Details on Mobile"
-    }
-  ],
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "theme_color": "#D946EF",
-  "background_color": "#111827"
+  "theme_color": "#a855f7",
+  "background_color": "#000000"
 }
