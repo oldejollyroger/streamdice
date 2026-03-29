@@ -113,11 +113,10 @@ const SettingsDropdown = ({ mode, setMode, accent, setAccent, language, setLangu
 };
 
 // Watched Media Modal
-const WatchedMediaModal = ({ isOpen, close, watchedMedia, handleUnwatchMedia, mediaType, t, cookieConsent }) => {
+const WatchedMediaModal = ({ isOpen, close, watchedMedia, handleUnwatchMedia, mediaType, t }) => {
   if (!isOpen) return null;
   const watchedArray = Object.values(watchedMedia).filter(m => m.mediaType === mediaType);
-  
- return (
+  return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.8)' }} onClick={close}>
       <div style={{ width: '100%', maxWidth: '32rem', maxHeight: '80vh', display: 'flex', flexDirection: 'column', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem', position: 'relative' }} onClick={e => e.stopPropagation()}>
         <button onClick={close} style={{ position: 'absolute', top: '1rem', right: '1rem', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1 }}>✕</button>
@@ -307,73 +306,53 @@ const MediaCardContent = ({ media, details, isFetching, t, userRegion, handleAct
 };
 
 // Filter Modal
+// Filter Modal
 const FilterModal = ({ isOpen, close, handleClearFilters, filters, handleGenreChangeInModal, genresMap, allPlatformOptions, platformSearchQuery, setPlatformSearchQuery, handlePlatformChange, t }) => {
   if (!isOpen) return null;
   const filteredPlatforms = allPlatformOptions.filter(p => p.name.toLowerCase().includes(platformSearchQuery.toLowerCase()));
-  const activeGenreCount = (filters.genre?.length || 0) + (filters.excludeGenres?.length || 0);
-  const activePlatformCount = filters.platform?.length || 0;
-
-  const sectionStyle = { marginBottom: '1.5rem' };
-  const sectionTitleStyle = { fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.75rem' };
-  const pillBase = { display: 'inline-flex', alignItems: 'center', padding: '0.375rem 0.875rem', borderRadius: '9999px', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', border: '1.5px solid', transition: 'all 0.15s', marginRight: '0.5rem', marginBottom: '0.5rem', userSelect: 'none' };
-  const pillActive = { ...pillBase, background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', borderColor: 'transparent', color: '#fff' };
-  const pillExclude = { ...pillBase, backgroundColor: 'rgba(239,68,68,0.15)', borderColor: 'rgba(239,68,68,0.5)', color: '#fca5a5' };
-  const pillInactive = { ...pillBase, backgroundColor: 'transparent', borderColor: '#374151', color: '#9ca3af' };
-
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.75)' }} onClick={close}>
-      <div style={{ width: '100%', maxWidth: '540px', maxHeight: '88vh', display: 'flex', flexDirection: 'column', backgroundColor: '#111827', borderRadius: '1.25rem 1.25rem 0 0', position: 'relative', overflow: 'hidden' }} onClick={e => e.stopPropagation()}>
-
-        {/* Header */}
-        <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.8)' }} onClick={close}>
+      <div style={{ width: '100%', maxWidth: '42rem', maxHeight: '90vh', overflowY: 'auto', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem', position: 'relative' }} onClick={e => e.stopPropagation()}>
+        <button onClick={close} style={{ position: 'absolute', top: '1rem', right: '1rem', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#fff', paddingRight: '2rem' }}>{t.advancedFilters}</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
           <div>
-            <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>{t.advancedFilters}</h2>
-            {(activeGenreCount + activePlatformCount) > 0 && (
-              <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.2rem' }}>{activeGenreCount + activePlatformCount} active filter{activeGenreCount + activePlatformCount > 1 ? 's' : ''}</p>
-            )}
-          </div>
-          <button onClick={close} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#1f2937', border: '1px solid #374151', color: '#9ca3af', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
-        </div>
-
-        {/* Scrollable body */}
-        <div style={{ overflowY: 'auto', padding: '1.5rem', flex: 1 }}>
-
-          {/* Include Genres */}
-          <div style={sectionStyle}>
-            <p style={sectionTitleStyle}>{t.includeGenre}</p>
-            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+            <p style={{ fontWeight: '600', marginBottom: '0.5rem', color: '#fff' }}>{t.includeGenre}</p>
+            <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
               {Object.entries(genresMap).sort(([, a], [, b]) => a.localeCompare(b)).map(([id, name]) => (
-                <span key={id} style={filters.genre.includes(id) ? pillActive : pillInactive} onClick={() => handleGenreChangeInModal(id, 'genre')}>{name}</span>
+                <label key={id} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.25rem', color: '#e5e7eb', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={filters.genre.includes(id)} onChange={() => handleGenreChangeInModal(id, 'genre')} />
+                  {name}
+                </label>
               ))}
             </div>
           </div>
-
-          {/* Exclude Genres */}
-          <div style={sectionStyle}>
-            <p style={sectionTitleStyle}>{t.excludeGenre}</p>
-            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+          <div>
+            <p style={{ fontWeight: '600', marginBottom: '0.5rem', color: '#fff' }}>{t.excludeGenre}</p>
+            <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
               {Object.entries(genresMap).sort(([, a], [, b]) => a.localeCompare(b)).map(([id, name]) => (
-                <span key={id} style={filters.excludeGenres.includes(id) ? pillExclude : pillInactive} onClick={() => handleGenreChangeInModal(id, 'excludeGenres')}>{name}</span>
-              ))}
-            </div>
-          </div>
-
-          {/* Platforms */}
-          <div style={sectionStyle}>
-            <p style={sectionTitleStyle}>{t.platform}</p>
-            <input type="text" value={platformSearchQuery} onChange={e => setPlatformSearchQuery(e.target.value)} placeholder={t.platformSearchPlaceholder} style={{ width: '100%', padding: '0.625rem 0.875rem', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '0.625rem', color: '#e5e7eb', fontSize: '0.875rem', marginBottom: '0.75rem', boxSizing: 'border-box' }} />
-            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-              {filteredPlatforms.map(p => (
-                <span key={p.id} style={filters.platform.includes(p.id) ? pillActive : pillInactive} onClick={() => handlePlatformChange(p.id)}>{p.name}</span>
+                <label key={id} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.25rem', color: '#e5e7eb', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={filters.excludeGenres.includes(id)} onChange={() => handleGenreChangeInModal(id, 'excludeGenres')} />
+                  {name}
+                </label>
               ))}
             </div>
           </div>
         </div>
-
-        {/* Footer */}
-        <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid #1f2937', display: 'flex', gap: '0.75rem', flexShrink: 0 }}>
-          <button onClick={() => { handleClearFilters(); close(); }} style={{ flex: 1, padding: '0.75rem', backgroundColor: '#1f2937', border: '1px solid #374151', color: '#9ca3af', borderRadius: '0.75rem', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}>{t.clearFilters}</button>
-          <button onClick={close} style={{ flex: 2, padding: '0.75rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: '#fff', borderRadius: '0.75rem', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem', border: 'none' }}>{t.applyFilters}</button>
+        <div style={{ marginTop: '1.5rem' }}>
+          <p style={{ fontWeight: '600', marginBottom: '0.5rem', color: '#fff' }}>{t.platform}</p>
+          <input type="text" value={platformSearchQuery} onChange={e => setPlatformSearchQuery(e.target.value)} placeholder={t.platformSearchPlaceholder} style={{ width: '100%', padding: '0.5rem', marginBottom: '0.5rem', backgroundColor: '#374151', border: '1px solid #4b5563', borderRadius: '0.5rem', color: '#fff' }} />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.25rem', maxHeight: '150px', overflowY: 'auto' }}>
+            {filteredPlatforms.map(p => (
+              <label key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.25rem', color: '#e5e7eb', cursor: 'pointer' }}>
+                <input type="checkbox" checked={filters.platform.includes(p.id)} onChange={() => handlePlatformChange(p.id)} />
+                {p.name}
+              </label>
+            ))}
+          </div>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
+          <button onClick={() => { handleClearFilters(); close(); }} style={{ padding: '0.5rem 1.5rem', backgroundColor: '#4b5563', color: 'white', borderRadius: '0.5rem', fontWeight: 'bold' }}>{t.clearFilters}</button>
         </div>
       </div>
     </div>
