@@ -707,12 +707,12 @@ const unwatchedMedia = transformedMedia.filter(m =>
 
       {/* Active Filter Pills */}
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
-        {filters.actor && (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
-            {filters.actor.title}
-            <button onClick={() => { setFilters(f => ({ ...f, actor: null })); resetAllState(); }} style={{ background: 'rgba(0,0,0,0.3)', border: 'none', borderRadius: '50%', padding: '2px', cursor: 'pointer', color: 'white' }}>✕</button>
-          </span>
-        )}
+        {(filters.actor || filters.creator) && (
+  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
+    {(filters.actor || filters.creator).title}
+    <button onClick={() => { setFilters(f => ({ ...f, actor: null, creator: null })); resetAllState(); }} style={{ background: 'rgba(0,0,0,0.3)', border: 'none', borderRadius: '50%', padding: '2px', cursor: 'pointer', color: 'white' }}>✕</button>
+  </span>
+)}
         {filters.platform.map(id => {
 const platform = platformMap.get(id);          return platform && (
             <span key={id} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
