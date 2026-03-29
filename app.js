@@ -4,7 +4,7 @@
     { code: 'de-DE', name: 'Deutsch' }, { code: 'it-IT', name: 'Italiano' }, { code: 'pt-PT', name: 'Português' },
     { code: 'ru-RU', name: 'Русский' }, { code: 'ja-JP', name: '日本語' }, { code: 'ko-KR', name: '한국어' }, { code: 'zh-CN', name: '中文' }
   ];
-const initialFilters = { genre: [], excludeGenres: [], decade: 'todos', platform: [], minRating: 0, actor: null, creator: null, duration: 0, ageRating: 0 };
+const initialFilters = { genre: [], excludeGenres: [], decade: 'todos', platform: [], minRating: 0, person: null, duration: 0, ageRating: 0 };
   // Theme-aware background getter
 const getThemedBg = (mode, darkBg, lightBg) => mode === 'light' ? lightBg : darkBg;
 const getThemedText = (mode, darkText, lightText) => mode === 'light' ? lightText : darkText;
@@ -389,8 +389,11 @@ const addToRecentHistory = useCallback((mediaId) => {
         [`${dateParam}.gte`]: `${parseInt(filters.decade)}-01-01`,
         [`${dateParam}.lte`]: `${parseInt(filters.decade) + 9}-12-31`
       }),
-     ...((filters.actor || filters.creator) && { with_people: (filters.actor || filters.creator).id }),
-      ...(filters.duration > 0 && { [`${runtimeParam}.gte`]: selectedDuration.gte, [`${runtimeParam}.lte`]: selectedDuration.lte }),
+...(filters.person && filters.person.role === 'actor'
+  ? { with_cast: filters.person.id }
+  : filters.person
+  ? { with_crew: filters.person.id }
+  : {}),      ...(filters.duration > 0 && { [`${runtimeParam}.gte`]: selectedDuration.gte, [`${runtimeParam}.lte`]: selectedDuration.lte }),
       ...ageRatingParams,
       sort_by: 'popularity.desc'
     };
@@ -711,11 +714,12 @@ const unwatchedMedia = transformedMedia.filter(m =>
 
       {/* Active Filter Pills */}
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
-        {(filters.actor || filters.creator) && (
+        {filters.person && (
   <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
-    {(filters.actor || filters.creator).title}
-    <button onClick={() => { setFilters(f => ({ ...f, actor: null, creator: null })); resetAllState(); }} style={{ background: 'rgba(0,0,0,0.3)', border: 'none', borderRadius: '50%', padding: '2px', cursor: 'pointer', color: 'white' }}>✕</button>
+    {filters.person.title} · {filters.person.role}
+    <button onClick={() => { setFilters(f => ({ ...f, person: null })); resetAllState(); }} style={{ background: 'rgba(0,0,0,0.3)', border: 'none', borderRadius: '50%', padding: '2px', cursor: 'pointer', color: 'white' }}>✕</button>
   </span>
+
 )}
         {filters.platform.map(id => {
 const platform = platformMap.get(id);          return platform && (
