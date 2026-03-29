@@ -360,13 +360,13 @@ const FilterModal = ({ isOpen, close, handleClearFilters, filters, handleGenreCh
 };
 
 // Trailer Modal
+// Trailer Modal
 const TrailerModal = ({ isOpen, close, trailerKey }) => {
   if (!isOpen || !trailerKey) return null;
-  
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.9)' }} onClick={close}>
       <div style={{ width: '100%', maxWidth: '56rem', position: 'relative' }} onClick={e => e.stopPropagation()}>
-        <button onClick={close} style={{ position: 'absolute', top: '-3rem', right: '0', width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', fontSize: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10, transition: 'all 0.2s' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'}>
+        <button onClick={close} style={{ position: 'absolute', top: '-3rem', right: '0', width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', fontSize: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
         <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, borderRadius: '0.75rem', overflow: 'hidden' }}>
           <iframe src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1`} title="Trailer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}></iframe>
         </div>
