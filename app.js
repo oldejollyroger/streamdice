@@ -94,7 +94,6 @@ const detailsCache = useRef({});
     { label: "> 120 min", gte: 120, lte: 999 }
   ], [t]);
 
-  const ageRatingOptions = useMemo(() => {
 const ageRatingOptions = useMemo(() => {
   const ratingsByRegion = {
     US: ['G', 'PG', 'PG-13', 'R', 'NC-17'],
@@ -119,10 +118,9 @@ const ageRatingOptions = useMemo(() => {
     PL: ['AP', '12', '15', '18'],
     RU: ['0+', '6+', '12+', '16+', '18+'],
   };
-  const ratings = ratingsByRegion[userRegion] || ratingsByRegion['GB'];
-  return [t.any, ...ratings];
-}, [userRegion, t]);    return [t.any, ...ratings];
-  }, [userRegion, t]);
+  const regionRatings = ratingsByRegion[userRegion] || ['G', 'PG', 'PG-13', 'R', 'NC-17'];
+  return [t.any, ...regionRatings];
+}, [userRegion, t]);
 
   const quickFilterGenres = useMemo(() => {
     if (mediaType === 'movie') return [{ id: '28', name: 'Action' }, { id: '35', name: 'Comedy' }, { id: '878', name: 'Sci-Fi' }, { id: '53', name: 'Thriller' }];
