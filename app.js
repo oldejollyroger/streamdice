@@ -1,10 +1,16 @@
 // app.js - Complete Version with UX Polish
-
-const App = () => {
-  const { useState, useEffect, useCallback, useMemo, useRef } = React;
+  const tmdbLanguages = [
+    { code: 'en-US', name: 'English' }, { code: 'es-ES', name: 'Español' }, { code: 'fr-FR', name: 'Français' },
+    { code: 'de-DE', name: 'Deutsch' }, { code: 'it-IT', name: 'Italiano' }, { code: 'pt-PT', name: 'Português' },
+    { code: 'ru-RU', name: 'Русский' }, { code: 'ja-JP', name: '日本語' }, { code: 'ko-KR', name: '한국어' }, { code: 'zh-CN', name: '中文' }
+  ];
+const initialFilters = { genre: [], excludeGenres: [], decade: 'todos', platform: [], minRating: 0, actor: null, creator: null, duration: 0, ageRating: 0 };
   // Theme-aware background getter
 const getThemedBg = (mode, darkBg, lightBg) => mode === 'light' ? lightBg : darkBg;
 const getThemedText = (mode, darkText, lightText) => mode === 'light' ? lightText : darkText;
+const App = () => {
+  const { useState, useEffect, useCallback, useMemo, useRef } = React;
+
 
   // Get toast function
   const { addToast } = useToast();
@@ -26,7 +32,6 @@ const getThemedText = (mode, darkText, lightText) => mode === 'light' ? lightTex
     }
   });
 
-  const initialFilters = { genre: [], excludeGenres: [], decade: 'todos', platform: [], minRating: 0, actor: null, creator: null, duration: 0, ageRating: 0 };
   const [filters, setFilters] = useLocalStorageState('mediaPickerFilters_v4', initialFilters);
   const [cookieConsent, setCookieConsent] = useLocalStorageState('cookieConsent_v1', false);
 
@@ -67,6 +72,7 @@ const [recentlyShownIds, setRecentlyShownIds] = useLocalStorageState(RECENT_HIST
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const platformMap = React.useMemo(() => new Map(allPlatformOptions.map(p => [p.id, p])), [allPlatformOptions]);
 
   // UX State
   const [showConfetti, setShowConfetti] = useState(false);
@@ -75,7 +81,7 @@ const [recentlyShownIds, setRecentlyShownIds] = useLocalStorageState(RECENT_HIST
 
   const t = translations[language];
   const searchRef = useRef(null);
-
+const detailsCache = useRef({});
   // ============================================
   // MEMOIZED VALUES
   // ============================================
@@ -96,11 +102,6 @@ const [recentlyShownIds, setRecentlyShownIds] = useLocalStorageState(RECENT_HIST
     return [{ id: '10759', name: 'Action & Adventure' }, { id: '35', name: 'Comedy' }, { id: '10765', name: 'Sci-Fi & Fantasy' }, { id: '80', name: 'Crime' }];
   }, [mediaType]);
 
-  const tmdbLanguages = [
-    { code: 'en-US', name: 'English' }, { code: 'es-ES', name: 'Español' }, { code: 'fr-FR', name: 'Français' },
-    { code: 'de-DE', name: 'Deutsch' }, { code: 'it-IT', name: 'Italiano' }, { code: 'pt-PT', name: 'Português' },
-    { code: 'ru-RU', name: 'Русский' }, { code: 'ja-JP', name: '日本語' }, { code: 'ko-KR', name: '한국어' }, { code: 'zh-CN', name: '中文' }
-  ];
 
   const showInstallButton = installPrompt && !isIos && !isStandalone;
   const showIosInstallInstructions = isIos && !isStandalone;
@@ -293,8 +294,10 @@ const addToRecentHistory = useCallback((mediaId) => {
     if (!mediaId || !type) return null;
     try {
       const append = type === 'movie'
+      
         ? 'credits,videos,watch/providers,similar,recommendations,release_dates'
         : 'credits,videos,watch/providers,similar,recommendations,content_ratings';
+        if (detailsCache.current[mediaId]) return detailsCache.current[mediaId];
       const data = await fetchApi(`${type}/${mediaId}`, { language: tmdbLanguage, append_to_response: append });
 
       let certification = '';
@@ -320,7 +323,7 @@ const addToRecentHistory = useCallback((mediaId) => {
       const buyProviders = (regionData?.buy || []).map(p => ({ ...p, link: watchLink }));
       const uniquePayProviders = [...rentProviders, ...buyProviders].filter((p, i, a) => a.findIndex(x => x.provider_id === p.provider_id) === i);
 
-      return {
+      const result = { 
         ...data,
         duration: data.runtime || (data.episode_run_time ? data.episode_run_time[0] : null),
         providers,
@@ -332,6 +335,8 @@ const addToRecentHistory = useCallback((mediaId) => {
         similar: similarMedia,
         certification
       };
+      detailsCache.current[mediaId] = result;
+      return result;
     } catch (err) {
       console.error(`Error fetching details:`, err);
       return null;
@@ -404,10 +409,10 @@ const addToRecentHistory = useCallback((mediaId) => {
     const data = randomPage === 1 ? initialData : await fetchApi(`discover/${mediaType}`, { ...queryParams, page: randomPage });
     const transformedMedia = data.results.map(m => normalizeMediaData(m, mediaType, genresMap)).filter(Boolean);
     
-    // FIXED: Exclude both watched AND recently shown movies to prevent duplicates
-    const unwatchedMedia = transformedMedia.filter(m => 
-      !watchedMedia[m.id] && !recentlyShownIds.includes(m.id)
-    );
+    const recentSet = new Set(recentlyShownIds);
+const unwatchedMedia = transformedMedia.filter(m => 
+  !watchedMedia[m.id] && !recentSet.has(m.id)
+);
 
     setAllMedia(unwatchedMedia);
 
@@ -710,8 +715,7 @@ const addToRecentHistory = useCallback((mediaId) => {
           </span>
         )}
         {filters.platform.map(id => {
-          const platform = allPlatformOptions.find(p => p.id === id);
-          return platform && (
+const platform = platformMap.get(id);          return platform && (
             <span key={id} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(to right, #a855f7, #ec4899)', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
               {platform.name}
               <button onClick={() => handleQuickFilterToggle('platform', id)} style={{ background: 'rgba(0,0,0,0.3)', border: 'none', borderRadius: '50%', padding: '2px', cursor: 'pointer', color: 'white' }}>✕</button>
