@@ -27,10 +27,12 @@ const App = () => {
   const [filters, setFilters] = useLocalStorageState('mediaPickerFilters_v4', initialFilters);
   const [cookieConsent, setCookieConsent] = useLocalStorageState('cookieConsent_v1', false);
 
-  const WATCHED_KEY = 'mediaPickerWatched_v2';
-  const WATCHLIST_KEY = 'mediaPickerWatchlist_v2';
-  const [watchedMedia, setWatchedMedia] = useLocalStorageState(WATCHED_KEY, {});
-  const [watchList, setWatchList] = useLocalStorageState(WATCHLIST_KEY, {});
+const WATCHED_KEY = 'mediaPickerWatched_v2';
+const WATCHLIST_KEY = 'mediaPickerWatchlist_v2';
+const RECENT_HISTORY_KEY = 'mediaPickerRecentHistory_v1';
+const [watchedMedia, setWatchedMedia] = useLocalStorageState(WATCHED_KEY, {});
+const [watchList, setWatchList] = useLocalStorageState(WATCHLIST_KEY, {});
+const [recentlyShownIds, setRecentlyShownIds] = useLocalStorageState(RECENT_HISTORY_KEY, []);
 
   const [allMedia, setAllMedia] = useState([]);
   const [selectedMedia, setSelectedMedia] = useState(null);
@@ -100,15 +102,14 @@ const App = () => {
   const showIosInstallInstructions = isIos && !isStandalone;
   const isCurrentMediaWatched = selectedMedia && watchedMedia[selectedMedia.id];
 
-  // ============================================
-  // SWIPE GESTURES
-  // ============================================
-  const swipeHandlers = useSwipeGesture(
-    () => { if (mediaHistory.length > 0) handleGoBack(); },
-    () => { if (!isDiscovering && userRegion) handleSurpriseMe(); },
-    () => { if (selectedMedia && !watchList[selectedMedia.id]) handleToggleWatchlist(selectedMedia); },
-    { enabled: !!selectedMedia && !isDiscovering && !isTrailerModalOpen && !isFilterModalOpen }
-  );
+ // FIXED: Swapped callbacks to match corrected swipe logic
+// Also REMOVED swipeUp to prevent accidental watchlist additions
+const swipeHandlers = useSwipeGesture(
+  () => { if (!isDiscovering && userRegion) handleSurpriseMe(); }, // Swipe LEFT = Next
+  () => { if (mediaHistory.length > 0) handleGoBack(); }, // Swipe RIGHT = Back
+  null, // Swipe UP = Disabled (was causing accidental watchlist adds)
+  { enabled: !!selectedMedia && !isDiscovering && !isTrailerModalOpen && !isFilterModalOpen }
+);
 
   // ============================================
   // API FUNCTIONS
@@ -134,10 +135,21 @@ const App = () => {
     setMediaHistory([]);
   }, []);
 
-  const resetAndClearFilters = () => {
-    resetAllState();
-    setFilters(initialFilters);
-  };
+const resetAndClearFilters = () => {
+  resetAllState();
+  setFilters(initialFilters);
+  // Clear recent history when filters are cleared
+  setRecentlyShownIds([]);
+};
+
+// Track recently shown media to prevent duplicates
+const addToRecentHistory = useCallback((mediaId) => {
+  setRecentlyShownIds(prev => {
+    const updated = [mediaId, ...prev.filter(id => id !== mediaId)];
+    return updated.slice(0, 100); // Keep last 100
+  });
+}, [setRecentlyShownIds]);
+  
 
   // ============================================
   // EFFECTS
@@ -384,10 +396,25 @@ const App = () => {
         return;
       }
 
-      const randomPage = Math.floor(Math.pow(Math.random(), 2) * (totalPages - 1)) + 1;
-      const data = randomPage === 1 ? initialData : await fetchApi(`discover/${mediaType}`, { ...queryParams, page: randomPage });
-      const transformedMedia = data.results.map(m => normalizeMediaData(m, mediaType, genresMap)).filter(Boolean);
-      const unwatchedMedia = transformedMedia.filter(m => !watchedMedia[m.id]);
+     const randomPage = Math.floor(Math.pow(Math.random(), 2) * (totalPages - 1)) + 1;
+const data = randomPage === 1 ? initialData : await fetchApi(`discover/${mediaType}`, { ...queryParams, page: randomPage });
+const transformedMedia = data.results.map(m => normalizeMediaData(m, mediaType, genresMap)).filter(Boolean);
+
+// FIXED: Exclude both watched AND recently shown movies to prevent duplicates
+const unwatchedMedia = transformedMedia.filter(m => 
+  !watchedMedia[m.id] && !recentlyShownIds.includes(m.id)
+);
+
+setAllMedia(unwatchedMedia);
+
+if (unwatchedMedia.length > 0) {
+  const selected = unwatchedMedia[Math.floor(Math.random() * unwatchedMedia.length)];
+  setSelectedMedia(selected);
+  addToRecentHistory(selected.id);
+} else {
+  setSelectedMedia(null);
+  addToast(t.noMoviesFound, 'info');
+}
 
       setAllMedia(unwatchedMedia);
 
@@ -403,7 +430,7 @@ const App = () => {
     } finally {
       setIsDiscovering(false);
     }
-  }, [filters, tmdbLanguage, mediaType, userRegion, genresMap, watchedMedia, selectedMedia, fetchApi, durationOptions, ageRatingOptions, addToast, t]);
+}, [filters, tmdbLanguage, mediaType, userRegion, genresMap, watchedMedia, recentlyShownIds, selectedMedia, fetchApi, durationOptions, ageRatingOptions, addToast, addToRecentHistory, t]);
 
   const handleRegionChange = (newRegion) => {
     setUserRegion(newRegion);
@@ -424,17 +451,18 @@ const App = () => {
     setFilters(f => ({ ...f, [type]: value }));
   };
 
-  const handleQuickFilterToggle = (list, id) => {
-    setFilters(f => {
-      const current = [...(f[list] || [])];
-      const index = current.indexOf(id);
-      if (index > -1) current.splice(index, 1);
-      else current.push(id);
-      return { ...f, [list]: current };
-    });
-    resetAllState();
-  };
-
+ const handleQuickFilterToggle = (list, id) => {
+  setFilters(f => {
+    const current = [...(f[list] || [])];
+    const index = current.indexOf(id);
+    if (index > -1) current.splice(index, 1);
+    else current.push(id);
+    return { ...f, [list]: current };
+  });
+  resetAllState();
+  // Clear recent history when filters change to allow fresh results
+  setRecentlyShownIds([]);
+};
   const handleGenreChangeInModal = (genreId, type) => {
     setFilters(f => {
       const list = [...(f[type] || [])];
@@ -533,17 +561,18 @@ const App = () => {
   };
 
   const handleSearchResultClick = (result) => {
-    if (result.resultType === 'person') {
-      const isCreator = result.year === 'Directing' || result.year === 'Writing' || result.year === 'Production';
-      setFilters(f => ({ ...f, actor: isCreator ? null : result, creator: isCreator ? result : null }));
-      resetAllState();
-    } else {
-      if (selectedMedia) setMediaHistory(prev => [...prev, selectedMedia]);
-      setSelectedMedia(result);
-    }
-    setSearchQuery('');
-    setSearchResults([]);
-  };
+  if (result.resultType === 'person') {
+    const isCreator = result.year === 'Directing' || result.year === 'Writing' || result.year === 'Production';
+    setFilters(f => ({ ...f, actor: isCreator ? null : result, creator: isCreator ? result : null }));
+    resetAllState();
+  } else {
+    if (selectedMedia) setMediaHistory(prev => [...prev, selectedMedia]);
+    setSelectedMedia(result);
+    addToRecentHistory(result.id);
+  }
+  setSearchQuery('');
+  setSearchResults([]);
+};
 
   const openTrailerModal = (key) => {
     setModalTrailerKey(key);

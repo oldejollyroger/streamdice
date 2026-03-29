@@ -148,14 +148,17 @@ const useSwipeGesture = (onSwipeLeft, onSwipeRight, onSwipeUp, options = {}) => 
   const onTouchEnd = React.useCallback(() => {
     if (!enabled) return;
     
-    const deltaX = touchStart.current.x - touchEnd.current.x;
+    const deltaX = touchEnd.current.x - touchStart.current.x;
     const deltaY = touchStart.current.y - touchEnd.current.y;
     const absDeltaX = Math.abs(deltaX);
     const absDeltaY = Math.abs(deltaY);
 
+    // Only trigger horizontal swipes if they're clearly horizontal
     if (absDeltaX > absDeltaY && absDeltaX > threshold) {
-      if (deltaX > 0 && onSwipeLeft) onSwipeLeft();
-      else if (onSwipeRight) onSwipeRight();
+      // FIXED: Reversed swipe logic
+      // deltaX > 0 = swipe right, deltaX < 0 = swipe left
+      if (deltaX > 0 && onSwipeRight) onSwipeRight();
+      else if (deltaX < 0 && onSwipeLeft) onSwipeLeft();
     } else if (absDeltaY > absDeltaX && absDeltaY > threshold && deltaY > 0) {
       if (onSwipeUp) onSwipeUp();
     }
@@ -183,8 +186,8 @@ const SwipeHint = ({ show, onDismiss }) => {
   return (
     <div className="swipe-hint" onClick={onDismiss}>
       <div className="swipe-hint-content">
-        <span>← Swipe for more movies →</span>
+        <span>← Back | Next →</span>
       </div>
     </div>
   );
-};
+}; 

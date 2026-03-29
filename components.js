@@ -172,11 +172,28 @@ const ActorDetailsModal = ({ isOpen, close, actorDetails, isFetching, t }) => {
   
   const popularMedia = React.useMemo(() => {
     if (!actorDetails) return [];
-    return (actorDetails?.movie_credits?.cast || [])
+    
+    // FIXED: Better relevance scoring for actor's movies
+    const allMedia = (actorDetails?.movie_credits?.cast || [])
       .concat(actorDetails?.tv_credits?.cast || [])
-      .filter(m => m.poster_path && m.vote_count > 50)
-      .sort((a, b) => b.popularity - a.popularity)
+      .filter(m => m.poster_path && m.vote_count > 100 && m.vote_average >= 6.0)
+      .map((m, index) => {
+        // Calculate relevance score based on multiple factors
+        const popularityScore = m.popularity * 0.4;
+        const ratingScore = m.vote_average * 10;
+        const voteCountScore = Math.min(m.vote_count / 10, 100);
+        // Bonus for being in top billing (lead roles)
+        const orderBonus = m.order < 5 ? 50 : 0;
+        
+        return {
+          ...m,
+          relevanceScore: popularityScore + ratingScore + voteCountScore + orderBonus
+        };
+      })
+      .sort((a, b) => b.relevanceScore - a.relevanceScore)
       .slice(0, 12);
+    
+    return allMedia;
   }, [actorDetails]);
 
   return (
