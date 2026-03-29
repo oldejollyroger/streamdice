@@ -119,9 +119,11 @@ const WatchedMediaModal = ({ isOpen, close, watchedMedia, handleUnwatchMedia, me
   
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.8)' }} onClick={close}>
-      <div style={{ width: '100%', maxWidth: '32rem', maxHeight: '80vh', display: 'flex', flexDirection: 'column', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem' }} onClick={e => e.stopPropagation()}>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#fff' }}>{t.watchedList}</h2>
-        <div style={{ flex: 1, overflowY: 'auto' }}>
+      <div style={{ width: '100%', maxWidth: '32rem', maxHeight: '80vh', display: 'flex', flexDirection: 'column', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem', position: 'relative' }} onClick={e => e.stopPropagation()}>
+        {/* Close Button */}
+        <button onClick={close} style={{ position: 'absolute', top: '1rem', right: '1rem', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', zIndex: 1 }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'; e.target.style.color = '#fff'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'; e.target.style.color = '#9ca3af'; }}>✕</button>
+        
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#fff', paddingRight: '2rem' }}>{t.watchedList}</h2>
           {watchedArray.length > 0 ? watchedArray.map(media => (
             <div key={media.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', backgroundColor: '#1f2937', borderRadius: '0.5rem', marginBottom: '0.5rem' }}>
               <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : FALLBACK_POSTER} alt="" style={{ width: '3rem', height: '4.5rem', objectFit: 'cover', borderRadius: '0.25rem' }} />
@@ -131,13 +133,12 @@ const WatchedMediaModal = ({ isOpen, close, watchedMedia, handleUnwatchMedia, me
               </div>
               <button onClick={() => handleUnwatchMedia(media.id)} style={{ padding: '0.25rem 0.75rem', backgroundColor: '#dc2626', color: 'white', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 'bold' }}>{t.unwatch}</button>
             </div>
-          )) : <p style={{ textAlign: 'center', color: '#9ca3af', padding: '2rem' }}>Your watched list is empty.</p>}
-        </div>
-        <button onClick={close} style={{ marginTop: '1rem', width: '100%', padding: '0.5rem', backgroundColor: '#4b5563', color: 'white', borderRadius: '0.5rem', fontWeight: 'bold' }}>Close</button>
-      </div>
-    </div>
-  );
-};
+                )) : <p style={{ textAlign: 'center', color: '#9ca3af', padding: '2rem' }}>Your watched list is empty.</p>}
+            </div>
+            <button onClick={close} style={{ marginTop: '1rem', width: '100%', padding: '0.5rem', backgroundColor: '#4b5563', color: 'white', borderRadius: '0.5rem', fontWeight: 'bold' }}>Close</button>
+          </div>
+        );
+      };
 
 // Watchlist Modal
 const WatchlistModal = ({ isOpen, close, watchlist, handleToggleWatchlist, mediaType, t, cookieConsent }) => {
@@ -146,9 +147,11 @@ const WatchlistModal = ({ isOpen, close, watchlist, handleToggleWatchlist, media
   
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.8)' }} onClick={close}>
-      <div style={{ width: '100%', maxWidth: '32rem', maxHeight: '80vh', display: 'flex', flexDirection: 'column', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem' }} onClick={e => e.stopPropagation()}>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#fff' }}>{t.watchList}</h2>
-        <div style={{ flex: 1, overflowY: 'auto' }}>
+      <div style={{ width: '100%', maxWidth: '32rem', maxHeight: '80vh', display: 'flex', flexDirection: 'column', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem', position: 'relative' }} onClick={e => e.stopPropagation()}>
+        {/* Close Button */}
+        <button onClick={close} style={{ position: 'absolute', top: '1rem', right: '1rem', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', zIndex: 1 }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'; e.target.style.color = '#fff'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'; e.target.style.color = '#9ca3af'; }}>✕</button>
+        
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#fff', paddingRight: '2rem' }}>{t.watchList}</h2>
           {watchlistArray.length > 0 ? watchlistArray.map(media => (
             <div key={media.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', backgroundColor: '#1f2937', borderRadius: '0.5rem', marginBottom: '0.5rem' }}>
               <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : FALLBACK_POSTER} alt="" style={{ width: '3rem', height: '4.5rem', objectFit: 'cover', borderRadius: '0.25rem' }} />
@@ -162,7 +165,7 @@ const WatchlistModal = ({ isOpen, close, watchlist, handleToggleWatchlist, media
         </div>
         <button onClick={close} style={{ marginTop: '1rem', width: '100%', padding: '0.5rem', backgroundColor: '#4b5563', color: 'white', borderRadius: '0.5rem', fontWeight: 'bold' }}>Close</button>
       </div>
-    </div>
+    
   );
 };
 
@@ -173,21 +176,46 @@ const ActorDetailsModal = ({ isOpen, close, actorDetails, isFetching, t }) => {
   const popularMedia = React.useMemo(() => {
     if (!actorDetails) return [];
     
-    // FIXED: Better relevance scoring for actor's movies
+    // FIXED: Even stricter filtering to remove talk shows and low-quality content
     const allMedia = (actorDetails?.movie_credits?.cast || [])
       .concat(actorDetails?.tv_credits?.cast || [])
-      .filter(m => m.poster_path && m.vote_count > 100 && m.vote_average >= 6.0)
-      .map((m, index) => {
-        // Calculate relevance score based on multiple factors
-        const popularityScore = m.popularity * 0.4;
-        const ratingScore = m.vote_average * 10;
-        const voteCountScore = Math.min(m.vote_count / 10, 100);
-        // Bonus for being in top billing (lead roles)
-        const orderBonus = m.order < 5 ? 50 : 0;
+      .filter(m => {
+        if (!m.poster_path) return false;
+        
+        // Stricter vote requirements
+        if (m.vote_count < 150) return false;
+        if (m.vote_average < 6.5) return false;
+        
+        // Filter out talk shows, news, and daily shows by episode count
+        if (m.media_type === 'tv' || m.first_air_date) {
+          // Exclude shows with too many episodes (talk shows, daily shows)
+          if (m.episode_count && m.episode_count > 500) return false;
+          // Exclude ongoing shows that are too long-running (talk shows)
+          if (m.number_of_episodes && m.number_of_episodes > 500) return false;
+        }
+        
+        return true;
+      })
+      .map((m) => {
+        // Calculate relevance score with movie preference
+        const popularityScore = m.popularity * 0.3;
+        const ratingScore = m.vote_average * 15;
+        const voteCountScore = Math.min(m.vote_count / 5, 200);
+        
+        // Strong bonus for lead roles
+        const orderBonus = m.order < 3 ? 100 : m.order < 5 ? 50 : 0;
+        
+        // Prefer movies over TV shows
+        const mediaTypeBonus = (m.media_type === 'movie' || m.release_date) ? 50 : 0;
+        
+        // Bonus for recent releases (last 20 years)
+        const releaseYear = m.release_date ? new Date(m.release_date).getFullYear() : 
+                           m.first_air_date ? new Date(m.first_air_date).getFullYear() : 1900;
+        const recencyBonus = releaseYear >= 2005 ? 30 : releaseYear >= 1990 ? 10 : 0;
         
         return {
           ...m,
-          relevanceScore: popularityScore + ratingScore + voteCountScore + orderBonus
+          relevanceScore: popularityScore + ratingScore + voteCountScore + orderBonus + mediaTypeBonus + recencyBonus
         };
       })
       .sort((a, b) => b.relevanceScore - a.relevanceScore)
@@ -198,34 +226,40 @@ const ActorDetailsModal = ({ isOpen, close, actorDetails, isFetching, t }) => {
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.8)' }} onClick={close}>
-      <div style={{ width: '100%', maxWidth: '42rem', maxHeight: '90vh', overflowY: 'auto', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem' }} onClick={e => e.stopPropagation()}>
+      <div style={{ width: '100%', maxWidth: '42rem', maxHeight: '90vh', overflowY: 'auto', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem', position: 'relative' }} onClick={e => e.stopPropagation()}>
+        {/* Close Button */}
+        <button onClick={close} style={{ position: 'absolute', top: '1rem', right: '1rem', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'; e.target.style.color = '#fff'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'; e.target.style.color = '#9ca3af'; }}>✕</button>
+        
         {isFetching || !actorDetails ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}><span className="loader"></span></div>
         ) : (
           <>
             <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
               <img src={actorDetails.profile_path ? `${TMDB_IMAGE_BASE_URL}${actorDetails.profile_path}` : FALLBACK_PROFILE} alt="" style={{ width: '8rem', height: '12rem', objectFit: 'cover', borderRadius: '0.5rem' }} />
-              <div>
+              <div style={{ flex: 1, paddingRight: '2rem' }}>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#fff' }}>{actorDetails.name}</h2>
                 <p style={{ fontSize: '0.875rem', color: '#9ca3af', marginTop: '0.5rem' }}>{actorDetails.biography?.substring(0, 300) || 'No biography available.'}{actorDetails.biography?.length > 300 ? '...' : ''}</p>
               </div>
             </div>
             <h3 style={{ fontWeight: '600', color: '#fff', marginBottom: '0.5rem' }}>Known For</h3>
-            <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '1rem' }}>
-              {popularMedia.map(m => (
-                <div key={m.id} style={{ flexShrink: 0, width: '6rem', textAlign: 'center' }}>
-                  <img src={`${TMDB_THUMBNAIL_BASE_URL}${m.poster_path}`} alt="" style={{ width: '100%', borderRadius: '0.25rem' }} />
-                  <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem' }}>{m.title || m.name}</p>
-                </div>
-              ))}
-            </div>
+            {popularMedia.length > 0 ? (
+              <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '1rem' }}>
+                {popularMedia.map(m => (
+                  <div key={m.id} style={{ flexShrink: 0, width: '6rem', textAlign: 'center' }}>
+                    <img src={`${TMDB_THUMBNAIL_BASE_URL}${m.poster_path}`} alt="" style={{ width: '100%', borderRadius: '0.25rem' }} />
+                    <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem' }}>{m.title || m.name}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p style={{ fontSize: '0.875rem', color: '#9ca3af', padding: '1rem 0' }}>No notable works found.</p>
+            )}
           </>
         )}
       </div>
     </div>
   );
 };
-
 // Media Card Content
 const MediaCardContent = ({ media, details, isFetching, t, userRegion, handleActorClick }) => {
   const displayDetails = isFetching ? {} : details;
@@ -275,8 +309,11 @@ const FilterModal = ({ isOpen, close, handleClearFilters, filters, handleGenreCh
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.8)' }} onClick={close}>
-      <div style={{ width: '100%', maxWidth: '42rem', maxHeight: '90vh', overflowY: 'auto', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem' }} onClick={e => e.stopPropagation()}>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#fff' }}>{t.advancedFilters}</h2>
+      <div style={{ width: '100%', maxWidth: '42rem', maxHeight: '90vh', overflowY: 'auto', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem', position: 'relative' }} onClick={e => e.stopPropagation()}>
+        {/* Close Button */}
+        <button onClick={close} style={{ position: 'absolute', top: '1rem', right: '1rem', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'; e.target.style.color = '#fff'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'; e.target.style.color = '#9ca3af'; }}>✕</button>
+        
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#fff', paddingRight: '2rem' }}>{t.advancedFilters}</h2>
         
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
           <div>
@@ -331,8 +368,8 @@ const TrailerModal = ({ isOpen, close, trailerKey }) => {
   
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.9)' }} onClick={close}>
-      <div style={{ width: '100%', maxWidth: '56rem' }} onClick={e => e.stopPropagation()}>
-        <button onClick={close} style={{ position: 'absolute', top: '1rem', right: '1rem', padding: '0.5rem', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: '50%', color: 'white' }}>✕</button>
+      <div style={{ width: '100%', maxWidth: '56rem', position: 'relative' }} onClick={e => e.stopPropagation()}>
+        <button onClick={close} style={{ position: 'absolute', top: '-3rem', right: '0', width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', fontSize: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10, transition: 'all 0.2s' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'}>✕</button>
         <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, borderRadius: '0.75rem', overflow: 'hidden' }}>
           <iframe src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1`} title="Trailer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}></iframe>
         </div>
@@ -358,7 +395,7 @@ const SimilarMediaModal = ({ media, close, fetchFullMediaDetails, handleActorCli
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.8)' }} onClick={close}>
       <div style={{ width: '100%', maxWidth: '42rem', maxHeight: '90vh', overflowY: 'auto', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem', position: 'relative' }} onClick={e => e.stopPropagation()}>
-        <button onClick={close} style={{ position: 'absolute', top: '1rem', right: '1rem', padding: '0.25rem', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: '50%', color: 'white' }}>✕</button>
+<button onClick={close} style={{ position: 'absolute', top: '1rem', right: '1rem', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'; e.target.style.color = '#fff'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'; e.target.style.color = '#9ca3af'; }}>✕</button>
         {isFetching ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}><span className="loader"></span></div>
         ) : (

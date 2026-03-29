@@ -410,6 +410,8 @@ setAllMedia(unwatchedMedia);
 
 if (unwatchedMedia.length > 0) {
   const selected = unwatchedMedia[Math.floor(Math.random() * unwatchedMedia.length)];
+    const minAnimationTime = 2000;
+
   setSelectedMedia(selected);
   addToRecentHistory(selected.id);
   setShowSparkles(true);  
@@ -427,12 +429,11 @@ if (unwatchedMedia.length > 0) {
         setSelectedMedia(null);
         addToast(t.noMoviesFound, 'info');
       }
-    } catch (err) {
-      console.error("Error discovering:", err);
-      setError(err.message);
-    } finally {
-      setIsDiscovering(false);
-    }
+   } catch (err) {
+  console.error("Error discovering:", err);
+  setError(err.message);
+  setIsDiscovering(false);
+}
 }, [filters, tmdbLanguage, mediaType, userRegion, genresMap, watchedMedia, recentlyShownIds, selectedMedia, fetchApi, durationOptions, ageRatingOptions, addToast, addToRecentHistory, t]);
 
   const handleRegionChange = (newRegion) => {
