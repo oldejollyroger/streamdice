@@ -387,8 +387,7 @@ const addToRecentHistory = useCallback((mediaId) => {
         [`${dateParam}.gte`]: `${parseInt(filters.decade)}-01-01`,
         [`${dateParam}.lte`]: `${parseInt(filters.decade) + 9}-12-31`
       }),
-      ...(filters.actor && { with_cast: filters.actor.id }),
-      ...(filters.creator && { with_crew: filters.creator.id }),
+     ...((filters.actor || filters.creator) && { with_people: (filters.actor || filters.creator).id }),
       ...(filters.duration > 0 && { [`${runtimeParam}.gte`]: selectedDuration.gte, [`${runtimeParam}.lte`]: selectedDuration.lte }),
       ...ageRatingParams,
       sort_by: 'popularity.desc'
@@ -623,8 +622,8 @@ const unwatchedMedia = transformedMedia.filter(m =>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           {/* Media Type Switcher */}
           <div style={{ display: 'flex', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '9999px', padding: '0.25rem' }}>
-            <button onClick={() => handleMediaTypeChange('movie')} style={{ padding: '0.5rem 1rem', borderRadius: '9999px', fontSize: '0.875rem', fontWeight: 600, backgroundColor: mediaType === 'movie' ? 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))' : 'transparent', background: mediaType === 'movie' ? 'linear-gradient(to right, #a855f7, #ec4899)' : 'transparent', color: mediaType === 'movie' ? 'white' : '#9ca3af', border: 'none', cursor: 'pointer' }}>{t.movies}</button>
-            <button onClick={() => handleMediaTypeChange('tv')} style={{ padding: '0.5rem 1rem', borderRadius: '9999px', fontSize: '0.875rem', fontWeight: 600, background: mediaType === 'tv' ? 'linear-gradient(to right, #a855f7, #ec4899)' : 'transparent', color: mediaType === 'tv' ? 'white' : '#9ca3af', border: 'none', cursor: 'pointer' }}>{t.tvShows}</button>
+            <button onClick={() => handleMediaTypeChange('movie')} style={{ padding: '0.5rem 1rem', borderRadius: '9999px', fontSize: '0.875rem', fontWeight: 600, backgroundColor: mediaType === 'movie' ? 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))' : 'transparent', background: mediaType === 'movie' ? 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))' : 'transparent', color: mediaType === 'movie' ? 'white' : '#9ca3af', border: 'none', cursor: 'pointer' }}>{t.movies}</button>
+            <button onClick={() => handleMediaTypeChange('tv')} style={{ padding: '0.5rem 1rem', borderRadius: '9999px', fontSize: '0.875rem', fontWeight: 600, background: mediaType === 'tv' ? 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))' : 'transparent', color: mediaType === 'tv' ? 'white' : '#9ca3af', border: 'none', cursor: 'pointer' }}>{t.tvShows}</button>
           </div>
 
           {/* Search */}
@@ -659,7 +658,7 @@ const unwatchedMedia = transformedMedia.filter(m =>
       {/* Quick Genre Filters */}
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
         {quickFilterGenres.map(genre => (
-          <button key={genre.id} onClick={() => handleQuickFilterToggle('genre', genre.id)} style={{ padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem', fontWeight: 500, border: '1px solid', borderColor: filters.genre.includes(genre.id) ? 'transparent' : 'rgba(255,255,255,0.2)', background: filters.genre.includes(genre.id) ? 'linear-gradient(to right, #a855f7, #ec4899)' : 'transparent', color: filters.genre.includes(genre.id) ? 'white' : '#9ca3af', cursor: 'pointer' }}>{genre.name}</button>
+          <button key={genre.id} onClick={() => handleQuickFilterToggle('genre', genre.id)} style={{ padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem', fontWeight: 500, border: '1px solid', borderColor: filters.genre.includes(genre.id) ? 'transparent' : 'rgba(255,255,255,0.2)', background: filters.genre.includes(genre.id) ? 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))' : 'transparent', color: filters.genre.includes(genre.id) ? 'white' : '#9ca3af', cursor: 'pointer' }}>{genre.name}</button>
         ))}
       </div>
 
@@ -667,7 +666,7 @@ const unwatchedMedia = transformedMedia.filter(m =>
       {userRegion && quickPlatformOptions.length > 0 && (
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
           {quickPlatformOptions.map(p => (
-            <button key={p.id} onClick={() => handleQuickFilterToggle('platform', p.id)} style={{ padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem', fontWeight: 500, border: '1px solid', borderColor: filters.platform.includes(p.id) ? 'transparent' : 'rgba(255,255,255,0.2)', background: filters.platform.includes(p.id) ? 'linear-gradient(to right, #a855f7, #ec4899)' : 'transparent', color: filters.platform.includes(p.id) ? 'white' : '#9ca3af', cursor: 'pointer' }}>{p.name}</button>
+            <button key={p.id} onClick={() => handleQuickFilterToggle('platform', p.id)} style={{ padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem', fontWeight: 500, border: '1px solid', borderColor: filters.platform.includes(p.id) ? 'transparent' : 'rgba(255,255,255,0.2)', background: filters.platform.includes(p.id) ? 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))' : 'transparent', color: filters.platform.includes(p.id) ? 'white' : '#9ca3af', cursor: 'pointer' }}>{p.name}</button>
           ))}
         </div>
       )}
@@ -701,7 +700,7 @@ const unwatchedMedia = transformedMedia.filter(m =>
 
       {/* Surprise Me Button */}
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
-        <button onClick={handleSurpriseMe} disabled={isDiscovering || !userRegion} style={{ padding: '0.75rem 2rem', background: 'linear-gradient(to right, #a855f7, #ec4899)', color: 'white', fontWeight: 'bold', borderRadius: '9999px', fontSize: '1.125rem', border: 'none', cursor: isDiscovering || !userRegion ? 'not-allowed' : 'pointer', opacity: isDiscovering || !userRegion ? 0.5 : 1, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <button onClick={handleSurpriseMe} disabled={isDiscovering || !userRegion} style={{ padding: '0.75rem 2rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', fontWeight: 'bold', borderRadius: '9999px', fontSize: '1.125rem', border: 'none', cursor: isDiscovering || !userRegion ? 'not-allowed' : 'pointer', opacity: isDiscovering || !userRegion ? 0.5 : 1, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           {isDiscovering ? <><span className="small-loader" style={{ borderColor: 'rgba(255,255,255,0.3)', borderTopColor: 'white' }}></span> {t.searching}</> : <><span>🎲</span> {t.surpriseMe}</>}
         </button>
       </div>
@@ -709,21 +708,21 @@ const unwatchedMedia = transformedMedia.filter(m =>
       {/* Active Filter Pills */}
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
         {filters.actor && (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(to right, #a855f7, #ec4899)', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
             {filters.actor.title}
             <button onClick={() => { setFilters(f => ({ ...f, actor: null })); resetAllState(); }} style={{ background: 'rgba(0,0,0,0.3)', border: 'none', borderRadius: '50%', padding: '2px', cursor: 'pointer', color: 'white' }}>✕</button>
           </span>
         )}
         {filters.platform.map(id => {
 const platform = platformMap.get(id);          return platform && (
-            <span key={id} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(to right, #a855f7, #ec4899)', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
+            <span key={id} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
               {platform.name}
               <button onClick={() => handleQuickFilterToggle('platform', id)} style={{ background: 'rgba(0,0,0,0.3)', border: 'none', borderRadius: '50%', padding: '2px', cursor: 'pointer', color: 'white' }}>✕</button>
             </span>
           );
         })}
         {filters.genre.map(id => genresMap[id] && (
-          <span key={id} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(to right, #a855f7, #ec4899)', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
+          <span key={id} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
             {genresMap[id]}
             <button onClick={() => handleQuickFilterToggle('genre', id)} style={{ background: 'rgba(0,0,0,0.3)', border: 'none', borderRadius: '50%', padding: '2px', cursor: 'pointer', color: 'white' }}>✕</button>
           </span>
@@ -794,7 +793,7 @@ const platform = platformMap.get(id);          return platform && (
       {/* Navigation */}
       <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', borderTop: '1px solid #374151', paddingTop: '1rem' }}>
         <button onClick={handleGoBack} disabled={mediaHistory.length === 0} style={{ padding: '0.5rem 1.5rem', backgroundColor: 'rgba(75,85,99,0.8)', color: 'white', fontWeight: 'bold', borderRadius: '9999px', border: 'none', cursor: mediaHistory.length === 0 ? 'not-allowed' : 'pointer', opacity: mediaHistory.length === 0 ? 0.5 : 1 }}>← Back</button>
-        <button onClick={handleSurpriseMe} disabled={isDiscovering} style={{ padding: '0.5rem 1.5rem', background: 'linear-gradient(to right, #a855f7, #ec4899)', color: 'white', fontWeight: 'bold', borderRadius: '9999px', border: 'none', cursor: 'pointer' }}>Next →</button>
+        <button onClick={handleSurpriseMe} disabled={isDiscovering} style={{ padding: '0.5rem 1.5rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', fontWeight: 'bold', borderRadius: '9999px', border: 'none', cursor: 'pointer' }}>Next →</button>
       </div>
     </div>
   </div>
@@ -803,7 +802,7 @@ const platform = platformMap.get(id);          return platform && (
             {hasSearched && allMedia.length === 0 ? (
               <div>
                 <p style={{ fontSize: '1.25rem', color: '#9ca3af', marginBottom: '1rem' }}>{t.noMoviesFound}</p>
-                <button onClick={resetAndClearFilters} style={{ padding: '0.5rem 1.5rem', backgroundColor: '#a855f7', color: 'white', fontWeight: 'bold', borderRadius: '9999px', border: 'none', cursor: 'pointer' }}>{t.clearAllFilters}</button>
+                <button onClick={resetAndClearFilters} style={{ padding: '0.5rem 1.5rem', backgroundColor: 'var(--color-accent)', color: 'white', fontWeight: 'bold', borderRadius: '9999px', border: 'none', cursor: 'pointer' }}>{t.clearAllFilters}</button>
               </div>
             ) : !hasSearched && (
               <p style={{ fontSize: '1.25rem', color: '#9ca3af' }}>{t.welcomeMessage}</p>
