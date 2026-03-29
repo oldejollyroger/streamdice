@@ -117,13 +117,12 @@ const WatchedMediaModal = ({ isOpen, close, watchedMedia, handleUnwatchMedia, me
   if (!isOpen) return null;
   const watchedArray = Object.values(watchedMedia).filter(m => m.mediaType === mediaType);
   
-  return (
+ return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.8)' }} onClick={close}>
       <div style={{ width: '100%', maxWidth: '32rem', maxHeight: '80vh', display: 'flex', flexDirection: 'column', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem', position: 'relative' }} onClick={e => e.stopPropagation()}>
-        {/* Close Button */}
-        <button onClick={close} style={{ position: 'absolute', top: '1rem', right: '1rem', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', zIndex: 1 }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'; e.target.style.color = '#fff'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'; e.target.style.color = '#9ca3af'; }}>✕</button>
-        
+        <button onClick={close} style={{ position: 'absolute', top: '1rem', right: '1rem', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1 }}>✕</button>
         <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#fff', paddingRight: '2rem' }}>{t.watchedList}</h2>
+        <div style={{ overflowY: 'auto' }}>
           {watchedArray.length > 0 ? watchedArray.map(media => (
             <div key={media.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', backgroundColor: '#1f2937', borderRadius: '0.5rem', marginBottom: '0.5rem' }}>
               <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : FALLBACK_POSTER} alt="" style={{ width: '3rem', height: '4.5rem', objectFit: 'cover', borderRadius: '0.25rem' }} />
@@ -133,12 +132,12 @@ const WatchedMediaModal = ({ isOpen, close, watchedMedia, handleUnwatchMedia, me
               </div>
               <button onClick={() => handleUnwatchMedia(media.id)} style={{ padding: '0.25rem 0.75rem', backgroundColor: '#dc2626', color: 'white', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 'bold' }}>{t.unwatch}</button>
             </div>
-                )) : <p style={{ textAlign: 'center', color: '#9ca3af', padding: '2rem' }}>Your watched list is empty.</p>}
-            </div>
-<button onClick={(e) => { e.stopPropagation(); close(); }} onTouchEnd={(e) => { e.stopPropagation(); close(); }} style={{ position: 'absolute', top: '1rem', right: '1rem', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', zIndex: 1 }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'; e.target.style.color = '#fff'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'; e.target.style.color = '#9ca3af'; }}>✕</button>
-          </div>
-        );
-      };
+          )) : <p style={{ textAlign: 'center', color: '#9ca3af', padding: '2rem' }}>Your watched list is empty.</p>}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // Watchlist Modal
 const WatchlistModal = ({ isOpen, close, watchlist, handleToggleWatchlist, mediaType, t, cookieConsent }) => {
