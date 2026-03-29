@@ -349,93 +349,86 @@ const addToRecentHistory = useCallback((mediaId) => {
   // ACTION HANDLERS
   // ============================================
   const handleSurpriseMe = useCallback(async () => {
-    if (!userRegion || !Object.keys(genresMap).length) return;
+  if (!userRegion || !Object.keys(genresMap).length) return;
 
-    setIsDiscovering(true);
-    setError(null);
-    if (selectedMedia) setMediaHistory(prev => [...prev, selectedMedia]);
-    setSelectedMedia(null);
-    setHasSearched(true);
-
-    try {
-      const dateParam = mediaType === 'movie' ? 'primary_release_date' : 'first_air_date';
-      const runtimeParam = mediaType === 'movie' ? 'with_runtime' : 'with_episode_runtime';
-      const selectedDuration = durationOptions[filters.duration];
-      const ageRatingParams = {};
-      if (filters.ageRating > 0) {
-        ageRatingParams.certification_country = userRegion;
-        ageRatingParams.certification = ageRatingOptions.slice(1, filters.ageRating + 1).join('|');
-      }
-
-      const queryParams = {
-        language: tmdbLanguage,
-        'vote_count.gte': mediaType === 'movie' ? 200 : 100,
-        watch_region: userRegion,
-        ...(filters.platform.length > 0 && { with_watch_providers: filters.platform.join('|') }),
-        ...(filters.genre.length > 0 && { with_genres: filters.genre.join(',') }),
-        ...(filters.excludeGenres.length > 0 && { without_genres: filters.excludeGenres.join(',') }),
-        ...(filters.minRating > 0 && { 'vote_average.gte': filters.minRating }),
-        ...(filters.decade !== 'todos' && {
-          [`${dateParam}.gte`]: `${parseInt(filters.decade)}-01-01`,
-          [`${dateParam}.lte`]: `${parseInt(filters.decade) + 9}-12-31`
-        }),
-        ...(filters.actor && { with_cast: filters.actor.id }),
-        ...(filters.creator && { with_crew: filters.creator.id }),
-        ...(filters.duration > 0 && { [`${runtimeParam}.gte`]: selectedDuration.gte, [`${runtimeParam}.lte`]: selectedDuration.lte }),
-        ...ageRatingParams,
-        sort_by: 'popularity.desc'
-      };
-
-      const initialData = await fetchApi(`discover/${mediaType}`, queryParams);
-      const totalPages = Math.min(initialData.total_pages, 200);
-
-      if (totalPages === 0) {
-        setAllMedia([]);
-        setSelectedMedia(null);
-        setIsDiscovering(false);
-        addToast(t.noMoviesFound, 'info');
-        return;
-      }
-
-     const randomPage = Math.floor(Math.pow(Math.random(), 2) * (totalPages - 1)) + 1;
-const data = randomPage === 1 ? initialData : await fetchApi(`discover/${mediaType}`, { ...queryParams, page: randomPage });
-const transformedMedia = data.results.map(m => normalizeMediaData(m, mediaType, genresMap)).filter(Boolean);
-
-// FIXED: Exclude both watched AND recently shown movies to prevent duplicates
-const unwatchedMedia = transformedMedia.filter(m => 
-  !watchedMedia[m.id] && !recentlyShownIds.includes(m.id)
-);
-
-setAllMedia(unwatchedMedia);
-
-if (unwatchedMedia.length > 0) {
-  const selected = unwatchedMedia[Math.floor(Math.random() * unwatchedMedia.length)];
-    const minAnimationTime = 2000;
-
-  setSelectedMedia(selected);
-  addToRecentHistory(selected.id);
-  setShowSparkles(true);  
-  setTimeout(() => setShowSparkles(false), 1500);
-} else {
+  setIsDiscovering(true);
+  setError(null);
+  if (selectedMedia) setMediaHistory(prev => [...prev, selectedMedia]);
   setSelectedMedia(null);
-  addToast(t.noMoviesFound, 'info');
-}
+  setHasSearched(true);
 
-      setAllMedia(unwatchedMedia);
+  try {
+    const dateParam = mediaType === 'movie' ? 'primary_release_date' : 'first_air_date';
+    const runtimeParam = mediaType === 'movie' ? 'with_runtime' : 'with_episode_runtime';
+    const selectedDuration = durationOptions[filters.duration];
+    const ageRatingParams = {};
+    if (filters.ageRating > 0) {
+      ageRatingParams.certification_country = userRegion;
+      ageRatingParams.certification = ageRatingOptions.slice(1, filters.ageRating + 1).join('|');
+    }
 
-      if (unwatchedMedia.length > 0) {
-        setSelectedMedia(unwatchedMedia[Math.floor(Math.random() * unwatchedMedia.length)]);
-      } else {
-        setSelectedMedia(null);
-        addToast(t.noMoviesFound, 'info');
-      }
-   } catch (err) {
-  console.error("Error discovering:", err);
-  setError(err.message);
-  setIsDiscovering(false);
-}
+    const queryParams = {
+      language: tmdbLanguage,
+      'vote_count.gte': mediaType === 'movie' ? 200 : 100,
+      watch_region: userRegion,
+      ...(filters.platform.length > 0 && { with_watch_providers: filters.platform.join('|') }),
+      ...(filters.genre.length > 0 && { with_genres: filters.genre.join(',') }),
+      ...(filters.excludeGenres.length > 0 && { without_genres: filters.excludeGenres.join(',') }),
+      ...(filters.minRating > 0 && { 'vote_average.gte': filters.minRating }),
+      ...(filters.decade !== 'todos' && {
+        [`${dateParam}.gte`]: `${parseInt(filters.decade)}-01-01`,
+        [`${dateParam}.lte`]: `${parseInt(filters.decade) + 9}-12-31`
+      }),
+      ...(filters.actor && { with_cast: filters.actor.id }),
+      ...(filters.creator && { with_crew: filters.creator.id }),
+      ...(filters.duration > 0 && { [`${runtimeParam}.gte`]: selectedDuration.gte, [`${runtimeParam}.lte`]: selectedDuration.lte }),
+      ...ageRatingParams,
+      sort_by: 'popularity.desc'
+    };
+
+    const initialData = await fetchApi(`discover/${mediaType}`, queryParams);
+    const totalPages = Math.min(initialData.total_pages, 200);
+
+    if (totalPages === 0) {
+      setAllMedia([]);
+      setSelectedMedia(null);
+      setIsDiscovering(false);
+      addToast(t.noMoviesFound, 'info');
+      return;
+    }
+
+    const randomPage = Math.floor(Math.pow(Math.random(), 2) * (totalPages - 1)) + 1;
+    const data = randomPage === 1 ? initialData : await fetchApi(`discover/${mediaType}`, { ...queryParams, page: randomPage });
+    const transformedMedia = data.results.map(m => normalizeMediaData(m, mediaType, genresMap)).filter(Boolean);
+    
+    // FIXED: Exclude both watched AND recently shown movies to prevent duplicates
+    const unwatchedMedia = transformedMedia.filter(m => 
+      !watchedMedia[m.id] && !recentlyShownIds.includes(m.id)
+    );
+
+    setAllMedia(unwatchedMedia);
+
+    if (unwatchedMedia.length > 0) {
+      const selected = unwatchedMedia[Math.floor(Math.random() * unwatchedMedia.length)];
+      
+      // Add minimum dice animation duration (1.5 seconds)
+      const minAnimationTime = 1500;
+      setTimeout(() => {
+        setSelectedMedia(selected);
+        addToRecentHistory(selected.id);
+        setIsDiscovering(false);
+      }, minAnimationTime);
+    } else {
+      setSelectedMedia(null);
+      addToast(t.noMoviesFound, 'info');
+      setIsDiscovering(false);
+    }
+  } catch (err) {
+    console.error("Error discovering:", err);
+    setError(err.message);
+    setIsDiscovering(false);
+  }
 }, [filters, tmdbLanguage, mediaType, userRegion, genresMap, watchedMedia, recentlyShownIds, selectedMedia, fetchApi, durationOptions, ageRatingOptions, addToast, addToRecentHistory, t]);
-
   const handleRegionChange = (newRegion) => {
     setUserRegion(newRegion);
     resetAllState();
