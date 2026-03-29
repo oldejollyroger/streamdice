@@ -406,7 +406,6 @@ const addToRecentHistory = useCallback((mediaId) => {
       language: tmdbLanguage,
       'vote_count.gte': mediaType === 'movie' ? 200 : 100,
       watch_region: userRegion,
-      ...(filters.platform.length > 0 && { with_watch_monetization_types: 'flatrate' }),
       ...(filters.platform.length > 0 && { with_watch_providers: filters.platform.join('|') }),
       ...(filters.genre.length > 0 && { with_genres: filters.genre.join(',') }),
       ...(filters.excludeGenres.length > 0 && { without_genres: filters.excludeGenres.join(',') }),
@@ -727,7 +726,7 @@ const unwatchedMedia = transformedMedia.filter(m =>
         </div>
         <button onClick={() => setIsFilterModalOpen(true)} style={{ padding: '0.5rem', backgroundColor: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0.5rem', color: '#e5e7eb', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '1.25rem', height: '1.25rem' }}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg>
-          {t.showFilters}
+          {t.advancedFilters}
         </button>
       </div>
 
@@ -883,22 +882,27 @@ const platform = platformMap.get(id);          return platform && (
 
 {/* Region Selector Modal */}
 {(showRegionSelector || !userRegion) && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '1rem' }}>
-          <div style={{ width: '100%', maxWidth: '400px', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '1rem', padding: '2rem', textAlign: 'center' }}>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#fff', marginBottom: '1.5rem' }}>{t.selectRegionPrompt}</h1>
-            {availableRegions.length > 0 ? (
-              <select onChange={(e) => handleRegionChange(e.target.value)} defaultValue="" style={{ width: '100%', padding: '0.75rem', backgroundColor: '#374151', border: '1px solid #4b5563', borderRadius: '0.5rem', color: '#fff', fontSize: '1rem' }}>
-                <option value="" disabled>-- {t.region} --</option>
-                {availableRegions.map(region => (
-                  <option key={region.iso_3166_1} value={region.iso_3166_1}>{region.english_name}</option>
-                ))}
-              </select>
-            ) : (
-              <span className="loader"></span>
-            )}
-          </div>
-        </div>
+  <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '1rem' }}>
+    <div style={{ width: '100%', maxWidth: '420px', backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '1.25rem', padding: '2rem', textAlign: 'center', boxShadow: '0 25px 50px rgba(0,0,0,0.6)' }}>
+      <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'linear-gradient(to bottom right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem', fontSize: '1.5rem' }}>🌍</div>
+      <h1 style={{ fontSize: '1.375rem', fontWeight: 800, color: '#fff', marginBottom: '0.375rem' }}>{t.selectRegionPrompt}</h1>
+      <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1.75rem' }}>We'll show you what's available to stream in your country.</p>
+      {availableRegions.length > 0 ? (
+        <>
+          <select onChange={(e) => handleRegionChange(e.target.value)} defaultValue="" style={{ width: '100%', padding: '0.75rem 1rem', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '0.75rem', color: '#e5e7eb', fontSize: '1rem', appearance: 'none', cursor: 'pointer', marginBottom: '1rem' }}>
+            <option value="" disabled>— Select your country —</option>
+            {availableRegions.map(region => (
+              <option key={region.iso_3166_1} value={region.iso_3166_1}>{region.english_name}</option>
+            ))}
+          </select>
+          <p style={{ fontSize: '0.75rem', color: '#4b5563' }}>Your choice is saved locally and can be changed anytime in Settings.</p>
+        </>
+      ) : (
+        <div style={{ padding: '1rem', display: 'flex', justifyContent: 'center' }}><span className="loader"></span></div>
       )}
+    </div>
+  </div>
+)}
     </div>
   );
 };
