@@ -99,6 +99,51 @@ const Confetti = ({ active, onComplete }) => {
 };
 
 // ============================================
+// SPARKLE EFFECT
+// ============================================
+const Sparkles = ({ active }) => {
+  const [particles, setParticles] = React.useState([]);
+
+  React.useEffect(() => {
+    if (!active) return;
+
+    const newParticles = [];
+    for (let i = 0; i < 20; i++) {
+      newParticles.push({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        delay: Math.random() * 0.5,
+        duration: Math.random() * 0.5 + 0.5
+      });
+    }
+    setParticles(newParticles);
+
+    const timer = setTimeout(() => setParticles([]), 1500);
+    return () => clearTimeout(timer);
+  }, [active]);
+
+  if (!active || particles.length === 0) return null;
+
+  return (
+    <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
+      {particles.map(p => (
+        <div
+          key={p.id}
+          className="sparkle"
+          style={{
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            animationDelay: `${p.delay}s`,
+            animationDuration: `${p.duration}s`
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
+// ============================================
 // DICE ROLL ANIMATION
 // ============================================
 const DiceRollAnimation = ({ isRolling }) => {

@@ -68,6 +68,7 @@ const [recentlyShownIds, setRecentlyShownIds] = useLocalStorageState(RECENT_HIST
   // UX State
   const [showConfetti, setShowConfetti] = useState(false);
   const [showSwipeHint, setShowSwipeHint] = useState(false);
+  const [showSparkles, setShowSparkles] = useState(false); 
 
   const t = translations[language];
   const searchRef = useRef(null);
@@ -411,6 +412,8 @@ if (unwatchedMedia.length > 0) {
   const selected = unwatchedMedia[Math.floor(Math.random() * unwatchedMedia.length)];
   setSelectedMedia(selected);
   addToRecentHistory(selected.id);
+  setShowSparkles(true);  
+  setTimeout(() => setShowSparkles(false), 1500);
 } else {
   setSelectedMedia(null);
   addToast(t.noMoviesFound, 'info');
@@ -602,6 +605,7 @@ if (unwatchedMedia.length > 0) {
     <div style={{ minHeight: '100vh', padding: '1rem', maxWidth: '72rem', margin: '0 auto' }} {...swipeHandlers}>
       {/* Confetti */}
       <Confetti active={showConfetti} onComplete={() => setShowConfetti(false)} />
+        <Sparkles active={showSparkles} />
       
       {/* Swipe Hint */}
       <SwipeHint show={showSwipeHint} onDismiss={() => setShowSwipeHint(false)} />
@@ -729,64 +733,64 @@ if (unwatchedMedia.length > 0) {
         {isDiscovering ? (
           <DiceRollAnimation isRolling={true} />
         ) : selectedMedia ? (
-          <div style={{ width: '100%', maxWidth: '56rem', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem' }}>
-                {/* Poster */}
-                <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                  <img src={selectedMedia.poster ? `${TMDB_IMAGE_BASE_URL}${selectedMedia.poster}` : 'https://placehold.co/300x450/1f2937/9ca3af?text=No+Poster'} alt="" style={{ width: '14rem', borderRadius: '0.75rem', boxShadow: '0 10px 25px rgba(0,0,0,0.3)' }} />
-                  {!isFetchingDetails && mediaDetails.trailerKey && (
-                    <button onClick={() => openTrailerModal(mediaDetails.trailerKey)} style={{ width: '100%', maxWidth: '14rem', padding: '0.75rem', backgroundColor: 'rgba(168,85,247,0.2)', color: '#d8b4fe', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>▶ {t.cardTrailer}</button>
-                  )}
-                </div>
+  <div className="movie-card-animated" style={{ width: '100%', maxWidth: '56rem', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem' }}>
+        {/* Poster */}
+        <div className="movie-poster-animated" style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+          <img src={selectedMedia.poster ? `${TMDB_IMAGE_BASE_URL}${selectedMedia.poster}` : 'https://placehold.co/300x450/1f2937/9ca3af?text=No+Poster'} alt="" style={{ width: '14rem', borderRadius: '0.75rem', boxShadow: '0 10px 25px rgba(0,0,0,0.3)' }} />
+          {!isFetchingDetails && mediaDetails.trailerKey && (
+            <button onClick={() => openTrailerModal(mediaDetails.trailerKey)} style={{ width: '100%', maxWidth: '14rem', padding: '0.75rem', backgroundColor: 'rgba(168,85,247,0.2)', color: '#d8b4fe', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>▶ {t.cardTrailer}</button>
+          )}
+        </div>
 
-                {/* Details */}
-                <div style={{ flex: 1, minWidth: '280px' }}>
-                  <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#fff', marginBottom: '0.5rem' }}>{selectedMedia.title}</h2>
-                  <p style={{ color: '#9ca3af', marginBottom: '1rem', display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{selectedMedia.synopsis}</p>
+        {/* Details */}
+        <div className="movie-details-animated" style={{ flex: 1, minWidth: '280px' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#fff', marginBottom: '0.5rem' }}>{selectedMedia.title}</h2>
+          <p style={{ color: '#9ca3af', marginBottom: '1rem', display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{selectedMedia.synopsis}</p>
 
-                  {/* Action Buttons */}
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1rem' }}>
-                    <button onClick={() => handleMarkAsWatched(selectedMedia)} style={{ flex: 1, minWidth: '140px', padding: '0.75rem', backgroundColor: isCurrentMediaWatched ? 'rgba(34,197,94,0.8)' : 'rgba(239,68,68,0.8)', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                      {isCurrentMediaWatched ? '✓ ' + t.cardIsWatched : t.cardMarkAsWatched}
-                    </button>
-                    <button onClick={() => handleToggleWatchlist(selectedMedia)} style={{ flex: 1, minWidth: '140px', padding: '0.75rem', backgroundColor: 'rgba(14,165,233,0.8)', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                      {watchList[selectedMedia.id] ? '★' : '☆'} {t.saveForLater}
-                    </button>
-                    <button onClick={handleShare} style={{ padding: '0.75rem 1rem', backgroundColor: 'rgba(75,85,99,0.8)', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer' }}>↗ {t.shareButton}</button>
-                  </div>
-
-                  {/* Media Card Content */}
-                  <div style={{ borderTop: '1px solid #374151', paddingTop: '1rem' }}>
-                    <MediaCardContent media={selectedMedia} details={mediaDetails} isFetching={isFetchingDetails} t={t} userRegion={userRegion} handleActorClick={handleActorClick} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Similar Movies */}
-              <div style={{ borderTop: '1px solid #374151', paddingTop: '1rem' }}>
-                <h3 style={{ fontWeight: '600', color: '#fff', marginBottom: '0.75rem' }}>{t.cardSimilarMovies}</h3>
-                {isFetchingDetails ? (
-                  <div style={{ display: 'flex', justifyContent: 'center' }}><span className="small-loader"></span></div>
-                ) : mediaDetails.similar?.length > 0 ? (
-                  <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
-                    {mediaDetails.similar.map(media => (
-                      <button key={media.id} onClick={() => handleSimilarMediaClick(media)} style={{ flexShrink: 0, width: '8rem', textAlign: 'center', background: 'none', border: 'none', cursor: 'pointer' }}>
-                        <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : 'https://placehold.co/128x192/1f2937/9ca3af?text=?'} alt="" style={{ width: '100%', borderRadius: '0.5rem' }} />
-                        <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{media.title}</p>
-                      </button>
-                    ))}
-                  </div>
-                ) : <p style={{ color: '#9ca3af' }}>{t.noMoviesFound}</p>}
-              </div>
-
-              {/* Navigation */}
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', borderTop: '1px solid #374151', paddingTop: '1rem' }}>
-                <button onClick={handleGoBack} disabled={mediaHistory.length === 0} style={{ padding: '0.5rem 1.5rem', backgroundColor: 'rgba(75,85,99,0.8)', color: 'white', fontWeight: 'bold', borderRadius: '9999px', border: 'none', cursor: mediaHistory.length === 0 ? 'not-allowed' : 'pointer', opacity: mediaHistory.length === 0 ? 0.5 : 1 }}>← Back</button>
-                <button onClick={handleSurpriseMe} disabled={isDiscovering} style={{ padding: '0.5rem 1.5rem', background: 'linear-gradient(to right, #a855f7, #ec4899)', color: 'white', fontWeight: 'bold', borderRadius: '9999px', border: 'none', cursor: 'pointer' }}>Next →</button>
-              </div>
-            </div>
+          {/* Action Buttons */}
+          <div className="movie-actions-animated" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1rem' }}>
+            <button onClick={() => handleMarkAsWatched(selectedMedia)} style={{ flex: 1, minWidth: '140px', padding: '0.75rem', backgroundColor: isCurrentMediaWatched ? 'rgba(34,197,94,0.8)' : 'rgba(239,68,68,0.8)', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+              {isCurrentMediaWatched ? '✓ ' + t.cardIsWatched : t.cardMarkAsWatched}
+            </button>
+            <button onClick={() => handleToggleWatchlist(selectedMedia)} style={{ flex: 1, minWidth: '140px', padding: '0.75rem', backgroundColor: 'rgba(14,165,233,0.8)', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+              {watchList[selectedMedia.id] ? '★' : '☆'} {t.saveForLater}
+            </button>
+            <button onClick={handleShare} style={{ padding: '0.75rem 1rem', backgroundColor: 'rgba(75,85,99,0.8)', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer' }}>↗ {t.shareButton}</button>
           </div>
+
+          {/* Media Card Content */}
+          <div style={{ borderTop: '1px solid #374151', paddingTop: '1rem' }}>
+            <MediaCardContent media={selectedMedia} details={mediaDetails} isFetching={isFetchingDetails} t={t} userRegion={userRegion} handleActorClick={handleActorClick} />
+          </div>
+        </div>
+      </div>
+
+      {/* Similar Movies */}
+      <div style={{ borderTop: '1px solid #374151', paddingTop: '1rem' }}>
+        <h3 style={{ fontWeight: '600', color: '#fff', marginBottom: '0.75rem' }}>{t.cardSimilarMovies}</h3>
+        {isFetchingDetails ? (
+          <div style={{ display: 'flex', justifyContent: 'center' }}><span className="small-loader"></span></div>
+        ) : mediaDetails.similar?.length > 0 ? (
+          <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+            {mediaDetails.similar.map(media => (
+              <button key={media.id} onClick={() => handleSimilarMediaClick(media)} style={{ flexShrink: 0, width: '8rem', textAlign: 'center', background: 'none', border: 'none', cursor: 'pointer' }}>
+                <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : 'https://placehold.co/128x192/1f2937/9ca3af?text=?'} alt="" style={{ width: '100%', borderRadius: '0.5rem' }} />
+                <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{media.title}</p>
+              </button>
+            ))}
+          </div>
+        ) : <p style={{ color: '#9ca3af' }}>{t.noMoviesFound}</p>}
+      </div>
+
+      {/* Navigation */}
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', borderTop: '1px solid #374151', paddingTop: '1rem' }}>
+        <button onClick={handleGoBack} disabled={mediaHistory.length === 0} style={{ padding: '0.5rem 1.5rem', backgroundColor: 'rgba(75,85,99,0.8)', color: 'white', fontWeight: 'bold', borderRadius: '9999px', border: 'none', cursor: mediaHistory.length === 0 ? 'not-allowed' : 'pointer', opacity: mediaHistory.length === 0 ? 0.5 : 1 }}>← Back</button>
+        <button onClick={handleSurpriseMe} disabled={isDiscovering} style={{ padding: '0.5rem 1.5rem', background: 'linear-gradient(to right, #a855f7, #ec4899)', color: 'white', fontWeight: 'bold', borderRadius: '9999px', border: 'none', cursor: 'pointer' }}>Next →</button>
+      </div>
+    </div>
+  </div>
         ) : (
           <div style={{ textAlign: 'center', padding: '4rem 1rem' }}>
             {hasSearched && allMedia.length === 0 ? (
