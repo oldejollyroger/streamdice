@@ -286,9 +286,14 @@ const MediaCardContent = ({ media, details, isFetching, t, userRegion, handleAct
       )}
       
       {displayDetails.cast?.length > 0 && (
-        <div>
-          <p style={{ fontWeight: '600', color: '#fff', marginBottom: '0.5rem' }}>{t.cardCast}:</p>
-          <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
+  <div>
+    <p style={{ fontWeight: '600', color: '#fff', marginBottom: '0.5rem' }}>{t.cardCast}:</p>
+    <div 
+      onTouchStart={(e) => e.stopPropagation()} 
+      onTouchMove={(e) => e.stopPropagation()} 
+      onTouchEnd={(e) => e.stopPropagation()}
+      style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '0.5rem' }}
+    >
             {displayDetails.cast.slice(0, 10).map(actor => (
               <button key={actor.id} onClick={() => handleActorClick(actor.id)} style={{ flexShrink: 0, width: '5rem', textAlign: 'center', background: 'none', border: 'none', cursor: 'pointer' }}>
                 <img src={actor.profile_path ? `${TMDB_THUMBNAIL_BASE_URL}${actor.profile_path}` : FALLBACK_PROFILE} alt="" style={{ width: '100%', aspectRatio: '2/3', objectFit: 'cover', borderRadius: '0.25rem' }} />

@@ -2,6 +2,9 @@
 
 const App = () => {
   const { useState, useEffect, useCallback, useMemo, useRef } = React;
+  // Theme-aware background getter
+const getThemedBg = (mode, darkBg, lightBg) => mode === 'light' ? lightBg : darkBg;
+const getThemedText = (mode, darkText, lightText) => mode === 'light' ? lightText : darkText;
 
   // Get toast function
   const { addToast } = useToast();
@@ -596,7 +599,8 @@ const addToRecentHistory = useCallback((mediaId) => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', padding: '1rem', maxWidth: '72rem', margin: '0 auto' }} >
+  <div style={{ minHeight: '100vh', padding: '1rem', maxWidth: '72rem', margin: '0 auto', backgroundColor: mode === 'light' ? '#ffffff' : 'transparent' }}>
+
       {/* Confetti */}
       <Confetti active={showConfetti} onComplete={() => setShowConfetti(false)} />
         <Sparkles active={showSparkles} />
@@ -756,27 +760,32 @@ const addToRecentHistory = useCallback((mediaId) => {
 
           {/* Media Card Content */}
           <div style={{ borderTop: '1px solid #374151', paddingTop: '1rem' }}>
-            <MediaCardContent media={selectedMedia} details={mediaDetails} isFetching={isFetchingDetails} t={t} userRegion={userRegion} handleActorClick={handleActorClick} />
-          </div>
+  <MediaCardContent media={selectedMedia} details={mediaDetails} isFetching={isFetchingDetails} t={t} userRegion={userRegion} handleActorClick={handleActorClick} />
+</div>
         </div>
       </div>
 
-      {/* Similar Movies */}
-      <div style={{ borderTop: '1px solid #374151', paddingTop: '1rem' }}>
-        <h3 style={{ fontWeight: '600', color: '#fff', marginBottom: '0.75rem' }}>{t.cardSimilarMovies}</h3>
-        {isFetchingDetails ? (
-          <div style={{ display: 'flex', justifyContent: 'center' }}><span className="small-loader"></span></div>
-        ) : mediaDetails.similar?.length > 0 ? (
-          <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
-            {mediaDetails.similar.map(media => (
-              <button key={media.id} onClick={() => handleSimilarMediaClick(media)} style={{ flexShrink: 0, width: '8rem', textAlign: 'center', background: 'none', border: 'none', cursor: 'pointer' }}>
-                <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : 'https://placehold.co/128x192/1f2937/9ca3af?text=?'} alt="" style={{ width: '100%', borderRadius: '0.5rem' }} />
-                <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{media.title}</p>
-              </button>
-            ))}
-          </div>
-        ) : <p style={{ color: '#9ca3af' }}>{t.noMoviesFound}</p>}
-      </div>
+     {/* Similar Movies */}
+<div style={{ borderTop: '1px solid #374151', paddingTop: '1rem' }}>
+  <h3 style={{ fontWeight: '600', color: '#fff', marginBottom: '0.75rem' }}>{t.cardSimilarMovies}</h3>
+  {isFetchingDetails ? (
+    <div style={{ display: 'flex', justifyContent: 'center' }}><span className="small-loader"></span></div>
+  ) : mediaDetails.similar?.length > 0 ? (
+    <div 
+      onTouchStart={(e) => e.stopPropagation()} 
+      onTouchMove={(e) => e.stopPropagation()} 
+      onTouchEnd={(e) => e.stopPropagation()}
+      style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '0.5rem' }}
+    >
+      {mediaDetails.similar.map(media => (
+        <button key={media.id} onClick={() => handleSimilarMediaClick(media)} style={{ flexShrink: 0, width: '8rem', textAlign: 'center', background: 'none', border: 'none', cursor: 'pointer' }}>
+          <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : 'https://placehold.co/128x192/1f2937/9ca3af?text=?'} alt="" style={{ width: '100%', borderRadius: '0.5rem' }} />
+          <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{media.title}</p>
+        </button>
+      ))}
+    </div>
+  ) : <p style={{ color: '#9ca3af' }}>{t.noMoviesFound}</p>}
+</div>
 
       {/* Navigation */}
       <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', borderTop: '1px solid #374151', paddingTop: '1rem' }}>
