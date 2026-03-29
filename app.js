@@ -833,22 +833,22 @@ const platform = platformMap.get(id);          return platform && (
   <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '1rem' }}>
     <div style={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '1rem', padding: '2rem', maxWidth: '360px', width: '100%', textAlign: 'center' }}>
       <p style={{ color: '#fff', fontWeight: 'bold', fontSize: '1.1rem', marginBottom: '0.5rem' }}>{pendingPerson.title}</p>
-      <p style={{ color: '#9ca3af', fontSize: '0.875rem', marginBottom: '1.5rem' }}>How do you want to filter by this person?</p>
-      <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
-        <button onClick={() => {
-          setFilters(f => ({ ...f, actor: pendingPerson, creator: null }));
-          resetAllState();
-          setPendingPerson(null);
-        }} style={{ flex: 1, padding: '0.75rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer' }}>
-          🎭 As Actor
-        </button>
-        <button onClick={() => {
-          setFilters(f => ({ ...f, creator: pendingPerson, actor: null }));
-          resetAllState();
-          setPendingPerson(null);
-        }} style={{ flex: 1, padding: '0.75rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer' }}>
-          🎬 As Director
-        </button>
+      <p style={{ color: '#9ca3af', fontSize: '0.875rem', marginBottom: '1.5rem' }}>What was their role?</p>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', justifyContent: 'center' }}>
+        {[
+          { label: '🎭 Actor', role: 'actor' },
+          { label: '🎬 Director', role: 'director' },
+          { label: '✍️ Writer', role: 'writer' },
+          { label: '🎛️ Producer', role: 'producer' },
+        ].map(({ label, role }) => (
+          <button key={role} onClick={() => {
+            setFilters(f => ({ ...f, person: { ...pendingPerson, role } }));
+            resetAllState();
+            setPendingPerson(null);
+          }} style={{ flex: '1 1 40%', padding: '0.75rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer' }}>
+            {label}
+          </button>
+        ))}
       </div>
       <button onClick={() => setPendingPerson(null)} style={{ marginTop: '1rem', background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer', fontSize: '0.875rem' }}>Cancel</button>
     </div>
