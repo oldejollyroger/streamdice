@@ -379,15 +379,6 @@ const FilterModal = ({ isOpen, close, handleClearFilters, filters, handleGenreCh
       </div>
     </div>
   );
-};        
-        
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1.5rem' }}>
-          <button onClick={() => { handleClearFilters(); close(); }} style={{ padding: '0.5rem 1.5rem', backgroundColor: '#4b5563', color: 'white', borderRadius: '0.5rem', fontWeight: 'bold' }}>{t.clearFilters}</button>
-<button onClick={(e) => { e.stopPropagation(); close(); }} onTouchEnd={(e) => { e.stopPropagation(); close(); }} style={{ position: 'absolute', top: '1rem', right: '1rem', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'; e.target.style.color = '#fff'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'; e.target.style.color = '#9ca3af'; }}>✕</button>
-        </div>
-      </div>
-    </div>
-  );
 };
 
 // Trailer Modal
@@ -397,7 +388,7 @@ const TrailerModal = ({ isOpen, close, trailerKey }) => {
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.9)' }} onClick={close}>
       <div style={{ width: '100%', maxWidth: '56rem', position: 'relative' }} onClick={e => e.stopPropagation()}>
-        <button onClick={close} style={{ position: 'absolute', top: '-3rem', right: '0', width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', fontSize: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10, transition: 'all 0.2s' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'}>✕</button>
+        <button onClick={close} style={{ position: 'absolute', top: '-3rem', right: '0', width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', fontSize: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10, transition: 'all 0.2s' }} onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'} onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'}>
         <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, borderRadius: '0.75rem', overflow: 'hidden' }}>
           <iframe src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1`} title="Trailer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}></iframe>
         </div>
