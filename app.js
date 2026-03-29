@@ -73,6 +73,8 @@ const [recentlyShownIds, setRecentlyShownIds] = useLocalStorageState(RECENT_HIST
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const platformMap = React.useMemo(() => new Map(allPlatformOptions.map(p => [p.id, p])), [allPlatformOptions]);
+  const [pendingPerson, setPendingPerson] = useState(null);
+
 
   // UX State
   const [showConfetti, setShowConfetti] = useState(false);
@@ -565,10 +567,12 @@ const unwatchedMedia = transformedMedia.filter(m =>
   };
 
   const handleSearchResultClick = (result) => {
-  if (result.resultType === 'person') {
-    const isCreator = result.year === 'Directing' || result.year === 'Writing' || result.year === 'Production';
-    setFilters(f => ({ ...f, actor: isCreator ? null : result, creator: isCreator ? result : null }));
-    resetAllState();
+ if (result.resultType === 'person') {
+  setPendingPerson(result);
+  setSearchQuery('');
+  setSearchResults([]);
+  return;
+
   } else {
     if (selectedMedia) setMediaHistory(prev => [...prev, selectedMedia]);
     setSelectedMedia(result);
@@ -818,10 +822,37 @@ const platform = platformMap.get(id);          return platform && (
       <WatchlistModal isOpen={isWatchlistModalOpen} close={() => setIsWatchlistModalOpen(false)} watchlist={watchList} handleToggleWatchlist={handleToggleWatchlist} mediaType={mediaType} t={t} cookieConsent={cookieConsent} />
       <ActorDetailsModal isOpen={isActorModalOpen} close={closeModal} actorDetails={actorDetails} isFetching={isFetchingActorDetails} t={t} />
       <SimilarMediaModal media={modalMedia} close={closeModal} fetchFullMediaDetails={fetchFullMediaDetails} handleActorClick={handleActorClick} handleSimilarMediaClick={handleSimilarMediaClick} t={t} userRegion={userRegion} openTrailerModal={openTrailerModal} />
-      <CookieConsentModal isOpen={!cookieConsent} onAccept={() => setCookieConsent(true)} t={t} />
+<CookieConsentModal isOpen={!cookieConsent} onAccept={() => setCookieConsent(true)} t={t} />
 
-      {/* Region Selector Modal */}
-      {(showRegionSelector || !userRegion) && (
+{/* Pending Person Modal */}
+{pendingPerson && (
+  <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '1rem' }}>
+    <div style={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '1rem', padding: '2rem', maxWidth: '360px', width: '100%', textAlign: 'center' }}>
+      <p style={{ color: '#fff', fontWeight: 'bold', fontSize: '1.1rem', marginBottom: '0.5rem' }}>{pendingPerson.title}</p>
+      <p style={{ color: '#9ca3af', fontSize: '0.875rem', marginBottom: '1.5rem' }}>How do you want to filter by this person?</p>
+      <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+        <button onClick={() => {
+          setFilters(f => ({ ...f, actor: pendingPerson, creator: null }));
+          resetAllState();
+          setPendingPerson(null);
+        }} style={{ flex: 1, padding: '0.75rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer' }}>
+          🎭 As Actor
+        </button>
+        <button onClick={() => {
+          setFilters(f => ({ ...f, creator: pendingPerson, actor: null }));
+          resetAllState();
+          setPendingPerson(null);
+        }} style={{ flex: 1, padding: '0.75rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer' }}>
+          🎬 As Director
+        </button>
+      </div>
+      <button onClick={() => setPendingPerson(null)} style={{ marginTop: '1rem', background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer', fontSize: '0.875rem' }}>Cancel</button>
+    </div>
+  </div>
+)}
+
+{/* Region Selector Modal */}
+{(showRegionSelector || !userRegion) && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '1rem' }}>
           <div style={{ width: '100%', maxWidth: '400px', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '1rem', padding: '2rem', textAlign: 'center' }}>
             <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#fff', marginBottom: '1.5rem' }}>{t.selectRegionPrompt}</h1>
