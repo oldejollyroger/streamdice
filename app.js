@@ -95,8 +95,33 @@ const detailsCache = useRef({});
   ], [t]);
 
   const ageRatingOptions = useMemo(() => {
-    const ratings = userRegion === 'US' ? ['G', 'PG', 'PG-13', 'R', 'NC-17'] : ['U', 'PG', '12', '15', '18'];
-    return [t.any, ...ratings];
+const ageRatingOptions = useMemo(() => {
+  const ratingsByRegion = {
+    US: ['G', 'PG', 'PG-13', 'R', 'NC-17'],
+    GB: ['U', 'PG', '12', '15', '18'],
+    ES: ['APTA', '7', '12', '16', '18'],
+    DE: ['0', '6', '12', '16', '18'],
+    FR: ['U', '10', '12', '16', '18'],
+    IT: ['T', 'VM14', 'VM18'],
+    PT: ['M/4', 'M/6', 'M/12', 'M/16', 'M/18'],
+    BR: ['L', '10', '12', '14', '16', '18'],
+    MX: ['AA', 'A', 'B', 'B15', 'C', 'D'],
+    AU: ['G', 'PG', 'M', 'MA15+', 'R18+'],
+    CA: ['G', 'PG', '14A', '18A', 'R'],
+    JP: ['G', 'PG12', 'R15+', 'R18+'],
+    KR: ['All', '12', '15', '18', '19'],
+    IN: ['U', 'UA', 'A', 'S'],
+    NL: ['AL', '6', '9', '12', '16'],
+    SE: ['Btl', '7', '11', '15'],
+    NO: ['A', '6', '9', '12', '15', '18'],
+    DK: ['A', '7', '11', '15'],
+    FI: ['S', '7', '12', '16', '18'],
+    PL: ['AP', '12', '15', '18'],
+    RU: ['0+', '6+', '12+', '16+', '18+'],
+  };
+  const ratings = ratingsByRegion[userRegion] || ratingsByRegion['GB'];
+  return [t.any, ...ratings];
+}, [userRegion, t]);    return [t.any, ...ratings];
   }, [userRegion, t]);
 
   const quickFilterGenres = useMemo(() => {
@@ -381,6 +406,7 @@ const addToRecentHistory = useCallback((mediaId) => {
       language: tmdbLanguage,
       'vote_count.gte': mediaType === 'movie' ? 200 : 100,
       watch_region: userRegion,
+      ...(filters.platform.length > 0 && { with_watch_monetization_types: 'flatrate' }),
       ...(filters.platform.length > 0 && { with_watch_providers: filters.platform.join('|') }),
       ...(filters.genre.length > 0 && { with_genres: filters.genre.join(',') }),
       ...(filters.excludeGenres.length > 0 && { without_genres: filters.excludeGenres.join(',') }),
