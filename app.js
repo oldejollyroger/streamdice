@@ -596,7 +596,7 @@ const addToRecentHistory = useCallback((mediaId) => {
   }
 
   return (
-    <div style={{ minHeight: '100vh', padding: '1rem', maxWidth: '72rem', margin: '0 auto' }} {...swipeHandlers}>
+    <div style={{ minHeight: '100vh', padding: '1rem', maxWidth: '72rem', margin: '0 auto' }} >
       {/* Confetti */}
       <Confetti active={showConfetti} onComplete={() => setShowConfetti(false)} />
         <Sparkles active={showSparkles} />
@@ -727,7 +727,7 @@ const addToRecentHistory = useCallback((mediaId) => {
         {isDiscovering ? (
           <DiceRollAnimation isRolling={true} />
         ) : selectedMedia ? (
-  <div className="movie-card-animated" style={{ width: '100%', maxWidth: '56rem', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem' }}>
+  <div className="movie-card-animated" {...swipeHandlers} style={{ width: '100%', maxWidth: '56rem', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem' }}>
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem' }}>
         {/* Poster */}
