@@ -291,8 +291,7 @@ const MediaCardContent = ({ media, details, isFetching, t, userRegion, handleAct
       {displayDetails.duration && <p style={{ color: '#e5e7eb' }}><strong style={{ color: '#9ca3af' }}>{t.cardDuration}:</strong> {formatDuration(displayDetails.duration)}</p>}
       {displayDetails.seasons && <p style={{ color: '#e5e7eb' }}><strong style={{ color: '#9ca3af' }}>{t.cardSeasons}:</strong> {displayDetails.seasons}</p>}
       <p style={{ color: '#e5e7eb' }}><strong style={{ color: '#9ca3af' }}>{t.cardRating}:</strong> {media.imdbRating}/10 ⭐</p>
-      <p style={{ color: '#e5e7eb' }}><strong style={{ color: '#9ca3af' }}>{t.cardGenres}:</strong> {media.genres.join(', ')}</p>
-      
+{media.genres?.length > 0 && <p style={{ color: '#e5e7eb' }}><strong style={{ color: '#9ca3af' }}>{t.cardGenres}:</strong> {media.genres.join(', ')}</p>}      
       {displayDetails.providers?.length > 0 && (
         <div>
           <p style={{ fontWeight: '600', color: '#fff', marginBottom: '0.5rem' }}>{t.cardAvailableOn} {userRegion}:</p>
