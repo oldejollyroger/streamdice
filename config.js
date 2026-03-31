@@ -20,6 +20,7 @@ const ACCENT_COLORS = [
   { name: 'Pink', color: '#ec4899', text: '#f9a8d4', from: '#ec4899', to: '#f43f5e' },
   { name: 'Red', color: '#ef4444', text: '#fca5a5', from: '#ef4444', to: '#f97316' }
 ];
+
 const getFlagEmoji = (countryCode) => {
   if (!countryCode) return '';
   return countryCode.toUpperCase().split('')

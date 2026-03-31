@@ -633,7 +633,7 @@ const getFlagEmoji = (countryCode) => {
     setInstallPrompt(null);
   };
 
- const handleActorClick = async (actorId) => {
+const handleActorClick = async (actorId) => {
   setModalMedia(null);
   setIsTrailerModalOpen(false);
   setActorDetails(null);
