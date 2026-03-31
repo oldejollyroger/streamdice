@@ -74,6 +74,7 @@ const [recentlyShownIds, setRecentlyShownIds] = useLocalStorageState(RECENT_HIST
   const [hasSearched, setHasSearched] = useState(false);
   const platformMap = React.useMemo(() => new Map(allPlatformOptions.map(p => [p.id, p])), [allPlatformOptions]);
   const [pendingPerson, setPendingPerson] = useState(null);
+  const [pendingRegionLanguages, setPendingRegionLanguages] = useState(null);
 
 
   // UX State
@@ -501,13 +502,23 @@ const unwatchedMedia = transformedMedia.filter(m =>
     setIsDiscovering(false);
   }
 }, [filters, tmdbLanguage, mediaType, userRegion, genresMap, watchedMedia, recentlyShownIds, selectedMedia, fetchApi, durationOptions, ageRatingOptions, addToast, addToRecentHistory, t]);
-  const handleRegionChange = (newRegion) => {
+ const handleRegionChange = (newRegion) => {
+  const langs = COUNTRY_LANGUAGES[newRegion];
+  if (langs && langs.length > 1) {
     setUserRegion(newRegion);
     resetAllState();
-    setFilters(initialFilters);
+    setFilters(INITIAL_FILTERS);
     setShowRegionSelector(false);
+    setPendingRegionLanguages(langs);
+  } else {
+    setUserRegion(newRegion);
+    resetAllState();
+    setFilters(INITIAL_FILTERS);
+    setShowRegionSelector(false);
+    if (langs && langs.length === 1) setTmdbLanguage(langs[0].code);
     addToast(`Region set to ${newRegion}`, 'success');
-  };
+  }
+};
 
   const handleMediaTypeChange = (type) => {
     if (type === mediaType) return;
@@ -920,6 +931,30 @@ const platform = platformMap.get(id);          return platform && (
           ))}
         </div>
         <button onClick={() => setPendingPerson(null)} style={{ width: '100%', padding: '0.625rem', background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', fontSize: '0.875rem' }}>Cancel</button>
+      </div>
+    </div>
+  </div>
+)}
+{pendingRegionLanguages && (
+  <div style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.75)' }}>
+    <div style={{ width: '100%', maxWidth: '540px', backgroundColor: '#111827', borderRadius: '1.25rem 1.25rem 0 0', overflow: 'hidden', animation: 'slideUp 0.90s cubic-bezier(0.32, 0.72, 0, 1)' }}>
+      <div style={{ padding: '1.5rem 1.5rem 1rem', borderBottom: '1px solid #1f2937' }}>
+        <p style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.25rem' }}>One more thing</p>
+        <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>Which language do you prefer?</h2>
+      </div>
+      <div style={{ padding: '1.25rem 1.5rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem', marginBottom: '1.25rem' }}>
+          {pendingRegionLanguages.map(lang => (
+            <button key={lang.code} onClick={() => {
+              setTmdbLanguage(lang.code);
+              setPendingRegionLanguages(null);
+              addToast(`Language set to ${lang.name}`, 'success');
+            }} style={{ padding: '1rem 1.25rem', backgroundColor: '#1f2937', border: `1.5px solid ${tmdbLanguage === lang.code ? 'var(--color-accent)' : '#374151'}`, borderRadius: '0.875rem', cursor: 'pointer', textAlign: 'left', color: '#fff', fontWeight: 600, fontSize: '0.95rem' }}>
+              {lang.name}
+            </button>
+          ))}
+        </div>
+        <button onClick={() => setPendingRegionLanguages(null)} style={{ width: '100%', padding: '0.625rem', background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', fontSize: '0.875rem' }}>Skip</button>
       </div>
     </div>
   </div>
