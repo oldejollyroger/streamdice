@@ -391,6 +391,45 @@ const addToRecentHistory = useCallback((mediaId) => {
   setHasSearched(true);
 
   try {
+    // If a person filter is active, fetch their credits directly
+if (filters.person) {
+  const creditType = filters.person.role === 'actor' ? 'cast' : 'crew';
+  const jobMap = { director: 'Director', writer: 'Writer', producer: 'Producer' };
+  const creditEndpoint = mediaType === 'movie'
+    ? `person/${filters.person.id}/movie_credits`
+    : `person/${filters.person.id}/tv_credits`;
+
+  const creditsData = await fetchApi(creditEndpoint, { language: tmdbLanguage });
+  let matches = creditsData[creditType] || [];
+
+  if (creditType === 'crew') {
+    const jobTitle = jobMap[filters.person.role];
+    matches = matches.filter(m => m.job === jobTitle);
+  }
+
+  matches = matches
+    .filter(m => m.poster_path && m.vote_count >= 50)
+    .sort((a, b) => b.popularity - a.popularity);
+
+  const unwatchedMatches = matches.filter(m =>
+    !watchedMedia[m.id.toString()] && !recentlyShownIds.includes(m.id.toString())
+  );
+
+  if (unwatchedMatches.length === 0) {
+    addToast(t.noMoviesFound, 'info');
+    setIsDiscovering(false);
+    return;
+  }
+
+  const selected = unwatchedMatches[Math.floor(Math.random() * unwatchedMatches.length)];
+  const normalized = normalizeMediaData(selected, mediaType, genresMap);
+  setTimeout(() => {
+    setSelectedMedia(normalized);
+    addToRecentHistory(normalized.id);
+    setIsDiscovering(false);
+  }, 1500);
+  return;
+}
     const dateParam = mediaType === 'movie' ? 'primary_release_date' : 'first_air_date';
     const runtimeParam = mediaType === 'movie' ? 'with_runtime' : 'with_episode_runtime';
     const selectedDuration = durationOptions[filters.duration];
