@@ -75,6 +75,7 @@ const [recentlyShownIds, setRecentlyShownIds] = useLocalStorageState(RECENT_HIST
   const platformMap = React.useMemo(() => new Map(allPlatformOptions.map(p => [p.id, p])), [allPlatformOptions]);
   const [pendingPerson, setPendingPerson] = useState(null);
   const [pendingRegionLanguages, setPendingRegionLanguages] = useState(null);
+  
 
 
   // UX State
@@ -503,21 +504,27 @@ const unwatchedMedia = transformedMedia.filter(m =>
   }
 }, [filters, tmdbLanguage, mediaType, userRegion, genresMap, watchedMedia, recentlyShownIds, selectedMedia, fetchApi, durationOptions, ageRatingOptions, addToast, addToRecentHistory, t]);
  const handleRegionChange = (newRegion) => {
-  const langs = COUNTRY_LANGUAGES[newRegion];
+  if (!newRegion) return;
+  const langs = typeof COUNTRY_LANGUAGES !== 'undefined' ? COUNTRY_LANGUAGES[newRegion] : null;
+  setUserRegion(newRegion);
+  resetAllState();
+  setFilters(initialFilters);
+  setShowRegionSelector(false);
   if (langs && langs.length > 1) {
-    setUserRegion(newRegion);
-    resetAllState();
-    setFilters(INITIAL_FILTERS);
-    setShowRegionSelector(false);
     setPendingRegionLanguages(langs);
+  } else if (langs && langs.length === 1) {
+    setTmdbLanguage(langs[0].code);
+    addToast(`${langs[0].name} set as content language`, 'success');
   } else {
-    setUserRegion(newRegion);
-    resetAllState();
-    setFilters(INITIAL_FILTERS);
-    setShowRegionSelector(false);
-    if (langs && langs.length === 1) setTmdbLanguage(langs[0].code);
-    addToast(`Region set to ${newRegion}`, 'success');
-  }
+addToast(`${getFlagEmoji(newRegion)} Region set to ${newRegion}`, 'success');  }
+};
+const getFlagEmoji = (countryCode) => {
+  if (!countryCode) return '';
+  return countryCode
+    .toUpperCase()
+    .split('')
+    .map(c => String.fromCodePoint(0x1F1E6 - 65 + c.charCodeAt(0)))
+    .join('');
 };
 
   const handleMediaTypeChange = (type) => {
@@ -626,9 +633,10 @@ const unwatchedMedia = transformedMedia.filter(m =>
     setInstallPrompt(null);
   };
 
-  const handleActorClick = async (actorId) => {
-    closeModal();
-    setIsActorModalOpen(true);
+ const handleActorClick = async (actorId) => {
+  setIsTrailerModalOpen(false);
+  setModalMedia(null);
+  setIsActorModalOpen(true);
     setIsFetchingActorDetails(true);
     fetchApi(`person/${actorId}`, { append_to_response: 'movie_credits,tv_credits' })
       .then(setActorDetails)
@@ -948,7 +956,7 @@ const platform = platformMap.get(id);          return platform && (
             <button key={lang.code} onClick={() => {
               setTmdbLanguage(lang.code);
               setPendingRegionLanguages(null);
-              addToast(`Language set to ${lang.name}`, 'success');
+              addToast(`Language set to ${getFlagEmoji(lang.code.split('-')[1])} {lang.name}`, 'success');
             }} style={{ padding: '1rem 1.25rem', backgroundColor: '#1f2937', border: `1.5px solid ${tmdbLanguage === lang.code ? 'var(--color-accent)' : '#374151'}`, borderRadius: '0.875rem', cursor: 'pointer', textAlign: 'left', color: '#fff', fontWeight: 600, fontSize: '0.95rem' }}>
               {lang.name}
             </button>
@@ -969,11 +977,10 @@ const platform = platformMap.get(id);          return platform && (
       <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1.75rem' }}>We'll show you what's available to stream in your country.</p>
       {availableRegions.length > 0 ? (
         <>
-          <select onChange={(e) => handleRegionChange(e.target.value)} defaultValue="" style={{ width: '100%', padding: '0.75rem 1rem', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '0.75rem', color: '#e5e7eb', fontSize: '1rem', cursor: 'pointer', marginBottom: '1rem' }}>
+          <select onChange={(e) => { if (e.target.value) handleRegionChange(e.target.value); }} defaultValue="" style={{ width: '100%', padding: '0.75rem 1rem', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '0.75rem', color: '#e5e7eb', fontSize: '1rem', cursor: 'pointer', marginBottom: '1rem' }}>
             <option value="" disabled>— Select your country —</option>
             {availableRegions.map(region => (
-              <option key={region.iso_3166_1} value={region.iso_3166_1}>{region.english_name}</option>
-            ))}
+<option key={region.iso_3166_1} value={region.iso_3166_1}>{getFlagEmoji(region.iso_3166_1)} {region.english_name}</option>            ))}
           </select>
           <p style={{ fontSize: '0.75rem', color: '#4b5563' }}>Your choice is saved locally and can be changed anytime in Settings.</p>
         </>
