@@ -634,6 +634,7 @@ const getFlagEmoji = (countryCode) => {
   };
 
 const handleActorClick = async (actorId) => {
+  console.log('actor clicked', actorId);  // ADD THIS LINE
   setModalMedia(null);
   setIsTrailerModalOpen(false);
   setActorDetails(null);
