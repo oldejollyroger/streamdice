@@ -153,8 +153,7 @@ const WatchedMediaModal = ({ isOpen, close, watchedMedia, handleUnwatchMedia, me
 };
 
 // Watchlist Modal
-const WatchlistModal = ({ isOpen, close, watchlist, handleToggleWatchlist, mediaType, t }) => {
-  if (!isOpen) return null;
+const WatchlistModal = ({ isOpen, close, watchlist, handleToggleWatchlist, handleSimilarMediaClick, mediaType, t }) => {  if (!isOpen) return null;
   const watchlistArray = Object.values(watchlist).filter(m => m.mediaType === mediaType);
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.75)' }} onClick={close}>
