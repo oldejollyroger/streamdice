@@ -851,27 +851,40 @@ const platform = platformMap.get(id);          return platform && (
 
 {/* Pending Person Modal */}
 {pendingPerson && (
-  <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '1rem' }}>
-    <div style={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '1rem', padding: '2rem', maxWidth: '360px', width: '100%', textAlign: 'center' }}>
-      <p style={{ color: '#fff', fontWeight: 'bold', fontSize: '1.1rem', marginBottom: '0.5rem' }}>{pendingPerson.title}</p>
-      <p style={{ color: '#9ca3af', fontSize: '0.875rem', marginBottom: '1.5rem' }}>What was their role?</p>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', justifyContent: 'center' }}>
-        {[
-          { label: '🎭 Actor', role: 'actor' },
-          { label: '🎬 Director', role: 'director' },
-          { label: '✍️ Writer', role: 'writer' },
-          { label: '🎛️ Producer', role: 'producer' },
-        ].map(({ label, role }) => (
-          <button key={role} onClick={() => {
-            setFilters(f => ({ ...f, person: { ...pendingPerson, role } }));
-            resetAllState();
-            setPendingPerson(null);
-          }} style={{ flex: '1 1 40%', padding: '0.75rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer' }}>
-            {label}
-          </button>
-        ))}
+  <div style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.75)' }} onClick={() => setPendingPerson(null)}>
+    <div style={{ width: '100%', maxWidth: '540px', backgroundColor: '#111827', borderRadius: '1.25rem 1.25rem 0 0', overflow: 'hidden', animation: 'slideUp 0.90s cubic-bezier(0.32, 0.72, 0, 1)' }} onClick={e => e.stopPropagation()}>
+      <div style={{ padding: '1.5rem 1.5rem 1rem', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div>
+          <p style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.25rem' }}>Filter by person</p>
+          <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>{pendingPerson.title}</h2>
+        </div>
+        <button onClick={() => setPendingPerson(null)} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#1f2937', border: '1px solid #374151', color: '#9ca3af', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
       </div>
-      <button onClick={() => setPendingPerson(null)} style={{ marginTop: '1rem', background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer', fontSize: '0.875rem' }}>Cancel</button>
+      <div style={{ padding: '1.25rem 1.5rem' }}>
+        <p style={{ fontSize: '0.85rem', color: '#6b7280', marginBottom: '1.25rem' }}>What role did they have?</p>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1.25rem' }}>
+          {[
+            { label: 'Actor', emoji: '🎭', desc: 'Appeared on screen', role: 'actor' },
+            { label: 'Director', emoji: '🎬', desc: 'Directed the film', role: 'director' },
+            { label: 'Writer', emoji: '✍️', desc: 'Wrote the screenplay', role: 'writer' },
+            { label: 'Producer', emoji: '🎛️', desc: 'Produced the project', role: 'producer' },
+          ].map(({ label, emoji, desc, role }) => (
+            <button key={role} onClick={() => {
+              setFilters(f => ({ ...f, person: { ...pendingPerson, role } }));
+              resetAllState();
+              setPendingPerson(null);
+            }} style={{ padding: '1rem', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '0.875rem', cursor: 'pointer', textAlign: 'left', transition: 'border-color 0.15s' }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--color-accent)'}
+              onMouseLeave={e => e.currentTarget.style.borderColor = '#374151'}
+            >
+              <div style={{ fontSize: '1.5rem', marginBottom: '0.4rem' }}>{emoji}</div>
+              <p style={{ fontWeight: 700, color: '#fff', fontSize: '0.9rem', margin: 0 }}>{label}</p>
+              <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.15rem' }}>{desc}</p>
+            </button>
+          ))}
+        </div>
+        <button onClick={() => setPendingPerson(null)} style={{ width: '100%', padding: '0.625rem', background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', fontSize: '0.875rem' }}>Cancel</button>
+      </div>
     </div>
   </div>
 )}
