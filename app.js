@@ -816,8 +816,7 @@ const platform = platformMap.get(id);          return platform && (
         {/* Details */}
         <div className="movie-details-animated" style={{ flex: 1, minWidth: '280px' }}>
           <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#fff', marginBottom: '0.5rem' }}>{selectedMedia.title}</h2>
-          <p style={{ color: '#9ca3af', marginBottom: '1rem', display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{selectedMedia.synopsis}</p>
-
+<p style={{ color: '#9ca3af', marginBottom: '1rem', display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{mediaDetails.overview || selectedMedia.synopsis}</p>
           {/* Action Buttons */}
           <div className="movie-actions-animated" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1rem' }}>
             <button onClick={() => handleMarkAsWatched(selectedMedia)} style={{ flex: 1, minWidth: '140px', padding: '0.75rem', backgroundColor: isCurrentMediaWatched ? 'rgba(34,197,94,0.8)' : 'rgba(239,68,68,0.8)', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
