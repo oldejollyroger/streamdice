@@ -167,8 +167,7 @@ const WatchlistModal = ({ isOpen, close, watchlist, handleToggleWatchlist, handl
         </div>
         <div style={{ overflowY: 'auto', padding: '1rem 1.5rem', flex: 1 }}>
           {watchlistArray.length > 0 ? watchlistArray.map(media => (
-            <div key={media.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', backgroundColor: '#1f2937', borderRadius: '0.75rem', marginBottom: '0.5rem' }}>
-              <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : FALLBACK_POSTER} alt="" style={{ width: '2.75rem', height: '4rem', objectFit: 'cover', borderRadius: '0.375rem', flexShrink: 0 }} />
+<div key={media.id} onClick={() => handleSimilarMediaClick(media)} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', backgroundColor: '#1f2937', borderRadius: '0.75rem', marginBottom: '0.5rem', cursor: 'pointer' }}>              <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : FALLBACK_POSTER} alt="" style={{ width: '2.75rem', height: '4rem', objectFit: 'cover', borderRadius: '0.375rem', flexShrink: 0 }} />
               <div style={{ flex: 1, overflow: 'hidden' }}>
                 <p style={{ fontWeight: 700, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontSize: '0.9rem' }}>{media.title}</p>
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.15rem' }}>{media.year}</p>
