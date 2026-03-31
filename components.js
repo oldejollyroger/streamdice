@@ -214,7 +214,7 @@ const ActorDetailsModal = ({ isOpen, close, actorDetails, isFetching, t }) => {
       .slice(0, 12);
   }, [actorDetails]);
 
-  if (!isOpen) return null;
+    if (!isOpen) return null;
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.8)' }} onClick={close}>
@@ -250,6 +250,8 @@ const ActorDetailsModal = ({ isOpen, close, actorDetails, isFetching, t }) => {
     </div>
   );
 };
+
+
 // Media Card Content
 const MediaCardContent = ({ media, details, isFetching, t, userRegion, handleActorClick }) => {
   const displayDetails = isFetching ? {} : details;
