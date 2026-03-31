@@ -412,11 +412,9 @@ const addToRecentHistory = useCallback((mediaId) => {
         [`${dateParam}.gte`]: `${parseInt(filters.decade)}-01-01`,
         [`${dateParam}.lte`]: `${parseInt(filters.decade) + 9}-12-31`
       }),
-...(filters.person && filters.person.role === 'actor'
-  ? { with_cast: filters.person.id }
-  : filters.person
-  ? { with_crew: filters.person.id }
-  : {}),      ...(filters.duration > 0 && { [`${runtimeParam}.gte`]: selectedDuration.gte, [`${runtimeParam}.lte`]: selectedDuration.lte }),
+...(filters.person && filters.person.role === 'actor' && { with_cast: filters.person.id }),
+...(filters.person && filters.person.role !== 'actor' && { with_crew: filters.person.id }),
+...(filters.duration > 0 && { [`${runtimeParam}.gte`]: selectedDuration.gte, [`${runtimeParam}.lte`]: selectedDuration.lte }),
       ...ageRatingParams,
       sort_by: 'popularity.desc'
     };
