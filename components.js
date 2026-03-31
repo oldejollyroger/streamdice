@@ -87,8 +87,8 @@ const SettingsDropdown = ({ mode, setMode, accent, setAccent, language, setLangu
           <div style={{ marginBottom: '1rem' }}>
             <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginBottom: '0.25rem' }}>Site Language</p>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-              <button onClick={() => setLanguage('en')} style={{ padding: '0.375rem', borderRadius: '9999px', backgroundColor: language === 'en' ? accent.color : 'rgba(0,0,0,0.2)', color: language === 'en' ? 'white' : '#9ca3af' }}>English</button>
-              <button onClick={() => setLanguage('es')} style={{ padding: '0.375rem', borderRadius: '9999px', backgroundColor: language === 'es' ? accent.color : 'rgba(0,0,0,0.2)', color: language === 'es' ? 'white' : '#9ca3af' }}>Español</button>
+              <button onClick={() => { setLanguage('en'); setTmdbLanguage('en-US'); }} style={{ padding: '0.375rem', borderRadius: '9999px', backgroundColor: language === 'en' ? accent.color : 'rgba(0,0,0,0.2)', color: language === 'en' ? 'white' : '#9ca3af' }}>English</button>
+<button onClick={() => { setLanguage('es'); setTmdbLanguage('es-ES'); }} style={{ padding: '0.375rem', borderRadius: '9999px', backgroundColor: language === 'es' ? accent.color : 'rgba(0,0,0,0.2)', color: language === 'es' ? 'white' : '#9ca3af' }}>Español</button>
             </div>
           </div>
           
