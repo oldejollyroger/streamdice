@@ -20,13 +20,15 @@ const ACCENT_COLORS = [
   { name: 'Pink', color: '#ec4899', text: '#f9a8d4', from: '#ec4899', to: '#f43f5e' },
   { name: 'Red', color: '#ef4444', text: '#fca5a5', from: '#ef4444', to: '#f97316' }
 ];
+const getFlagEmoji = (countryCode) => {
+  if (!countryCode) return '';
+  return countryCode.toUpperCase().split('')
+    .map(c => String.fromCodePoint(0x1F1E6 - 65 + c.charCodeAt(0)))
+    .join('');
+};
+
 const COUNTRY_LANGUAGES = {
-  ES: [
-    { code: 'es-ES', name: 'Español' },
-    { code: 'ca-ES', name: 'Català' },
-    { code: 'eu-ES', name: 'Euskera' },
-    { code: 'gl-ES', name: 'Galego' },
-  ],
+  ES: [{ code: 'es-ES', name: 'Español' }, { code: 'ca-ES', name: 'Català' }, { code: 'eu-ES', name: 'Euskera' }, { code: 'gl-ES', name: 'Galego' }],
   US: [{ code: 'en-US', name: 'English' }],
   GB: [{ code: 'en-GB', name: 'English' }],
   AU: [{ code: 'en-AU', name: 'English' }],
@@ -36,15 +38,12 @@ const COUNTRY_LANGUAGES = {
   IT: [{ code: 'it-IT', name: 'Italiano' }],
   PT: [{ code: 'pt-PT', name: 'Português' }],
   BR: [{ code: 'pt-BR', name: 'Português (Brasil)' }],
-  MX: [{ code: 'es-MX', name: 'Español (México)' }],
-  AR: [{ code: 'es-AR', name: 'Español (Argentina)' }],
-  CL: [{ code: 'es-CL', name: 'Español (Chile)' }],
-  CO: [{ code: 'es-CO', name: 'Español (Colombia)' }],
-  PE: [{ code: 'es-PE', name: 'Español (Perú)' }],
-  VE: [{ code: 'es-VE', name: 'Español (Venezuela)' }],
+  MX: [{ code: 'es-MX', name: 'Español' }],
+  AR: [{ code: 'es-AR', name: 'Español' }],
+  CL: [{ code: 'es-CL', name: 'Español' }],
+  CO: [{ code: 'es-CO', name: 'Español' }],
   JP: [{ code: 'ja-JP', name: '日本語' }],
   KR: [{ code: 'ko-KR', name: '한국어' }],
-  CN: [{ code: 'zh-CN', name: '中文' }],
   RU: [{ code: 'ru-RU', name: 'Русский' }],
   NL: [{ code: 'nl-NL', name: 'Nederlands' }],
   SE: [{ code: 'sv-SE', name: 'Svenska' }],

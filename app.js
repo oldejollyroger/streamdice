@@ -634,15 +634,16 @@ const getFlagEmoji = (countryCode) => {
   };
 
  const handleActorClick = async (actorId) => {
-  setIsTrailerModalOpen(false);
   setModalMedia(null);
+  setIsTrailerModalOpen(false);
+  setActorDetails(null);
+  setIsFetchingActorDetails(true);
   setIsActorModalOpen(true);
-    setIsFetchingActorDetails(true);
-    fetchApi(`person/${actorId}`, { append_to_response: 'movie_credits,tv_credits' })
-      .then(setActorDetails)
-      .catch(console.error)
-      .finally(() => setIsFetchingActorDetails(false));
-  };
+  fetchApi(`person/${actorId}`, { append_to_response: 'movie_credits,tv_credits' })
+    .then(setActorDetails)
+    .catch(console.error)
+    .finally(() => setIsFetchingActorDetails(false));
+};
 
   const handleSimilarMediaClick = (media) => {
     setModalMedia(media);
