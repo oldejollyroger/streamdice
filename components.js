@@ -117,21 +117,35 @@ const WatchedMediaModal = ({ isOpen, close, watchedMedia, handleUnwatchMedia, me
   if (!isOpen) return null;
   const watchedArray = Object.values(watchedMedia).filter(m => m.mediaType === mediaType);
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.8)' }} onClick={close}>
-      <div style={{ width: '100%', maxWidth: '32rem', maxHeight: '80vh', display: 'flex', flexDirection: 'column', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem', position: 'relative' }} onClick={e => e.stopPropagation()}>
-        <button onClick={close} style={{ position: 'absolute', top: '1rem', right: '1rem', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1 }}>✕</button>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#fff', paddingRight: '2rem' }}>{t.watchedList}</h2>
-        <div style={{ overflowY: 'auto' }}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.75)' }} onClick={close}>
+      <div style={{ width: '100%', maxWidth: '540px', maxHeight: '88vh', display: 'flex', flexDirection: 'column', backgroundColor: '#111827', borderRadius: '1.25rem 1.25rem 0 0', overflow: 'hidden', animation: 'slideUp 0.90s cubic-bezier(0.32, 0.72, 0, 1)' }} onClick={e => e.stopPropagation()}>
+        <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+          <div>
+            <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>{t.watchedList}</h2>
+            {watchedArray.length > 0 && <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.2rem' }}>{watchedArray.length} title{watchedArray.length > 1 ? 's' : ''}</p>}
+          </div>
+          <button onClick={close} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#1f2937', border: '1px solid #374151', color: '#9ca3af', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+        </div>
+        <div style={{ overflowY: 'auto', padding: '1rem 1.5rem', flex: 1 }}>
           {watchedArray.length > 0 ? watchedArray.map(media => (
-            <div key={media.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', backgroundColor: '#1f2937', borderRadius: '0.5rem', marginBottom: '0.5rem' }}>
-              <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : FALLBACK_POSTER} alt="" style={{ width: '3rem', height: '4.5rem', objectFit: 'cover', borderRadius: '0.25rem' }} />
+            <div key={media.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', backgroundColor: '#1f2937', borderRadius: '0.75rem', marginBottom: '0.5rem' }}>
+              <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : FALLBACK_POSTER} alt="" style={{ width: '2.75rem', height: '4rem', objectFit: 'cover', borderRadius: '0.375rem', flexShrink: 0 }} />
               <div style={{ flex: 1, overflow: 'hidden' }}>
-                <p style={{ fontWeight: '600', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{media.title}</p>
-                <p style={{ fontSize: '0.875rem', color: '#9ca3af' }}>{media.year}</p>
+                <p style={{ fontWeight: 700, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontSize: '0.9rem' }}>{media.title}</p>
+                <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.15rem' }}>{media.year}</p>
               </div>
-              <button onClick={() => handleUnwatchMedia(media.id)} style={{ padding: '0.25rem 0.75rem', backgroundColor: '#dc2626', color: 'white', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 'bold' }}>{t.unwatch}</button>
+              <button onClick={() => handleUnwatchMedia(media.id)} style={{ flexShrink: 0, padding: '0.25rem 0.625rem', backgroundColor: 'rgba(220,38,38,0.15)', border: '1px solid rgba(220,38,38,0.4)', color: '#fca5a5', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}>{t.unwatch}</button>
             </div>
-          )) : <p style={{ textAlign: 'center', color: '#9ca3af', padding: '2rem' }}>Your watched list is empty.</p>}
+          )) : (
+            <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#4b5563' }}>
+              <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>🎬</div>
+              <p style={{ fontWeight: 600, color: '#6b7280' }}>No watched titles yet</p>
+              <p style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>Mark titles as watched and they'll appear here</p>
+            </div>
+          )}
+        </div>
+        <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid #1f2937', flexShrink: 0 }}>
+          <button onClick={close} style={{ width: '100%', padding: '0.75rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: '#fff', borderRadius: '0.75rem', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem', border: 'none' }}>Done</button>
         </div>
       </div>
     </div>
@@ -139,31 +153,42 @@ const WatchedMediaModal = ({ isOpen, close, watchedMedia, handleUnwatchMedia, me
 };
 
 // Watchlist Modal
-const WatchlistModal = ({ isOpen, close, watchlist, handleToggleWatchlist, mediaType, t, cookieConsent }) => {
+const WatchlistModal = ({ isOpen, close, watchlist, handleToggleWatchlist, mediaType, t }) => {
   if (!isOpen) return null;
   const watchlistArray = Object.values(watchlist).filter(m => m.mediaType === mediaType);
-  
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.8)' }} onClick={close}>
-      <div style={{ width: '100%', maxWidth: '32rem', maxHeight: '80vh', display: 'flex', flexDirection: 'column', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem', position: 'relative' }} onClick={e => e.stopPropagation()}>
-        {/* Close Button */}
-        <button onClick={close} style={{ position: 'absolute', top: '1rem', right: '1rem', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', zIndex: 1 }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'; e.target.style.color = '#fff'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'; e.target.style.color = '#9ca3af'; }}>✕</button>
-        
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem', color: '#fff', paddingRight: '2rem' }}>{t.watchList}</h2>
-          {watchlistArray.length > 0 ? watchlistArray.map(media => (
-            <div key={media.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', backgroundColor: '#1f2937', borderRadius: '0.5rem', marginBottom: '0.5rem' }}>
-              <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : FALLBACK_POSTER} alt="" style={{ width: '3rem', height: '4.5rem', objectFit: 'cover', borderRadius: '0.25rem' }} />
-              <div style={{ flex: 1, overflow: 'hidden' }}>
-                <p style={{ fontWeight: '600', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{media.title}</p>
-                <p style={{ fontSize: '0.875rem', color: '#9ca3af' }}>{media.year}</p>
-              </div>
-              <button onClick={() => handleToggleWatchlist(media)} style={{ padding: '0.25rem 0.75rem', backgroundColor: '#4b5563', color: 'white', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 'bold' }}>{t.removeFromList}</button>
-            </div>
-          )) : <p style={{ textAlign: 'center', color: '#9ca3af', padding: '2rem' }}>Your watchlist is empty.</p>}
+    <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.75)' }} onClick={close}>
+      <div style={{ width: '100%', maxWidth: '540px', maxHeight: '88vh', display: 'flex', flexDirection: 'column', backgroundColor: '#111827', borderRadius: '1.25rem 1.25rem 0 0', overflow: 'hidden', animation: 'slideUp 0.90s cubic-bezier(0.32, 0.72, 0, 1)' }} onClick={e => e.stopPropagation()}>
+        <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+          <div>
+            <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>{t.watchList}</h2>
+            {watchlistArray.length > 0 && <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.2rem' }}>{watchlistArray.length} title{watchlistArray.length > 1 ? 's' : ''}</p>}
+          </div>
+          <button onClick={close} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#1f2937', border: '1px solid #374151', color: '#9ca3af', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
         </div>
-        <button onClick={close} style={{ marginTop: '1rem', width: '100%', padding: '0.5rem', backgroundColor: '#4b5563', color: 'white', borderRadius: '0.5rem', fontWeight: 'bold' }}>Close</button>
+        <div style={{ overflowY: 'auto', padding: '1rem 1.5rem', flex: 1 }}>
+          {watchlistArray.length > 0 ? watchlistArray.map(media => (
+            <div key={media.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', backgroundColor: '#1f2937', borderRadius: '0.75rem', marginBottom: '0.5rem' }}>
+              <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : FALLBACK_POSTER} alt="" style={{ width: '2.75rem', height: '4rem', objectFit: 'cover', borderRadius: '0.375rem', flexShrink: 0 }} />
+              <div style={{ flex: 1, overflow: 'hidden' }}>
+                <p style={{ fontWeight: 700, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontSize: '0.9rem' }}>{media.title}</p>
+                <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.15rem' }}>{media.year}</p>
+              </div>
+              <button onClick={() => handleToggleWatchlist(media)} style={{ flexShrink: 0, padding: '0.25rem 0.625rem', backgroundColor: 'rgba(75,85,99,0.4)', border: '1px solid #374151', color: '#9ca3af', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}>{t.removeFromList}</button>
+            </div>
+          )) : (
+            <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#4b5563' }}>
+              <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>📑</div>
+              <p style={{ fontWeight: 600, color: '#6b7280' }}>Your watchlist is empty</p>
+              <p style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>Save titles to watch later and they'll appear here</p>
+            </div>
+          )}
+        </div>
+        <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid #1f2937', flexShrink: 0 }}>
+          <button onClick={close} style={{ width: '100%', padding: '0.75rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: '#fff', borderRadius: '0.75rem', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem', border: 'none' }}>Done</button>
+        </div>
       </div>
-    
+    </div>
   );
 };
 
