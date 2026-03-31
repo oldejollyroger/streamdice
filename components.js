@@ -193,65 +193,33 @@ const WatchlistModal = ({ isOpen, close, watchlist, handleToggleWatchlist, handl
 
 // Actor Details Modal
 const ActorDetailsModal = ({ isOpen, close, actorDetails, isFetching, t }) => {
-  if (!isOpen) return null;
-  
   const popularMedia = React.useMemo(() => {
     if (!actorDetails) return [];
-    
-    // FIXED: Even stricter filtering to remove talk shows and low-quality content
-    const allMedia = (actorDetails?.movie_credits?.cast || [])
+    return (actorDetails?.movie_credits?.cast || [])
       .concat(actorDetails?.tv_credits?.cast || [])
-      .filter(m => {
-        if (!m.poster_path) return false;
-        
-        // Stricter vote requirements
-        if (m.vote_count < 150) return false;
-        if (m.vote_average < 6.5) return false;
-        
-        // Filter out talk shows, news, and daily shows by episode count
-        if (m.media_type === 'tv' || m.first_air_date) {
-          // Exclude shows with too many episodes (talk shows, daily shows)
-          if (m.episode_count && m.episode_count > 500) return false;
-          // Exclude ongoing shows that are too long-running (talk shows)
-          if (m.number_of_episodes && m.number_of_episodes > 500) return false;
-        }
-        
-        return true;
-      })
-      .map((m) => {
-        // Calculate relevance score with movie preference
-        const popularityScore = m.popularity * 0.3;
-        const ratingScore = m.vote_average * 15;
-        const voteCountScore = Math.min(m.vote_count / 5, 200);
-        
-        // Strong bonus for lead roles
-        const orderBonus = m.order < 3 ? 100 : m.order < 5 ? 50 : 0;
-        
-        // Prefer movies over TV shows
-        const mediaTypeBonus = (m.media_type === 'movie' || m.release_date) ? 50 : 0;
-        
-        // Bonus for recent releases (last 20 years)
-        const releaseYear = m.release_date ? new Date(m.release_date).getFullYear() : 
-                           m.first_air_date ? new Date(m.first_air_date).getFullYear() : 1900;
-        const recencyBonus = releaseYear >= 2005 ? 30 : releaseYear >= 1990 ? 10 : 0;
-        
+      .filter(m => m.poster_path && m.vote_count >= 150 && m.vote_average >= 6.5)
+      .map(m => {
+        const releaseYear = m.release_date ? new Date(m.release_date).getFullYear() :
+          m.first_air_date ? new Date(m.first_air_date).getFullYear() : 1900;
         return {
           ...m,
-          relevanceScore: popularityScore + ratingScore + voteCountScore + orderBonus + mediaTypeBonus + recencyBonus
+          relevanceScore: (m.popularity * 0.3) + (m.vote_average * 15) +
+            Math.min(m.vote_count / 5, 200) +
+            (m.order < 3 ? 100 : m.order < 5 ? 50 : 0) +
+            ((m.media_type === 'movie' || m.release_date) ? 50 : 0) +
+            (releaseYear >= 2005 ? 30 : releaseYear >= 1990 ? 10 : 0)
         };
       })
       .sort((a, b) => b.relevanceScore - a.relevanceScore)
       .slice(0, 12);
-    
-    return allMedia;
   }, [actorDetails]);
+
+  if (!isOpen) return null;
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.8)' }} onClick={close}>
       <div style={{ width: '100%', maxWidth: '42rem', maxHeight: '90vh', overflowY: 'auto', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem', position: 'relative' }} onClick={e => e.stopPropagation()}>
-        {/* Close Button */}
-<button onClick={(e) => { e.stopPropagation(); close(); }} onTouchEnd={(e) => { e.stopPropagation(); close(); }} style={{ position: 'absolute', top: '1rem', right: '1rem', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'; e.target.style.color = '#fff'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'; e.target.style.color = '#9ca3af'; }}>✕</button>
-        
+        <button onClick={close} style={{ position: 'absolute', top: '1rem', right: '1rem', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
         {isFetching || !actorDetails ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}><span className="loader"></span></div>
         ) : (
