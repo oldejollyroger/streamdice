@@ -968,9 +968,6 @@ const platform = platformMap.get(id);          return platform && (
   </div>
 )}
 
-    </div>
-  );
-} 
 {/* Region Selector Modal */}
       {(showRegionSelector || !userRegion) && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '1rem' }}>
@@ -994,8 +991,10 @@ const platform = platformMap.get(id);          return platform && (
           </div>
         </div>
       )}
-      );
+    </div>
+  );
 };
+
 // Wrap with Toast Provider
 const AppWithProviders = () => {
   return (
