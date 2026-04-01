@@ -331,8 +331,8 @@ const MediaCardContent = ({ media, details, isFetching, t, userRegion, handleAct
             {displayDetails.cast.slice(0, 10).map(actor => (
               <button key={actor.id} onClick={() => handleActorClick(actor.id)}
                 style={{ flexShrink: 0, width: '4.5rem', textAlign: 'center', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-                onMouseEnter={e => e.currentTarget.querySelector('img').style.outline = '2px solid var(--color-accent)'}
-                onMouseLeave={e => e.currentTarget.querySelector('img').style.outline = 'none'}
+            onMouseEnter={e => { e.currentTarget.querySelector('img').style.outline = '3px solid var(--color-accent)'; e.currentTarget.querySelector('img').style.outlineOffset = '3px'; e.currentTarget.querySelector('img').style.boxShadow = '0 0 12px 2px var(--color-accent)'; }}
+onMouseLeave={e => { e.currentTarget.querySelector('img').style.outline = 'none'; e.currentTarget.querySelector('img').style.outlineOffset = '0'; e.currentTarget.querySelector('img').style.boxShadow = 'none'; }}
               >
                 <img
   src={actor.profile_path ? `${TMDB_THUMBNAIL_BASE_URL}${actor.profile_path}` : FALLBACK_PROFILE}
