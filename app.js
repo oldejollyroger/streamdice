@@ -4,7 +4,7 @@
     { code: 'de-DE', name: 'Deutsch' }, { code: 'it-IT', name: 'Italiano' }, { code: 'pt-PT', name: 'Português' },
     { code: 'ru-RU', name: 'Русский' }, { code: 'ja-JP', name: '日本語' }, { code: 'ko-KR', name: '한국어' }, { code: 'zh-CN', name: '中文' }
   ];
-const initialFilters = { genre: [], excludeGenres: [], decade: 'todos', platform: [], minRating: 0, person: null, duration: 0, ageRating: 0 };
+const initialFilters = { genre: [], excludeGenres: [], decade: 'todos', platform: [], minRating: 0, person: null, duration: 0, ageRatingMin: 0, ageRatingMax: 0 };
   // Theme-aware background getter
 const getThemedBg = (mode, darkBg, lightBg) => mode === 'light' ? lightBg : darkBg;
 const getThemedText = (mode, darkText, lightText) => mode === 'light' ? lightText : darkText;
@@ -429,10 +429,12 @@ if (filters.person) {
     const runtimeParam = mediaType === 'movie' ? 'with_runtime' : 'with_episode_runtime';
     const selectedDuration = durationOptions[filters.duration];
     const ageRatingParams = {};
-    if (filters.ageRating > 0) {
-      ageRatingParams.certification_country = userRegion;
-      ageRatingParams.certification = ageRatingOptions.slice(1, filters.ageRating + 1).join('|');
-    }
+if (filters.ageRatingMin > 0 || filters.ageRatingMax > 0) {
+  const min = Math.min(filters.ageRatingMin, filters.ageRatingMax);
+  const max = Math.max(filters.ageRatingMin, filters.ageRatingMax);
+  ageRatingParams.certification_country = userRegion;
+  ageRatingParams.certification = ageRatingOptions.slice(min, max + 1).join('|');
+}
 
     const queryParams = {
       language: tmdbLanguage,
@@ -765,9 +767,22 @@ const handleActorClick = async (actorId) => {
           <input type="range" min="0" max="3" value={filters.duration} onChange={(e) => handleFilterChange('duration', e.target.value)} style={{ width: '100%' }} />
         </div>
         <div>
-          <label style={{ display: 'block', fontSize: '0.75rem', color: '#9ca3af', marginBottom: '0.25rem' }}>{t.ageRating}: {ageRatingOptions[filters.ageRating]}</label>
-          <input type="range" min="0" max={ageRatingOptions.length - 1} value={filters.ageRating} onChange={(e) => handleFilterChange('ageRating', e.target.value)} style={{ width: '100%' }} />
-        </div>
+  <label style={{ display: 'block', fontSize: '0.75rem', color: '#9ca3af', marginBottom: '0.25rem' }}>
+    {t.ageRating}: {filters.ageRatingMin === 0 && filters.ageRatingMax === 0 ? t.any : `${ageRatingOptions[filters.ageRatingMin]} → ${ageRatingOptions[filters.ageRatingMax]}`}
+  </label>
+  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+    <input type="range" min="0" max={ageRatingOptions.length - 1} value={filters.ageRatingMin} onChange={(e) => {
+      const val = parseInt(e.target.value);
+      handleFilterChange('ageRatingMin', val);
+      if (val > filters.ageRatingMax) handleFilterChange('ageRatingMax', val);
+    }} style={{ width: '100%' }} />
+    <input type="range" min="0" max={ageRatingOptions.length - 1} value={filters.ageRatingMax} onChange={(e) => {
+      const val = parseInt(e.target.value);
+      handleFilterChange('ageRatingMax', val);
+      if (val < filters.ageRatingMin) handleFilterChange('ageRatingMin', val);
+    }} style={{ width: '100%' }} />
+  </div>
+</div>
         <button onClick={() => setIsFilterModalOpen(true)} style={{ padding: '0.5rem', backgroundColor: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0.5rem', color: '#e5e7eb', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '1.25rem', height: '1.25rem' }}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg>
           {t.advancedFilters}
