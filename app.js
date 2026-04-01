@@ -782,30 +782,29 @@ const handleActorClick = async (actorId) => {
       </div>
 
       {/* Active Filter Pills */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
-        {filters.person && (
-  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
-    {filters.person.title} · {filters.person.role}
-    <button onClick={() => { setFilters(f => ({ ...f, person: null })); resetAllState(); }} style={{ background: 'rgba(0,0,0,0.3)', border: 'none', borderRadius: '50%', padding: '2px', cursor: 'pointer', color: 'white' }}>✕</button>
-  </span>
-
-)}
-        {filters.platform.map(id => {
-const platform = platformMap.get(id);          return platform && (
-            <span key={id} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
-              {platform.name}
-              <button onClick={() => handleQuickFilterToggle('platform', id)} style={{ background: 'rgba(0,0,0,0.3)', border: 'none', borderRadius: '50%', padding: '2px', cursor: 'pointer', color: 'white' }}>✕</button>
-            </span>
-          );
-        })}
-        {filters.genre.map(id => genresMap[id] && (
-          <span key={id} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
-            {genresMap[id]}
-            <button onClick={() => handleQuickFilterToggle('genre', id)} style={{ background: 'rgba(0,0,0,0.3)', border: 'none', borderRadius: '50%', padding: '2px', cursor: 'pointer', color: 'white' }}>✕</button>
-          </span>
-        ))}
-      </div>
-
+<div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
+  {filters.person && (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
+      {filters.person.title} · {filters.person.role}
+      <button onClick={() => { setFilters(f => ({ ...f, person: null })); resetAllState(); }} style={{ background: 'rgba(0,0,0,0.3)', border: 'none', borderRadius: '50%', padding: '2px', cursor: 'pointer', color: 'white' }}>✕</button>
+    </span>
+  )}
+  {filters.platform.map(id => {
+    const platform = allPlatformOptions.find(p => p.id === id);
+    return platform && (
+      <span key={id} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
+        {platform.name}
+        <button onClick={() => handleQuickFilterToggle('platform', id)} style={{ background: 'rgba(0,0,0,0.3)', border: 'none', borderRadius: '50%', padding: '2px', cursor: 'pointer', color: 'white' }}>✕</button>
+      </span>
+    );
+  })}
+  {filters.genre.map(id => genresMap[id] && (
+    <span key={id} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
+      {genresMap[id]}
+      <button onClick={() => handleQuickFilterToggle('genre', id)} style={{ background: 'rgba(0,0,0,0.3)', border: 'none', borderRadius: '50%', padding: '2px', cursor: 'pointer', color: 'white' }}>✕</button>
+    </span>
+  ))}
+</div>
       {/* Main Content */}
       <main style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         {isDiscovering ? (
@@ -858,27 +857,45 @@ const platform = platformMap.get(id);          return platform && (
 
      {/* Similar Movies */}
 <div style={{ borderTop: '1px solid #374151', paddingTop: '1rem' }}>
-  <h3 style={{ fontWeight: '600', color: '#fff', marginBottom: '0.75rem' }}>{t.cardSimilarMovies}</h3>
+  <p style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.75rem' }}>{t.cardSimilarMovies}</p>
   {isFetchingDetails ? (
-    <div style={{ display: 'flex', justifyContent: 'center' }}><span className="small-loader"></span></div>
+    <div style={{ display: 'flex', justifyContent: 'center', padding: '1rem' }}><span className="small-loader"></span></div>
   ) : mediaDetails.similar?.length > 0 ? (
-    <div 
-      onTouchStart={(e) => e.stopPropagation()} 
-      onTouchMove={(e) => e.stopPropagation()} 
-      onTouchEnd={(e) => e.stopPropagation()}
-      style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '0.5rem' }}
+    <div
+      onTouchStart={e => e.stopPropagation()}
+      onTouchMove={e => e.stopPropagation()}
+      onTouchEnd={e => e.stopPropagation()}
+      style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '0.75rem' }}
     >
       {mediaDetails.similar.map(media => (
-        <button key={media.id} onClick={() => handleSimilarMediaClick(media)} style={{ flexShrink: 0, width: '8rem', textAlign: 'center', background: 'none', border: 'none', cursor: 'pointer' }}>
-          <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : 'https://placehold.co/128x192/1f2937/9ca3af?text=?'} alt="" style={{ width: '100%', borderRadius: '0.5rem' }} />
-          <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{media.title}</p>
+        <button key={media.id} onClick={() => handleSimilarMediaClick(media)}
+          style={{ flexShrink: 0, width: '7rem', textAlign: 'center', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+          onMouseEnter={e => {
+            e.currentTarget.querySelector('.sim-overlay').style.opacity = '1';
+            e.currentTarget.querySelector('.sim-img').style.transform = 'scale(1.05)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.querySelector('.sim-overlay').style.opacity = '0';
+            e.currentTarget.querySelector('.sim-img').style.transform = 'scale(1)';
+          }}
+        >
+          <div style={{ position: 'relative', borderRadius: '0.5rem', overflow: 'hidden' }}>
+            <img className="sim-img" src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : 'https://placehold.co/128x192/1f2937/9ca3af?text=?'} alt="" style={{ width: '100%', display: 'block', transition: 'transform 0.2s ease' }} />
+            {media.imdbRating && media.imdbRating !== 'N/A' && (
+              <div style={{ position: 'absolute', top: '0.375rem', right: '0.375rem', backgroundColor: 'rgba(0,0,0,0.75)', borderRadius: '9999px', padding: '0.1rem 0.375rem', fontSize: '0.65rem', fontWeight: 700, color: '#fbbf24' }}>⭐ {media.imdbRating}</div>
+            )}
+            <div className="sim-overlay" style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.75)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0.5rem', opacity: 0, transition: 'opacity 0.2s ease' }}>
+              <p style={{ fontSize: '0.75rem', fontWeight: 700, color: '#fff', textAlign: 'center', lineHeight: 1.3 }}>{media.title}</p>
+              {media.year && <p style={{ fontSize: '0.65rem', color: '#9ca3af', marginTop: '0.25rem' }}>{media.year}</p>}
+            </div>
+          </div>
+          <p style={{ fontSize: '0.7rem', color: '#9ca3af', marginTop: '0.375rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{media.title}</p>
         </button>
       ))}
     </div>
-  ) : <p style={{ color: '#9ca3af' }}>{t.noMoviesFound}</p>}
+  ) : <p style={{ color: '#9ca3af', fontSize: '0.875rem' }}>{t.noMoviesFound}</p>}
 </div>
-
-      {/* Navigation */}
+{/* Navigation */}
       <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', borderTop: '1px solid #374151', paddingTop: '1rem' }}>
         <button onClick={handleGoBack} disabled={mediaHistory.length === 0} style={{ padding: '0.5rem 1.5rem', backgroundColor: 'rgba(75,85,99,0.8)', color: 'white', fontWeight: 'bold', borderRadius: '9999px', border: 'none', cursor: mediaHistory.length === 0 ? 'not-allowed' : 'pointer', opacity: mediaHistory.length === 0 ? 0.5 : 1 }}>← Back</button>
         <button onClick={handleSurpriseMe} disabled={isDiscovering} style={{ padding: '0.5rem 1.5rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', fontWeight: 'bold', borderRadius: '9999px', border: 'none', cursor: 'pointer' }}>Next →</button>
