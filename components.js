@@ -318,8 +318,7 @@ const RegionPicker = ({ regions, onSelect, t }) => {
             onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1f2937'}
             onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
           >
-            <span style={{ fontSize: '1.25rem', lineHeight: 1 }}>{getFlagEmoji(region.iso_3166_1)}</span>
-            <span>{region.english_name}</span>
+<span style={{ fontSize: '1.5rem', lineHeight: '1', fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif', display: 'inline-block', width: '1.75rem', textAlign: 'center' }}>{getFlagEmoji(region.iso_3166_1)}</span>            <span>{region.english_name}</span>
           </button>
         ))}
         {filtered.length === 0 && (
