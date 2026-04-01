@@ -435,7 +435,7 @@ const ShareModal = ({ isOpen, close, media, details, t, addToast }) => {
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.75)' }} onClick={close}>
-      <div style={{ width: '100%', maxWidth: '540px', backgroundColor: '#111827', borderRadius: '1.25rem 1.25rem 0 0', overflow: 'hidden', animation: 'slideUp 0.90s cubic-bezier(0.32, 0.72, 0, 1)' }} onClick={e => e.stopPropagation()}>
+      <div style={{ width: '100%', maxWidth: '400px', backgroundColor: '#111827', borderRadius: '1.25rem', overflow: 'hidden', animation: 'modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)' }} onClick={e => e.stopPropagation()}>
 
         {/* Header with movie info */}
         <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -475,7 +475,7 @@ const FilterModal = ({ isOpen, close, handleClearFilters, filters, handleGenreCh
   const pillInactive = { ...pillBase, backgroundColor: 'transparent', borderColor: '#374151', color: '#9ca3af' };
   const sectionTitleStyle = { fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.75rem' };
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.75)' }} onClick={close}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.75)', padding: '1rem' }} onClick={close}>
 <div style={{ width: '100%', maxWidth: '540px', maxHeight: '88vh', display: 'flex', flexDirection: 'column', backgroundColor: '#111827', borderRadius: '1.25rem 1.25rem 0 0', overflow: 'hidden', animation: 'slideUp 0.90s cubic-bezier(0.32, 0.72, 0, 1)' }} onClick={e => e.stopPropagation()}>        <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <div>
             <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>{t.advancedFilters}</h2>

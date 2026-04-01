@@ -839,7 +839,13 @@ const platform = platformMap.get(id);          return platform && (
   <span style={{ display: 'inline-block', animation: watchList[selectedMedia.id] ? 'watchedPop 0.4s cubic-bezier(0.34,1.56,0.64,1)' : 'none', fontSize: '1.1rem' }}>{watchList[selectedMedia.id] ? '🔖' : '📋'}</span>
   {t.saveForLater}
 </button>
-            <button onClick={handleShare} style={{ padding: '0.75rem 1rem', backgroundColor: 'rgba(75,85,99,0.8)', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer' }}>↗ {t.shareButton}</button>
+            <button onClick={handleShare} style={{ padding: '0.75rem 1rem', backgroundColor: 'rgba(75,85,99,0.8)', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" style={{ width: '1rem', height: '1rem' }}>
+    <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+  </svg>
+  {t.shareButton}
+</button>
           </div>
 
 
