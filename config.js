@@ -29,7 +29,7 @@ const getFlagEmoji = (countryCode) => {
 };
 
 const COUNTRY_LANGUAGES = {
-ES: [{ code: 'es-ES', name: 'Español' }, { code: 'ca-ES', name: 'Català' }],
+ES: [{ code: 'es-ES', name: 'Español' }],
   US: [{ code: 'en-US', name: 'English' }],
   GB: [{ code: 'en-GB', name: 'English' }],
   AU: [{ code: 'en-AU', name: 'English' }],

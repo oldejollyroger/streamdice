@@ -977,12 +977,7 @@ addToast(`Language set to ${getFlagEmoji(lang.code.split('-')[1])} ${lang.name}`
             <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1.75rem' }}>{t.selectRegionSubtitle}</p>
             {availableRegions.length > 0 ? (
               <>
-                <select onChange={(e) => { if (e.target.value) handleRegionChange(e.target.value); }} defaultValue="" style={{ width: '100%', padding: '0.75rem 1rem', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '0.75rem', color: '#e5e7eb', fontSize: '1rem', cursor: 'pointer', marginBottom: '1rem' }}>
-                  <option value="" disabled>— Select your country —</option>
-                  {availableRegions.map(region => (
-                    <option key={region.iso_3166_1} value={region.iso_3166_1}>{getFlagEmoji(region.iso_3166_1)} {region.english_name}</option>
-                  ))}
-                </select>
+                <RegionPicker regions={availableRegions} onSelect={handleRegionChange} t={t} />
                 <p style={{ fontSize: '0.75rem', color: '#4b5563' }}>{t.selectRegionHint}</p>
               </>
             ) : (

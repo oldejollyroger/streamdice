@@ -294,6 +294,42 @@ const MediaCardContent = ({ media, details, isFetching, t, userRegion, handleAct
   );
 };
 
+// Region Picker
+const RegionPicker = ({ regions, onSelect, t }) => {
+  const [search, setSearch] = React.useState('');
+  const filtered = regions.filter(r =>
+    r.english_name.toLowerCase().includes(search.toLowerCase())
+  );
+  return (
+    <div style={{ width: '100%' }}>
+      <div style={{ position: 'relative', marginBottom: '0.75rem' }}>
+        <input
+          type="text"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="Search country..."
+          style={{ width: '100%', padding: '0.625rem 0.875rem 0.625rem 2.25rem', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '0.625rem', color: '#e5e7eb', fontSize: '0.875rem', boxSizing: 'border-box' }}
+        />
+        <span style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#6b7280', fontSize: '0.875rem' }}>🔍</span>
+      </div>
+      <div style={{ maxHeight: '240px', overflowY: 'auto', borderRadius: '0.625rem', border: '1px solid #374151' }}>
+        {filtered.map(region => (
+          <button key={region.iso_3166_1} onClick={() => onSelect(region.iso_3166_1)} style={{ width: '100%', padding: '0.625rem 0.875rem', backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid #1f2937', color: '#e5e7eb', fontSize: '0.9rem', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.625rem' }}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1f2937'}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+          >
+            <span style={{ fontSize: '1.25rem', lineHeight: 1 }}>{getFlagEmoji(region.iso_3166_1)}</span>
+            <span>{region.english_name}</span>
+          </button>
+        ))}
+        {filtered.length === 0 && (
+          <p style={{ padding: '1rem', color: '#6b7280', textAlign: 'center', fontSize: '0.875rem' }}>No results found</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // Filter Modal
 const FilterModal = ({ isOpen, close, handleClearFilters, filters, handleGenreChangeInModal, genresMap, allPlatformOptions, platformSearchQuery, setPlatformSearchQuery, handlePlatformChange, t }) => {
   if (!isOpen) return null;
