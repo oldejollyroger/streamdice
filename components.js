@@ -51,64 +51,83 @@ const InstallPwaButton = ({ t, handleInstallClick }) => (
 // Settings Dropdown
 const SettingsDropdown = ({ mode, setMode, accent, setAccent, language, setLanguage, tmdbLanguage, setTmdbLanguage, tmdbLanguages, t, openWatchedModal, openWatchlistModal, openRegionSelector }) => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const dropdownRef = React.useRef(null);
 
-  React.useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) setIsOpen(false);
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const sectionLabel = { fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.625rem' };
+  const menuRow = { width: '100%', padding: '0.75rem 0.875rem', display: 'flex', alignItems: 'center', gap: '0.75rem', backgroundColor: '#1f2937', border: 'none', borderRadius: '0.625rem', color: '#e5e7eb', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', marginBottom: '0.375rem', textAlign: 'left' };
 
   return (
-    <div ref={dropdownRef} style={{ position: 'relative' }}>
-      <button onClick={() => setIsOpen(!isOpen)} style={{ padding: '0.5rem', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.1)' }}>
+    <>
+      <button onClick={() => setIsOpen(true)} style={{ padding: '0.5rem', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer' }}>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '24px', height: '24px', color: '#e5e7eb' }}><path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
       </button>
+
       {isOpen && (
-        <div style={{ position: 'absolute', right: 0, marginTop: '0.5rem', width: '16rem', padding: '1rem', borderRadius: '0.75rem', backgroundColor: '#1f2937', border: '1px solid #374151', zIndex: 50 }}>
-          <h3 style={{ fontWeight: 'bold', fontSize: '1.1rem', color: '#fff', marginBottom: '1rem' }}>{t.settings}</h3>
-          
-          {/* Accent Colors */}
-          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-            {ACCENT_COLORS.map(c => (
-              <button key={c.name} onClick={() => setAccent(c)} style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: c.color, border: accent.name === c.name ? '2px solid white' : 'none', transform: accent.name === c.name ? 'scale(1.2)' : 'scale(1)' }} title={c.name}></button>
-            ))}
-          </div>
-          
-          {/* Theme Toggle */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '1rem' }}>
-            <button onClick={() => setMode('light')} style={{ padding: '0.5rem', borderRadius: '9999px', backgroundColor: mode === 'light' ? accent.color : 'transparent', color: mode === 'light' ? 'white' : '#9ca3af' }}>Light</button>
-            <button onClick={() => setMode('dark')} style={{ padding: '0.5rem', borderRadius: '9999px', backgroundColor: mode === 'dark' ? accent.color : 'transparent', color: mode === 'dark' ? 'white' : '#9ca3af' }}>Dark</button>
-          </div>
-          
-          {/* Language */}
-          <div style={{ marginBottom: '1rem' }}>
-<p style={{ fontSize: '0.75rem', color: '#9ca3af', marginBottom: '0.25rem' }}>{t.siteLanguage}</p>            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-              <button onClick={() => { setLanguage('en'); setTmdbLanguage('en-US'); }} style={{ padding: '0.375rem', borderRadius: '9999px', backgroundColor: language === 'en' ? accent.color : 'rgba(0,0,0,0.2)', color: language === 'en' ? 'white' : '#9ca3af' }}>English</button>
-<button onClick={() => { setLanguage('es'); setTmdbLanguage('es-ES'); }} style={{ padding: '0.375rem', borderRadius: '9999px', backgroundColor: language === 'es' ? accent.color : 'rgba(0,0,0,0.2)', color: language === 'es' ? 'white' : '#9ca3af' }}>Español</button>
-           
-           </div>
-          </div>
-          
-          {/* Content Language */}
-          <div style={{ marginBottom: '1rem' }}>
-            <label style={{ fontSize: '0.75rem', color: '#9ca3af' }}>{t.contentLanguage}</label>
-            <select value={tmdbLanguage} onChange={(e) => setTmdbLanguage(e.target.value)} style={{ width: '100%', padding: '0.5rem', backgroundColor: '#374151', border: '1px solid #4b5563', borderRadius: '0.5rem', color: '#fff', marginTop: '0.25rem' }}>
-              {tmdbLanguages.map(l => <option key={l.code} value={l.code}>{l.name}</option>)}
-            </select>
-          </div>
-          
-          {/* Menu Items */}
-          <div style={{ borderTop: '1px solid #374151', paddingTop: '0.5rem' }}>
-            <button onClick={() => { setIsOpen(false); openWatchlistModal(); }} style={{ width: '100%', padding: '0.5rem', textAlign: 'left', color: '#e5e7eb', backgroundColor: 'transparent', borderRadius: '0.5rem', marginBottom: '0.25rem' }}>📑 {t.watchList}</button>
-            <button onClick={() => { setIsOpen(false); openWatchedModal(); }} style={{ width: '100%', padding: '0.5rem', textAlign: 'left', color: '#e5e7eb', backgroundColor: 'transparent', borderRadius: '0.5rem', marginBottom: '0.25rem' }}>✓ {t.watchedList}</button>
-            <button onClick={() => { setIsOpen(false); openRegionSelector(); }} style={{ width: '100%', padding: '0.5rem', textAlign: 'left', color: '#e5e7eb', backgroundColor: 'transparent', borderRadius: '0.5rem' }}>🌍 {t.changeCountry}</button>
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.75)' }} onClick={() => setIsOpen(false)}>
+          <div style={{ width: '100%', maxWidth: '540px', backgroundColor: '#111827', borderRadius: '1.25rem 1.25rem 0 0', overflow: 'hidden', animation: 'slideUp 0.90s cubic-bezier(0.32, 0.72, 0, 1)', maxHeight: '90vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+
+            {/* Header */}
+            <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>{t.settings}</h2>
+              <button onClick={() => setIsOpen(false)} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#1f2937', border: '1px solid #374151', color: '#9ca3af', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+            </div>
+
+            <div style={{ padding: '1.25rem 1.5rem 2rem' }}>
+
+              {/* Accent color */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <p style={sectionLabel}>Accent Color</p>
+                <div style={{ display: 'flex', gap: '0.625rem', flexWrap: 'wrap' }}>
+                  {ACCENT_COLORS.map(c => (
+                    <button key={c.name} onClick={() => setAccent(c)} title={c.name} style={{ width: '2rem', height: '2rem', borderRadius: '50%', backgroundColor: c.color, border: accent.name === c.name ? '2px solid white' : '2px solid transparent', transform: accent.name === c.name ? 'scale(1.15)' : 'scale(1)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.15s' }}>
+                      {accent.name === c.name && <span style={{ color: 'white', fontSize: '0.75rem', fontWeight: 900 }}>✓</span>}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Theme */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <p style={sectionLabel}>Theme</p>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                  <button onClick={() => setMode('light')} style={{ padding: '0.625rem', borderRadius: '0.625rem', backgroundColor: mode === 'light' ? 'var(--color-accent)' : '#1f2937', border: `1.5px solid ${mode === 'light' ? 'transparent' : '#374151'}`, color: mode === 'light' ? 'white' : '#9ca3af', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>☀️ Light</button>
+                  <button onClick={() => setMode('dark')} style={{ padding: '0.625rem', borderRadius: '0.625rem', backgroundColor: mode === 'dark' ? 'var(--color-accent)' : '#1f2937', border: `1.5px solid ${mode === 'dark' ? 'transparent' : '#374151'}`, color: mode === 'dark' ? 'white' : '#9ca3af', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>🌙 Dark</button>
+                </div>
+              </div>
+
+              {/* Site Language */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <p style={sectionLabel}>{t.siteLanguage}</p>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                  <button onClick={() => { setLanguage('en'); setTmdbLanguage('en-US'); }} style={{ padding: '0.625rem', borderRadius: '0.625rem', backgroundColor: language === 'en' ? 'var(--color-accent)' : '#1f2937', border: `1.5px solid ${language === 'en' ? 'transparent' : '#374151'}`, color: language === 'en' ? 'white' : '#9ca3af', fontWeight: 700, cursor: 'pointer' }}>🇬🇧 English</button>
+                  <button onClick={() => { setLanguage('es'); setTmdbLanguage('es-ES'); }} style={{ padding: '0.625rem', borderRadius: '0.625rem', backgroundColor: language === 'es' ? 'var(--color-accent)' : '#1f2937', border: `1.5px solid ${language === 'es' ? 'transparent' : '#374151'}`, color: language === 'es' ? 'white' : '#9ca3af', fontWeight: 700, cursor: 'pointer' }}>🇪🇸 Español</button>
+                </div>
+              </div>
+
+              {/* Content Language */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <p style={sectionLabel}>{t.contentLanguage}</p>
+                <select value={tmdbLanguage} onChange={e => setTmdbLanguage(e.target.value)} style={{ width: '100%', padding: '0.625rem 0.875rem', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '0.625rem', color: '#e5e7eb', fontSize: '0.875rem' }}>
+                  {tmdbLanguages.map(l => <option key={l.code} value={l.code}>{l.name}</option>)}
+                </select>
+              </div>
+
+              {/* Menu rows */}
+              <div style={{ borderTop: '1px solid #1f2937', paddingTop: '1rem' }}>
+                <button onClick={() => { setIsOpen(false); openWatchlistModal(); }} style={menuRow}>
+                  <span style={{ fontSize: '1.1rem' }}>📑</span><span style={{ flex: 1 }}>{t.watchList}</span><span style={{ color: '#6b7280' }}>›</span>
+                </button>
+                <button onClick={() => { setIsOpen(false); openWatchedModal(); }} style={menuRow}>
+                  <span style={{ fontSize: '1.1rem' }}>✅</span><span style={{ flex: 1 }}>{t.watchedList}</span><span style={{ color: '#6b7280' }}>›</span>
+                </button>
+                <button onClick={() => { setIsOpen(false); openRegionSelector(); }} style={{ ...menuRow, marginBottom: 0 }}>
+                  <span style={{ fontSize: '1.1rem' }}>🌍</span><span style={{ flex: 1 }}>{t.changeCountry}</span><span style={{ color: '#6b7280' }}>›</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
