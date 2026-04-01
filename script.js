@@ -90,6 +90,9 @@ const translations = {
     titlesPlural: "titles",
     activeFilter: "active filter",
     activeFilters: "active filters",
+    readMore: "Read more",
+readLess: "Show less",
+cardDirectorLabel: "Directed by",
   },
   es: {
     subtitle: "¿Qué deberíamos ver esta noche?",
@@ -180,6 +183,9 @@ const translations = {
     titlesPlural: "títulos",
     activeFilter: "filtro activo",
     activeFilters: "filtros activos",
+    readMore: "Leer más",
+readLess: "Mostrar menos",
+cardDirectorLabel: "Dirigido por",
   }
 };
 

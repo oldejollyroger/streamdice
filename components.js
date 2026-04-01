@@ -248,43 +248,101 @@ const ActorDetailsModal = ({ isOpen, close, actorDetails, isFetching, t }) => {
 };
 
 
+// Synopsis Block
+const SynopsisBlock = ({ text, t }) => {
+  const [expanded, setExpanded] = React.useState(false);
+  const isLong = text && text.length > 200;
+  return (
+    <div style={{ marginBottom: '1rem' }}>
+      <p style={{ color: '#9ca3af', lineHeight: 1.6, fontSize: '0.9rem' }}>
+        {isLong && !expanded ? text.substring(0, 200) + '…' : text}
+      </p>
+      {isLong && (
+        <button onClick={() => setExpanded(!expanded)} style={{ marginTop: '0.375rem', background: 'none', border: 'none', color: 'var(--color-accent)', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', padding: 0 }}>
+          {expanded ? t.readLess : t.readMore}
+        </button>
+      )}
+    </div>
+  );
+};
 // Media Card Content
 const MediaCardContent = ({ media, details, isFetching, t, userRegion, handleActorClick }) => {
   const displayDetails = isFetching ? {} : details;
-  
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.875rem' }}>
-      <p style={{ color: '#e5e7eb' }}><strong style={{ color: '#9ca3af' }}>{t.cardYear}:</strong> {media.year}</p>
-      {displayDetails.duration && <p style={{ color: '#e5e7eb' }}><strong style={{ color: '#9ca3af' }}>{t.cardDuration}:</strong> {formatDuration(displayDetails.duration)}</p>}
-      {displayDetails.seasons && <p style={{ color: '#e5e7eb' }}><strong style={{ color: '#9ca3af' }}>{t.cardSeasons}:</strong> {displayDetails.seasons}</p>}
-      <p style={{ color: '#e5e7eb' }}><strong style={{ color: '#9ca3af' }}>{t.cardRating}:</strong> {media.imdbRating}/10 ⭐</p>
-{media.genres?.length > 0 && <p style={{ color: '#e5e7eb' }}><strong style={{ color: '#9ca3af' }}>{t.cardGenres}:</strong> {media.genres.join(', ')}</p>}      
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.875rem' }}>
+
+      {/* Metadata pills row */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+        {media.year && (
+          <span style={{ padding: '0.25rem 0.625rem', backgroundColor: 'rgba(255,255,255,0.07)', borderRadius: '9999px', color: '#e5e7eb', fontSize: '0.8rem' }}>📅 {media.year}</span>
+        )}
+        {media.imdbRating && media.imdbRating !== 'N/A' && (
+          <span style={{ padding: '0.25rem 0.625rem', backgroundColor: 'rgba(251,191,36,0.15)', borderRadius: '9999px', color: '#fbbf24', fontSize: '0.8rem' }}>⭐ {media.imdbRating}/10</span>
+        )}
+        {displayDetails.certification && (
+          <span style={{ padding: '0.25rem 0.625rem', backgroundColor: 'rgba(255,255,255,0.07)', borderRadius: '9999px', color: '#9ca3af', fontSize: '0.8rem', fontWeight: 700 }}>{displayDetails.certification}</span>
+        )}
+        {displayDetails.duration && (
+          <span style={{ padding: '0.25rem 0.625rem', backgroundColor: 'rgba(255,255,255,0.07)', borderRadius: '9999px', color: '#e5e7eb', fontSize: '0.8rem' }}>⏱ {formatDuration(displayDetails.duration)}</span>
+        )}
+        {displayDetails.seasons && (
+          <span style={{ padding: '0.25rem 0.625rem', backgroundColor: 'rgba(255,255,255,0.07)', borderRadius: '9999px', color: '#e5e7eb', fontSize: '0.8rem' }}>📺 {displayDetails.seasons} {t.cardSeasons}</span>
+        )}
+        {media.genres?.length > 0 && media.genres.map(genre => (
+          <span key={genre} style={{ padding: '0.25rem 0.625rem', backgroundColor: 'rgba(168,85,247,0.15)', borderRadius: '9999px', color: '#d8b4fe', fontSize: '0.8rem' }}>{genre}</span>
+        ))}
+      </div>
+
+      {/* Director */}
+      {displayDetails.director && (
+        <p style={{ color: '#9ca3af', fontSize: '0.85rem' }}>
+          🎬 <span style={{ color: '#e5e7eb', fontWeight: 600 }}>{t.cardDirectorLabel}:</span> {displayDetails.director.name}
+        </p>
+      )}
+
+      {/* Streaming providers */}
       {displayDetails.providers?.length > 0 && (
         <div>
-          <p style={{ fontWeight: '600', color: '#fff', marginBottom: '0.5rem' }}>{t.cardAvailableOn} {userRegion}:</p>
+          <p style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.5rem' }}>{t.cardAvailableOn} {userRegion}</p>
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             {displayDetails.providers.map(p => (
-              <a key={p.provider_id} href={p.link} target="_blank" rel="noopener noreferrer">
-                <img src={`${TMDB_IMAGE_BASE_URL}${p.logo_path}`} alt={p.provider_name} style={{ width: '40px', height: '40px', borderRadius: '0.5rem' }} />
+              <a key={p.provider_id} href={p.link} target="_blank" rel="noopener noreferrer" title={p.provider_name}>
+                <img src={`${TMDB_IMAGE_BASE_URL}${p.logo_path}`} alt={p.provider_name} style={{ width: '36px', height: '36px', borderRadius: '0.5rem', transition: 'transform 0.15s' }}
+                  onMouseEnter={e => e.target.style.transform = 'scale(1.1)'}
+                  onMouseLeave={e => e.target.style.transform = 'scale(1)'}
+                />
               </a>
             ))}
           </div>
         </div>
       )}
-      
+
+      {/* Cast */}
       {displayDetails.cast?.length > 0 && (
-  <div>
-    <p style={{ fontWeight: '600', color: '#fff', marginBottom: '0.5rem' }}>{t.cardCast}:</p>
-    <div 
-      onTouchStart={(e) => e.stopPropagation()} 
-      onTouchMove={(e) => e.stopPropagation()} 
-      onTouchEnd={(e) => e.stopPropagation()}
-      style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '0.5rem' }}
-    >
+        <div>
+          <p style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.75rem' }}>{t.cardCast}</p>
+          <div
+            onTouchStart={e => e.stopPropagation()}
+            onTouchMove={e => e.stopPropagation()}
+            onTouchEnd={e => e.stopPropagation()}
+            style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '0.5rem' }}
+          >
             {displayDetails.cast.slice(0, 10).map(actor => (
-              <button key={actor.id} onClick={() => handleActorClick(actor.id)} style={{ flexShrink: 0, width: '5rem', textAlign: 'center', background: 'none', border: 'none', cursor: 'pointer' }}>
-                <img src={actor.profile_path ? `${TMDB_THUMBNAIL_BASE_URL}${actor.profile_path}` : FALLBACK_PROFILE} alt="" style={{ width: '100%', aspectRatio: '2/3', objectFit: 'cover', borderRadius: '0.25rem' }} />
-                <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem' }}>{actor.name}</p>
+              <button key={actor.id} onClick={() => handleActorClick(actor.id)}
+                style={{ flexShrink: 0, width: '4.5rem', textAlign: 'center', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                onMouseEnter={e => e.currentTarget.querySelector('img').style.outline = '2px solid var(--color-accent)'}
+                onMouseLeave={e => e.currentTarget.querySelector('img').style.outline = 'none'}
+              >
+                <img
+                  src={actor.profile_path ? `${TMDB_THUMBNAIL_BASE_URL}${actor.profile_path}` : FALLBACK_PROFILE}
+                  alt={actor.name}
+                  style={{ width: '4rem', height: '4rem', objectFit: 'cover', objectPosition: 'top', borderRadius: '50%', display: 'block', margin: '0 auto', transition: 'outline 0.15s' }}
+                />
+                <p style={{ fontSize: '0.7rem', color: '#9ca3af', marginTop: '0.375rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{actor.name}</p>
+                {actor.character && (
+                  <p style={{ fontSize: '0.65rem', color: '#6b7280', marginTop: '0.1rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{actor.character}</p>
+                )}
               </button>
             ))}
           </div>

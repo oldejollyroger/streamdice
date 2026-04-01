@@ -837,7 +837,10 @@ const platform = platformMap.get(id);          return platform && (
         {/* Details */}
         <div className="movie-details-animated" style={{ flex: 1, minWidth: '280px' }}>
           <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#fff', marginBottom: '0.5rem' }}>{selectedMedia.title}</h2>
-<p style={{ color: '#9ca3af', marginBottom: '1rem', display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{mediaDetails.overview || selectedMedia.synopsis}</p>
+{mediaDetails.original_title && mediaDetails.original_title !== selectedMedia.title && (
+  <p style={{ fontSize: '0.8rem', color: '#6b7280', marginBottom: '0.5rem', fontStyle: 'italic' }}>{mediaDetails.original_title}</p>
+)}
+<SynopsisBlock text={mediaDetails.overview || selectedMedia.synopsis} t={t} />
           {/* Action Buttons */}
           <div className="movie-actions-animated" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1rem' }}>
             <button onClick={() => handleMarkAsWatched(selectedMedia)} style={{ flex: 1, minWidth: '140px', padding: '0.75rem', backgroundColor: isCurrentMediaWatched ? 'rgba(34,197,94,0.8)' : 'rgba(239,68,68,0.8)', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
@@ -848,6 +851,7 @@ const platform = platformMap.get(id);          return platform && (
             </button>
             <button onClick={handleShare} style={{ padding: '0.75rem 1rem', backgroundColor: 'rgba(75,85,99,0.8)', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer' }}>↗ {t.shareButton}</button>
           </div>
+
 
           {/* Media Card Content */}
           <div style={{ borderTop: '1px solid #374151', paddingTop: '1rem' }}>
