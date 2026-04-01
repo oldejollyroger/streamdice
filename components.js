@@ -85,8 +85,7 @@ const SettingsDropdown = ({ mode, setMode, accent, setAccent, language, setLangu
           
           {/* Language */}
           <div style={{ marginBottom: '1rem' }}>
-            <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginBottom: '0.25rem' }}>Site Language</p>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+<p style={{ fontSize: '0.75rem', color: '#9ca3af', marginBottom: '0.25rem' }}>{t.siteLanguage}</p>            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
               <button onClick={() => { setLanguage('en'); setTmdbLanguage('en-US'); }} style={{ padding: '0.375rem', borderRadius: '9999px', backgroundColor: language === 'en' ? accent.color : 'rgba(0,0,0,0.2)', color: language === 'en' ? 'white' : '#9ca3af' }}>English</button>
 <button onClick={() => { setLanguage('es'); setTmdbLanguage('es-ES'); }} style={{ padding: '0.375rem', borderRadius: '9999px', backgroundColor: language === 'es' ? accent.color : 'rgba(0,0,0,0.2)', color: language === 'es' ? 'white' : '#9ca3af' }}>Español</button>
            
@@ -123,8 +122,7 @@ const WatchedMediaModal = ({ isOpen, close, watchedMedia, handleUnwatchMedia, me
         <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <div>
             <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>{t.watchedList}</h2>
-            {watchedArray.length > 0 && <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.2rem' }}>{watchedArray.length} title{watchedArray.length > 1 ? 's' : ''}</p>}
-          </div>
+{watchedArray.length > 0 && <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.2rem' }}>{watchedArray.length} {watchedArray.length > 1 ? t.titlesPlural : t.titles}</p>}          </div>
           <button onClick={close} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#1f2937', border: '1px solid #374151', color: '#9ca3af', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
         </div>
         <div style={{ overflowY: 'auto', padding: '1rem 1.5rem', flex: 1 }}>
@@ -140,14 +138,13 @@ const WatchedMediaModal = ({ isOpen, close, watchedMedia, handleUnwatchMedia, me
           )) : (
             <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#4b5563' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>🎬</div>
-              <p style={{ fontWeight: 600, color: '#6b7280' }}>No watched titles yet</p>
-              <p style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>Mark titles as watched and they'll appear here</p>
+              <p style={{ fontWeight: 600, color: '#6b7280' }}>{t.watchedEmpty}</p>
+<p style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>{t.watchedEmptyHint}</p>
             </div>
           )}
         </div>
         <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid #1f2937', flexShrink: 0 }}>
-          <button onClick={close} style={{ width: '100%', padding: '0.75rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: '#fff', borderRadius: '0.75rem', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem', border: 'none' }}>Done</button>
-        </div>
+<button onClick={close} style={{ width: '100%', padding: '0.75rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: '#fff', borderRadius: '0.75rem', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem', border: 'none' }}>{t.done}</button>        </div>
       </div>
     </div>
   );
@@ -228,11 +225,10 @@ const ActorDetailsModal = ({ isOpen, close, actorDetails, isFetching, t }) => {
               <img src={actorDetails.profile_path ? `${TMDB_IMAGE_BASE_URL}${actorDetails.profile_path}` : FALLBACK_PROFILE} alt="" style={{ width: '8rem', height: '12rem', objectFit: 'cover', borderRadius: '0.5rem' }} />
               <div style={{ flex: 1, paddingRight: '2rem' }}>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#fff' }}>{actorDetails.name}</h2>
-                <p style={{ fontSize: '0.875rem', color: '#9ca3af', marginTop: '0.5rem' }}>{actorDetails.biography?.substring(0, 300) || 'No biography available.'}{actorDetails.biography?.length > 300 ? '...' : ''}</p>
+                <p style={{ fontSize: '0.875rem', color: '#9ca3af', marginTop: '0.5rem' }}>{actorDetails.biography?.substring(0, 300) || t.noBiography}{actorDetails.biography?.length > 300 ? '...' : ''}</p>
               </div>
             </div>
-            <h3 style={{ fontWeight: '600', color: '#fff', marginBottom: '0.5rem' }}>Known For</h3>
-            {popularMedia.length > 0 ? (
+<h3 style={{ fontWeight: '600', color: '#fff', marginBottom: '0.5rem' }}>{t.knownFor}</h3>            {popularMedia.length > 0 ? (
               <div style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '1rem' }}>
                 {popularMedia.map(m => (
                   <div key={m.id} style={{ flexShrink: 0, width: '6rem', textAlign: 'center' }}>
@@ -314,8 +310,7 @@ const FilterModal = ({ isOpen, close, handleClearFilters, filters, handleGenreCh
           <div>
             <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>{t.advancedFilters}</h2>
             {activeCount > 0 && (
-              <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.2rem' }}>{activeCount} active filter{activeCount > 1 ? 's' : ''}</p>
-            )}
+<p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.2rem' }}>{activeCount} {activeCount > 1 ? t.activeFilters : t.activeFilter}</p>            )}
           </div>
           <button onClick={close} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#1f2937', border: '1px solid #374151', color: '#9ca3af', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
         </div>

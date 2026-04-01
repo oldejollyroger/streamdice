@@ -914,19 +914,17 @@ const platform = platformMap.get(id);          return platform && (
     <div style={{ width: '100%', maxWidth: '540px', backgroundColor: '#111827', borderRadius: '1.25rem 1.25rem 0 0', overflow: 'hidden', animation: 'slideUp 0.90s cubic-bezier(0.32, 0.72, 0, 1)' }} onClick={e => e.stopPropagation()}>
       <div style={{ padding: '1.5rem 1.5rem 1rem', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <p style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.25rem' }}>Filter by person</p>
-          <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>{pendingPerson.title}</h2>
+<p style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.25rem' }}>{t.filterByPerson}</p>          <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>{pendingPerson.title}</h2>
         </div>
         <button onClick={() => setPendingPerson(null)} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#1f2937', border: '1px solid #374151', color: '#9ca3af', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
       </div>
       <div style={{ padding: '1.25rem 1.5rem' }}>
-        <p style={{ fontSize: '0.85rem', color: '#6b7280', marginBottom: '1.25rem' }}>What role did they have?</p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1.25rem' }}>
+<p style={{ fontSize: '0.85rem', color: '#6b7280', marginBottom: '1.25rem' }}>{t.whatRole}</p>        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1.25rem' }}>
           {[
-            { label: 'Actor', emoji: '🎭', desc: 'Appeared on screen', role: 'actor' },
-            { label: 'Director', emoji: '🎬', desc: 'Directed the film', role: 'director' },
-            { label: 'Writer', emoji: '✍️', desc: 'Wrote the screenplay', role: 'writer' },
-            { label: 'Producer', emoji: '🎛️', desc: 'Produced the project', role: 'producer' },
+            { label: t.roleActor, emoji: '🎭', desc: t.roleActorDesc, role: 'actor' },
+{ label: t.roleDirector, emoji: '🎬', desc: t.roleDirectorDesc, role: 'director' },
+{ label: t.roleWriter, emoji: '✍️', desc: t.roleWriterDesc, role: 'writer' },
+{ label: t.roleProducer, emoji: '🎛️', desc: t.roleProducerDesc, role: 'producer' },
           ].map(({ label, emoji, desc, role }) => (
             <button key={role} onClick={() => {
               setFilters(f => ({ ...f, person: { ...pendingPerson, role } }));
@@ -942,8 +940,7 @@ const platform = platformMap.get(id);          return platform && (
             </button>
           ))}
         </div>
-        <button onClick={() => setPendingPerson(null)} style={{ width: '100%', padding: '0.625rem', background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', fontSize: '0.875rem' }}>Cancel</button>
-      </div>
+<button onClick={() => setPendingPerson(null)} style={{ width: '100%', padding: '0.625rem', background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', fontSize: '0.875rem' }}>{t.cancel}</button>      </div>
     </div>
   </div>
 )}
@@ -951,8 +948,8 @@ const platform = platformMap.get(id);          return platform && (
   <div style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.75)' }}>
     <div style={{ width: '100%', maxWidth: '540px', backgroundColor: '#111827', borderRadius: '1.25rem 1.25rem 0 0', overflow: 'hidden', animation: 'slideUp 0.90s cubic-bezier(0.32, 0.72, 0, 1)' }}>
       <div style={{ padding: '1.5rem 1.5rem 1rem', borderBottom: '1px solid #1f2937' }}>
-        <p style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.25rem' }}>One more thing</p>
-        <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>Which language do you prefer?</h2>
+        <p style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.25rem' }}>{t.oneMoreThing}</p>
+<h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>{t.whichLanguage}</h2>
       </div>
       <div style={{ padding: '1.25rem 1.5rem' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem', marginBottom: '1.25rem' }}>
@@ -966,8 +963,7 @@ const platform = platformMap.get(id);          return platform && (
             </button>
           ))}
         </div>
-        <button onClick={() => setPendingRegionLanguages(null)} style={{ width: '100%', padding: '0.625rem', background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', fontSize: '0.875rem' }}>Skip</button>
-      </div>
+<button onClick={() => setPendingRegionLanguages(null)} style={{ width: '100%', padding: '0.625rem', background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', fontSize: '0.875rem' }}>{t.skip}</button>      </div>
     </div>
   </div>
 )}
@@ -978,16 +974,14 @@ const platform = platformMap.get(id);          return platform && (
     <div style={{ width: '100%', maxWidth: '420px', backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '1.25rem', padding: '2rem', textAlign: 'center' }}>
       <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'linear-gradient(to bottom right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem', fontSize: '1.5rem' }}>🌍</div>
       <h1 style={{ fontSize: '1.375rem', fontWeight: 800, color: '#fff', marginBottom: '0.375rem' }}>{t.selectRegionPrompt}</h1>
-      <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1.75rem' }}>We'll show you what's available to stream in your country.</p>
-      {availableRegions.length > 0 ? (
+<p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1.75rem' }}>{t.selectRegionSubtitle}</p>      {availableRegions.length > 0 ? (
         <>
           <select onChange={(e) => { if (e.target.value) handleRegionChange(e.target.value); }} defaultValue="" style={{ width: '100%', padding: '0.75rem 1rem', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '0.75rem', color: '#e5e7eb', fontSize: '1rem', cursor: 'pointer', marginBottom: '1rem' }}>
             <option value="" disabled>— Select your country —</option>
             {availableRegions.map(region => (
 <option key={region.iso_3166_1} value={region.iso_3166_1}>{getFlagEmoji(region.iso_3166_1)} {region.english_name}</option>            ))}
           </select>
-          <p style={{ fontSize: '0.75rem', color: '#4b5563' }}>Your choice is saved locally and can be changed anytime in Settings.</p>
-        </>
+<p style={{ fontSize: '0.75rem', color: '#4b5563' }}>{t.selectRegionHint}</p>        </>
       ) : (
         <div style={{ padding: '1rem', display: 'flex', justifyContent: 'center' }}><span className="loader"></span></div>
       )}
