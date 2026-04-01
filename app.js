@@ -959,7 +959,7 @@ const platform = platformMap.get(id);          return platform && (
               setPendingRegionLanguages(null);
               addToast(`Language set to ${getFlagEmoji(lang.code.split('-')[1])} {lang.name}`, 'success');
             }} style={{ padding: '1rem 1.25rem', backgroundColor: '#1f2937', border: `1.5px solid ${tmdbLanguage === lang.code ? 'var(--color-accent)' : '#374151'}`, borderRadius: '0.875rem', cursor: 'pointer', textAlign: 'left', color: '#fff', fontWeight: 600, fontSize: '0.95rem' }}>
-              {lang.name}
+              {getFlagEmoji(lang.code.split('-')[1])} {lang.name}
             </button>
           ))}
         </div>
@@ -968,29 +968,32 @@ const platform = platformMap.get(id);          return platform && (
   </div>
 )}
 
-{/* Region Selector Modal */}
-{(showRegionSelector || !userRegion) && (
-  <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '1rem' }}>
-    <div style={{ width: '100%', maxWidth: '420px', backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '1.25rem', padding: '2rem', textAlign: 'center' }}>
-      <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'linear-gradient(to bottom right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem', fontSize: '1.5rem' }}>🌍</div>
-      <h1 style={{ fontSize: '1.375rem', fontWeight: 800, color: '#fff', marginBottom: '0.375rem' }}>{t.selectRegionPrompt}</h1>
-<p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1.75rem' }}>{t.selectRegionSubtitle}</p>      {availableRegions.length > 0 ? (
-        <>
-          <select onChange={(e) => { if (e.target.value) handleRegionChange(e.target.value); }} defaultValue="" style={{ width: '100%', padding: '0.75rem 1rem', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '0.75rem', color: '#e5e7eb', fontSize: '1rem', cursor: 'pointer', marginBottom: '1rem' }}>
-            <option value="" disabled>— Select your country —</option>
-            {availableRegions.map(region => (
-<option key={region.iso_3166_1} value={region.iso_3166_1}>{getFlagEmoji(region.iso_3166_1)} {region.english_name}</option>            ))}
-          </select>
-<p style={{ fontSize: '0.75rem', color: '#4b5563' }}>{t.selectRegionHint}</p>        </>
-      ) : (
-        <div style={{ padding: '1rem', display: 'flex', justifyContent: 'center' }}><span className="loader"></span></div>
-      )}
     </div>
-  </div>
-)}
-      </div>
-    );
-  };
+  );
+} 
+{/* Region Selector Modal */}
+      {(showRegionSelector || !userRegion) && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: '1rem' }}>
+          <div style={{ width: '100%', maxWidth: '420px', backgroundColor: '#111827', border: '1px solid #1f2937', borderRadius: '1.25rem', padding: '2rem', textAlign: 'center' }}>
+            <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'linear-gradient(to bottom right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem', fontSize: '1.5rem' }}>🌍</div>
+            <h1 style={{ fontSize: '1.375rem', fontWeight: 800, color: '#fff', marginBottom: '0.375rem' }}>{t.selectRegionPrompt}</h1>
+            <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1.75rem' }}>{t.selectRegionSubtitle}</p>
+            {availableRegions.length > 0 ? (
+              <>
+                <select onChange={(e) => { if (e.target.value) handleRegionChange(e.target.value); }} defaultValue="" style={{ width: '100%', padding: '0.75rem 1rem', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '0.75rem', color: '#e5e7eb', fontSize: '1rem', cursor: 'pointer', marginBottom: '1rem' }}>
+                  <option value="" disabled>— Select your country —</option>
+                  {availableRegions.map(region => (
+                    <option key={region.iso_3166_1} value={region.iso_3166_1}>{getFlagEmoji(region.iso_3166_1)} {region.english_name}</option>
+                  ))}
+                </select>
+                <p style={{ fontSize: '0.75rem', color: '#4b5563' }}>{t.selectRegionHint}</p>
+              </>
+            ) : (
+              <div style={{ padding: '1rem', display: 'flex', justifyContent: 'center' }}><span className="loader"></span></div>
+            )}
+          </div>
+        </div>
+      )}
 
 // Wrap with Toast Provider
 const AppWithProviders = () => {
