@@ -844,11 +844,13 @@ const platform = platformMap.get(id);          return platform && (
           {/* Action Buttons */}
           <div className="movie-actions-animated" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1rem' }}>
             <button onClick={() => handleMarkAsWatched(selectedMedia)} style={{ flex: 1, minWidth: '140px', padding: '0.75rem', backgroundColor: isCurrentMediaWatched ? 'rgba(34,197,94,0.8)' : 'rgba(239,68,68,0.8)', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-              {isCurrentMediaWatched ? '✓ ' + t.cardIsWatched : t.cardMarkAsWatched}
-            </button>
-            <button onClick={() => handleToggleWatchlist(selectedMedia)} style={{ flex: 1, minWidth: '140px', padding: '0.75rem', backgroundColor: 'rgba(14,165,233,0.8)', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-              {watchList[selectedMedia.id] ? '★' : '☆'} {t.saveForLater}
-            </button>
+  <span style={{ display: 'inline-block', animation: isCurrentMediaWatched ? 'watchedPop 0.4s cubic-bezier(0.34,1.56,0.64,1)' : 'none', fontSize: '1.1rem' }}>{isCurrentMediaWatched ? '✅' : '🎬'}</span>
+  {isCurrentMediaWatched ? t.cardIsWatched : t.cardMarkAsWatched}
+</button>
+          <button onClick={() => handleToggleWatchlist(selectedMedia)} style={{ flex: 1, minWidth: '140px', padding: '0.75rem', backgroundColor: 'rgba(14,165,233,0.8)', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+  <span style={{ display: 'inline-block', animation: watchList[selectedMedia.id] ? 'watchedPop 0.4s cubic-bezier(0.34,1.56,0.64,1)' : 'none', fontSize: '1.1rem' }}>{watchList[selectedMedia.id] ? '🔖' : '📋'}</span>
+  {t.saveForLater}
+</button>
             <button onClick={handleShare} style={{ padding: '0.75rem 1rem', backgroundColor: 'rgba(75,85,99,0.8)', color: 'white', fontWeight: 'bold', borderRadius: '0.5rem', border: 'none', cursor: 'pointer' }}>↗ {t.shareButton}</button>
           </div>
 
