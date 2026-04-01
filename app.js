@@ -957,7 +957,7 @@ const platform = platformMap.get(id);          return platform && (
             <button key={lang.code} onClick={() => {
               setTmdbLanguage(lang.code);
               setPendingRegionLanguages(null);
-              addToast(`Language set to ${getFlagEmoji(lang.code.split('-')[1])} {lang.name}`, 'success');
+addToast(`Language set to ${getFlagEmoji(lang.code.split('-')[1])} ${lang.name}`, 'success');
             }} style={{ padding: '1rem 1.25rem', backgroundColor: '#1f2937', border: `1.5px solid ${tmdbLanguage === lang.code ? 'var(--color-accent)' : '#374151'}`, borderRadius: '0.875rem', cursor: 'pointer', textAlign: 'left', color: '#fff', fontWeight: 600, fontSize: '0.95rem' }}>
               {getFlagEmoji(lang.code.split('-')[1])} {lang.name}
             </button>
