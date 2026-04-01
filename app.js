@@ -994,7 +994,8 @@ const platform = platformMap.get(id);          return platform && (
           </div>
         </div>
       )}
-
+      );
+};
 // Wrap with Toast Provider
 const AppWithProviders = () => {
   return (
