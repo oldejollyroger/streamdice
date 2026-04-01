@@ -319,7 +319,7 @@ const RegionPicker = ({ regions, onSelect, t }) => {
             onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
           >
 <img src={`https://flagcdn.com/24x18/${region.iso_3166_1.toLowerCase()}.png`} alt="" style={{ width: '24px', height: '18px', borderRadius: '2px', flexShrink: 0 }} />          </button>
-        ))}
+        ))}<span>{region.english_name}</span>
         {filtered.length === 0 && (
           <p style={{ padding: '1rem', color: '#6b7280', textAlign: 'center', fontSize: '0.875rem' }}>No results found</p>
         )}
