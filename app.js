@@ -24,24 +24,16 @@ const App = () => {
   const [tmdbLanguage, setTmdbLanguage] = useLocalStorageState('tmdbContentLang', 'en-US');
   const [userRegion, setUserRegion] = useLocalStorageState('movieRandomizerRegion', null);
   const [mediaType, setMediaType] = useLocalStorageState('mediaPickerType_v1', 'movie');
-  const [showRegionSelector, setShowRegionSelector] = useState(() => {
-    try {
-      return !localStorage.getItem('movieRandomizerRegion');
-    } catch (e) {
-      return true;
-    }
-  });
-
+  const [showRegionSelector, setShowRegionSelector] = useState(() => 
+    {try {return !localStorage.getItem('movieRandomizerRegion');} catch (e) {return true;}});
   const [filters, setFilters] = useLocalStorageState('mediaPickerFilters_v4', initialFilters);
   const [cookieConsent, setCookieConsent] = useLocalStorageState('cookieConsent_v1', false);
-
-const WATCHED_KEY = 'mediaPickerWatched_v2';
-const WATCHLIST_KEY = 'mediaPickerWatchlist_v2';
-const RECENT_HISTORY_KEY = 'mediaPickerRecentHistory_v1';
-const [watchedMedia, setWatchedMedia] = useLocalStorageState(WATCHED_KEY, {});
-const [watchList, setWatchList] = useLocalStorageState(WATCHLIST_KEY, {});
-const [recentlyShownIds, setRecentlyShownIds] = useLocalStorageState(RECENT_HISTORY_KEY, []);
-
+  const WATCHED_KEY = 'mediaPickerWatched_v2';
+  const WATCHLIST_KEY = 'mediaPickerWatchlist_v2';
+  const RECENT_HISTORY_KEY = 'mediaPickerRecentHistory_v1';
+  const [watchedMedia, setWatchedMedia] = useLocalStorageState(WATCHED_KEY, {});
+  const [watchList, setWatchList] = useLocalStorageState(WATCHLIST_KEY, {});
+  const [recentlyShownIds, setRecentlyShownIds] = useLocalStorageState(RECENT_HISTORY_KEY, []);
   const [allMedia, setAllMedia] = useState([]);
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [mediaHistory, setMediaHistory] = useState([]);
@@ -75,6 +67,7 @@ const [recentlyShownIds, setRecentlyShownIds] = useLocalStorageState(RECENT_HIST
   const platformMap = React.useMemo(() => new Map(allPlatformOptions.map(p => [p.id, p])), [allPlatformOptions]);
   const [pendingPerson, setPendingPerson] = useState(null);
   const [pendingRegionLanguages, setPendingRegionLanguages] = useState(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   
 
 
@@ -618,14 +611,9 @@ const getFlagEmoji = (countryCode) => {
   };
 
   const handleShare = useCallback(() => {
-    if (!selectedMedia) return;
-    const url = `https://www.themoviedb.org/${selectedMedia.mediaType}/${selectedMedia.id}`;
-    if (navigator.share) {
-      navigator.share({ title: selectedMedia.title, url }).catch(console.error);
-    } else {
-      navigator.clipboard.writeText(url).then(() => addToast(t.shareSuccess || 'Link copied!', 'success'));
-    }
-  }, [selectedMedia, addToast, t]);
+  if (!selectedMedia) return;
+  setIsShareModalOpen(true);
+}, [selectedMedia]);
 
   const handleInstallClick = async () => {
     if (!installPrompt) return;
@@ -909,10 +897,11 @@ const platform = platformMap.get(id);          return platform && (
       <TrailerModal isOpen={isTrailerModalOpen} close={closeModal} trailerKey={modalTrailerKey} />
       <FilterModal isOpen={isFilterModalOpen} close={() => setIsFilterModalOpen(false)} handleClearFilters={resetAndClearFilters} filters={filters} handleGenreChangeInModal={handleGenreChangeInModal} handlePlatformChange={handlePlatformChange} genresMap={genresMap} allPlatformOptions={allPlatformOptions} platformSearchQuery={platformSearchQuery} setPlatformSearchQuery={setPlatformSearchQuery} t={t} />
       <WatchedMediaModal isOpen={isWatchedModalOpen} close={() => setIsWatchedModalOpen(false)} watchedMedia={watchedMedia} handleUnwatchMedia={handleUnwatchMedia} mediaType={mediaType} t={t} cookieConsent={cookieConsent} />
-<WatchlistModal isOpen={isWatchlistModalOpen} close={() => setIsWatchlistModalOpen(false)} watchlist={watchList} handleToggleWatchlist={handleToggleWatchlist} handleSimilarMediaClick={handleSimilarMediaClick} mediaType={mediaType} t={t} />      
-  <ActorDetailsModal isOpen={isActorModalOpen} close={closeModal} actorDetails={actorDetails} isFetching={isFetchingActorDetails} t={t} />
-  <SimilarMediaModal media={modalMedia} close={closeModal} fetchFullMediaDetails={fetchFullMediaDetails} handleActorClick={handleActorClick} handleSimilarMediaClick={handleSimilarMediaClick} t={t} userRegion={userRegion} openTrailerModal={openTrailerModal} />
-<CookieConsentModal isOpen={!cookieConsent} onAccept={() => setCookieConsent(true)} t={t} />
+      <WatchlistModal isOpen={isWatchlistModalOpen} close={() => setIsWatchlistModalOpen(false)} watchlist={watchList} handleToggleWatchlist={handleToggleWatchlist} handleSimilarMediaClick={handleSimilarMediaClick} mediaType={mediaType} t={t} />      
+      <ShareModal isOpen={isShareModalOpen} close={() => setIsShareModalOpen(false)} media={selectedMedia} details={mediaDetails} t={t} addToast={addToast} /> 
+      <ActorDetailsModal isOpen={isActorModalOpen} close={closeModal} actorDetails={actorDetails} isFetching={isFetchingActorDetails} t={t} />
+      <SimilarMediaModal media={modalMedia} close={closeModal} fetchFullMediaDetails={fetchFullMediaDetails} handleActorClick={handleActorClick} handleSimilarMediaClick={handleSimilarMediaClick} t={t} userRegion={userRegion} openTrailerModal={openTrailerModal} />
+      <CookieConsentModal isOpen={!cookieConsent} onAccept={() => setCookieConsent(true)} t={t} />
 
 {/* Pending Person Modal */}
 {pendingPerson && (

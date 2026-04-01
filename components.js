@@ -384,6 +384,85 @@ const RegionPicker = ({ regions, onSelect, t }) => {
     </div>
   );
 };
+// Share Modal
+const ShareModal = ({ isOpen, close, media, details, t, addToast }) => {
+  if (!isOpen || !media) return null;
+  const url = `https://www.themoviedb.org/${media.mediaType}/${media.id}`;
+  const text = encodeURIComponent(`${media.title} (${media.year})`);
+  const encodedUrl = encodeURIComponent(url);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(url).then(() => {
+      addToast(t.shareLinkCopied, 'success');
+      close();
+    });
+  };
+
+  const options = [
+    {
+      label: t.shareWhatsApp,
+      emoji: '💬',
+      color: 'rgba(37,211,102,0.15)',
+      border: 'rgba(37,211,102,0.4)',
+      textColor: '#4ade80',
+      action: () => window.open(`https://wa.me/?text=${text}%20${encodedUrl}`, '_blank')
+    },
+    {
+      label: t.shareTelegram,
+      emoji: '✈️',
+      color: 'rgba(36,161,222,0.15)',
+      border: 'rgba(36,161,222,0.4)',
+      textColor: '#60a5fa',
+      action: () => window.open(`https://t.me/share/url?url=${encodedUrl}&text=${text}`, '_blank')
+    },
+    {
+      label: t.shareEmail,
+      emoji: '📧',
+      color: 'rgba(251,191,36,0.15)',
+      border: 'rgba(251,191,36,0.4)',
+      textColor: '#fbbf24',
+      action: () => window.open(`mailto:?subject=${text}&body=${url}`, '_blank')
+    },
+    {
+      label: t.shareCopyLink,
+      emoji: '🔗',
+      color: 'rgba(168,85,247,0.15)',
+      border: 'rgba(168,85,247,0.4)',
+      textColor: '#d8b4fe',
+      action: handleCopy
+    },
+  ];
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.75)' }} onClick={close}>
+      <div style={{ width: '100%', maxWidth: '540px', backgroundColor: '#111827', borderRadius: '1.25rem 1.25rem 0 0', overflow: 'hidden', animation: 'slideUp 0.90s cubic-bezier(0.32, 0.72, 0, 1)' }} onClick={e => e.stopPropagation()}>
+
+        {/* Header with movie info */}
+        <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : FALLBACK_POSTER} alt="" style={{ width: '3rem', height: '4.5rem', objectFit: 'cover', borderRadius: '0.375rem', flexShrink: 0 }} />
+          <div style={{ flex: 1, overflow: 'hidden' }}>
+            <p style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.25rem' }}>{t.shareTitle}</p>
+            <p style={{ fontWeight: 800, color: '#fff', fontSize: '1rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{media.title}</p>
+            <p style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '0.15rem' }}>{media.year}{details?.certification ? ` · ${details.certification}` : ''}{details?.duration ? ` · ${formatDuration(details.duration)}` : ''}</p>
+          </div>
+          <button onClick={close} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#1f2937', border: '1px solid #374151', color: '#9ca3af', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>✕</button>
+        </div>
+
+        {/* Share options */}
+        <div style={{ padding: '1.25rem 1.5rem 2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+            {options.map(opt => (
+              <button key={opt.label} onClick={() => { opt.action(); if (opt.label !== t.shareCopyLink) close(); }} style={{ padding: '1rem', backgroundColor: opt.color, border: `1.5px solid ${opt.border}`, borderRadius: '0.875rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <span style={{ fontSize: '1.5rem' }}>{opt.emoji}</span>
+                <span style={{ fontWeight: 700, color: opt.textColor, fontSize: '0.9rem' }}>{opt.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // Filter Modal
 const FilterModal = ({ isOpen, close, handleClearFilters, filters, handleGenreChangeInModal, genresMap, allPlatformOptions, platformSearchQuery, setPlatformSearchQuery, handlePlatformChange, t }) => {

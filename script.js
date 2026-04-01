@@ -91,9 +91,17 @@ const translations = {
     activeFilter: "active filter",
     activeFilters: "active filters",
     readMore: "Read more",
-readLess: "Show less",
-cardDirectorLabel: "Directed by",
+    readLess: "Show less",
+    cardDirectorLabel: "Directed by",
+    shareTitle: "Share this title",
+    shareWhatsApp: "WhatsApp",
+    shareTelegram: "Telegram",
+    shareEmail: "Email",
+    shareCopyLink: "Copy Link",
+    shareLinkCopied: "Link copied!",
   },
+
+
   es: {
     subtitle: "¿Qué deberíamos ver esta noche?",
     movies: "Películas",
@@ -184,8 +192,14 @@ cardDirectorLabel: "Directed by",
     activeFilter: "filtro activo",
     activeFilters: "filtros activos",
     readMore: "Leer más",
-readLess: "Mostrar menos",
-cardDirectorLabel: "Dirigido por",
+    readLess: "Mostrar menos",
+    cardDirectorLabel: "Dirigido por",
+    shareTitle: "Compartir este título",
+    shareWhatsApp: "WhatsApp",
+    shareTelegram: "Telegram",
+    shareEmail: "Email",
+    shareCopyLink: "Copiar enlace",
+    shareLinkCopied: "¡Enlace copiado!",
   }
 };
 
