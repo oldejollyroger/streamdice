@@ -493,27 +493,43 @@ const unwatchedMedia = transformedMedia.filter(m =>
 
     setAllMedia(unwatchedMedia);
 
-    if (unwatchedMedia.length > 0) {
-      const selected = unwatchedMedia[Math.floor(Math.random() * unwatchedMedia.length)];
-      
-      // Add minimum dice animation duration (1.5 seconds)
-      const minAnimationTime = 1500;
-      setTimeout(() => {
-        setSelectedMedia(selected);
-        addToRecentHistory(selected.id);
-        setIsDiscovering(false);
-      }, minAnimationTime);
-    } else {
-      setSelectedMedia(null);
-      addToast(t.noMoviesFound, 'info');
-      setIsDiscovering(false);
+   if (unwatchedMedia.length > 0) {
+  const needsCertCheck = filters.ageRatingMin > 0 || filters.ageRatingMax > 0;
+  const min = Math.max(1, Math.min(filters.ageRatingMin || 1, filters.ageRatingMax || 1));
+  const max = Math.max(filters.ageRatingMin || 1, filters.ageRatingMax || 1);
+  const allowedRatings = new Set(ageRatingOptions.slice(min, max + 1).filter(r => r !== t.any));
+
+  let selected = null;
+  const pool = [...unwatchedMedia];
+
+  if (needsCertCheck) {
+    while (pool.length > 0) {
+      const idx = Math.floor(Math.random() * pool.length);
+      const candidate = pool.splice(idx, 1)[0];
+      const details = await fetchFullMediaDetails(candidate.id, candidate.mediaType);
+      const cert = details?.certification;
+      if (!cert || allowedRatings.has(cert)) {
+        selected = candidate;
+        break;
+      }
     }
-  } catch (err) {
-    console.error("Error discovering:", err);
-    setError(err.message);
+  } else {
+    selected = pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  if (selected) {
+    setTimeout(() => {
+      setSelectedMedia(selected);
+      addToRecentHistory(selected.id);
+      setIsDiscovering(false);
+    }, 1500);
+  } else {
+    addToast(t.noMoviesFound, 'info');
     setIsDiscovering(false);
   }
-}, [filters, tmdbLanguage, mediaType, userRegion, genresMap, watchedMedia, recentlyShownIds, selectedMedia, fetchApi, durationOptions, ageRatingOptions, addToast, addToRecentHistory, t]);
+}
+  
+[filters, tmdbLanguage, mediaType, userRegion, genresMap, watchedMedia, recentlyShownIds, selectedMedia, fetchApi, durationOptions, ageRatingOptions, addToast, addToRecentHistory, t]);
  const handleRegionChange = (newRegion) => {
   if (!newRegion) return;
   const langs = typeof COUNTRY_LANGUAGES !== 'undefined' ? COUNTRY_LANGUAGES[newRegion] : null;
