@@ -688,3 +688,101 @@ button {
   0% { opacity: 0; transform: scale(0.85); }
   100% { opacity: 1; transform: scale(1); }
 }
+
+/* ============================================
+   COMPREHENSIVE LIGHT MODE FIXES
+   ============================================ */
+
+/* Filter cards */
+.light-mode [style*="rgba(255,255,255,0.05)"] {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+}
+.light-mode [style*="rgba(255,255,255,0.08)"] {
+  border-color: var(--border-color) !important;
+}
+
+/* Quick filter pills inactive state */
+.light-mode [style*="rgba(255,255,255,0.2)"] {
+  border-color: var(--border-color) !important;
+}
+
+/* Range inputs */
+.light-mode input[type="range"] {
+  accent-color: var(--color-accent);
+}
+
+/* Select inside filter cards */
+.light-mode select {
+  color: var(--text-primary) !important;
+  background-color: transparent !important;
+}
+
+/* Genre and platform quick filter pill text */
+.light-mode button[style*="color: #9ca3af"] {
+  color: var(--text-muted) !important;
+}
+
+/* Metadata pills on movie card */
+.light-mode [style*="rgba(255,255,255,0.07)"] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* Rating pill yellow color stays */
+.light-mode [style*="rgba(251,191,36,0.15)"] {
+  background-color: rgba(251, 191, 36, 0.2) !important;
+}
+
+/* Genre pills purple tint */
+.light-mode [style*="rgba(168,85,247,0.15)"] {
+  background-color: rgba(168, 85, 247, 0.12) !important;
+}
+.light-mode [style*="color: #d8b4fe"] {
+  color: #7c3aed !important;
+}
+
+/* Cast thumbnails background */
+.light-mode [style*="FALLBACK_PROFILE"] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* Muted text */
+.light-mode [style*="color: #6b7280"] {
+  color: var(--text-muted) !important;
+}
+
+/* White text elements that should flip */
+.light-mode [style*="color: #e5e7eb"],
+.light-mode [style*="color: #fff"] {
+  color: var(--text-primary) !important;
+}
+
+/* Exceptions - keep white text on gradient backgrounds */
+.light-mode [style*="background: linear-gradient"] [style*="color: white"],
+.light-mode [style*="background: linear-gradient"] p,
+.light-mode [style*="background: linear-gradient"] span {
+  color: white !important;
+}
+
+/* Search input */
+.light-mode input[type="text"] {
+  color: var(--text-primary) !important;
+  background-color: var(--bg-secondary) !important;
+}
+
+/* Navigation back/next buttons */
+.light-mode [style*="rgba(75,85,99,0.8)"] {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Borders with dark hardcoded values */
+.light-mode [style*="borderTop: '1px solid #374151'"],
+.light-mode [style*="borderTop: \"1px solid #374151\""] {
+  border-top-color: var(--border-color) !important;
+}
+
+/* Slider track accent color */
+input[type="range"] {
+  accent-color: var(--color-accent);
+}

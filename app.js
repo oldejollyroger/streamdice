@@ -781,41 +781,39 @@ const handleActorClick = async (actorId) => {
       )}
 
 {/* Advanced Filters Row */}
-<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.75rem', marginBottom: '1.5rem' }}>
-  <div>
-    <label style={{ display: 'block', fontSize: '0.75rem', color: '#9ca3af', marginBottom: '0.25rem' }}>{t.decade}</label>
-    <select value={filters.decade} onChange={(e) => handleFilterChange('decade', e.target.value)} style={{ width: '100%', padding: '0.5rem', backgroundColor: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0.5rem', color: '#e5e7eb' }}>
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '0.75rem', marginBottom: '1.5rem' }}>
+  <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem', padding: '0.75rem' }}>
+    <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.5rem' }}>{t.decade}</label>
+    <select value={filters.decade} onChange={(e) => handleFilterChange('decade', e.target.value)} style={{ width: '100%', padding: '0.375rem 0.5rem', backgroundColor: 'transparent', border: 'none', borderRadius: '0.375rem', color: '#e5e7eb', fontSize: '0.875rem', outline: 'none' }}>
       <option value="todos">{t.allDecades}</option>
       {[2020, 2010, 2000, 1990, 1980, 1970].map(d => <option key={d} value={d}>{d}s</option>)}
     </select>
   </div>
-  <div>
-    <label style={{ display: 'block', fontSize: '0.75rem', color: '#9ca3af', marginBottom: '0.25rem' }}>{t.minRating}: {Number(filters.minRating).toFixed(1)}</label>
-    <input type="range" min="0" max="9" step="0.5" value={filters.minRating} onChange={(e) => handleFilterChange('minRating', e.target.value)} style={{ width: '100%' }} />
+  <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem', padding: '0.75rem' }}>
+    <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.5rem' }}>{t.minRating} <span style={{ color: '#fbbf24', fontWeight: 800 }}>{Number(filters.minRating).toFixed(1)}+</span></label>
+    <input type="range" min="0" max="9" step="0.5" value={filters.minRating} onChange={(e) => handleFilterChange('minRating', e.target.value)} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
   </div>
-  <div>
-    <label style={{ display: 'block', fontSize: '0.75rem', color: '#9ca3af', marginBottom: '0.25rem' }}>{t.duration}: {durationOptions[filters.duration].label}</label>
-    <input type="range" min="0" max="3" value={filters.duration} onChange={(e) => handleFilterChange('duration', e.target.value)} style={{ width: '100%' }} />
+  <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem', padding: '0.75rem' }}>
+    <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.5rem' }}>{t.duration}: <span style={{ color: '#e5e7eb', fontWeight: 800 }}>{durationOptions[filters.duration].label}</span></label>
+    <input type="range" min="0" max="3" value={filters.duration} onChange={(e) => handleFilterChange('duration', e.target.value)} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
   </div>
-  
-  <div>
-    <label style={{ display: 'block', fontSize: '0.75rem', color: '#9ca3af', marginBottom: '0.25rem' }}>
-      {t.ageRating}: {filters.ageRatingMin === 0 && filters.ageRatingMax === 0 ? t.any : `${ageRatingOptions[filters.ageRatingMin || 1]} → ${ageRatingOptions[filters.ageRatingMax || 1]}`}
+  <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem', padding: '0.75rem' }}>
+    <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.5rem' }}>
+      {t.ageRating}: <span style={{ color: '#e5e7eb', fontWeight: 800 }}>{filters.ageRatingMin === 0 && filters.ageRatingMax === 0 ? t.any : `${ageRatingOptions[filters.ageRatingMin || 1]} → ${ageRatingOptions[filters.ageRatingMax || 1]}`}</span>
     </label>
-    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
       <input type="range" min="1" max={ageRatingOptions.length - 1} value={filters.ageRatingMin || 1} onChange={(e) => {
         const val = parseInt(e.target.value);
         setFilters(f => ({ ...f, ageRatingMin: val, ageRatingMax: Math.max(val, f.ageRatingMax || val) }));
-      }} style={{ width: '100%' }} />
+      }} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
       <input type="range" min="1" max={ageRatingOptions.length - 1} value={filters.ageRatingMax || 1} onChange={(e) => {
         const val = parseInt(e.target.value);
         setFilters(f => ({ ...f, ageRatingMax: val, ageRatingMin: Math.min(val, f.ageRatingMin || val) }));
-      }} style={{ width: '100%' }} />
+      }} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
     </div>
   </div>
-
-  <button onClick={() => setIsFilterModalOpen(true)} style={{ padding: '0.5rem', backgroundColor: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0.5rem', color: '#e5e7eb', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '1.25rem', height: '1.25rem' }}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg>
+  <button onClick={() => setIsFilterModalOpen(true)} style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem', padding: '0.75rem', color: '#e5e7eb', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontSize: '0.875rem' }}>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '1.1rem', height: '1.1rem' }}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg>
     {t.advancedFilters}
   </button>
 </div>
