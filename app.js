@@ -524,12 +524,15 @@ const unwatchedMedia = transformedMedia.filter(m =>
       setIsDiscovering(false);
     }, 1500);
   } else {
-    addToast(t.noMoviesFound, 'info');
+      addToast(t.noMoviesFound, 'info');
+      setIsDiscovering(false);
+    }
+  } catch (err) {
+    console.error("Error discovering:", err);
+    setError(err.message);
     setIsDiscovering(false);
   }
-}
-  
-[filters, tmdbLanguage, mediaType, userRegion, genresMap, watchedMedia, recentlyShownIds, selectedMedia, fetchApi, durationOptions, ageRatingOptions, addToast, addToRecentHistory, t]);
+}, [filters, tmdbLanguage, mediaType, userRegion, genresMap, watchedMedia, recentlyShownIds, selectedMedia, fetchApi, durationOptions, ageRatingOptions, addToast, addToRecentHistory, fetchFullMediaDetails, t]);
  const handleRegionChange = (newRegion) => {
   if (!newRegion) return;
   const langs = typeof COUNTRY_LANGUAGES !== 'undefined' ? COUNTRY_LANGUAGES[newRegion] : null;
@@ -544,14 +547,6 @@ const unwatchedMedia = transformedMedia.filter(m =>
     addToast(`${langs[0].name} set as content language`, 'success');
   } else {
 addToast(`${getFlagEmoji(newRegion)} Region set to ${newRegion}`, 'success');  }
-};
-const getFlagEmoji = (countryCode) => {
-  if (!countryCode) return '';
-  return countryCode
-    .toUpperCase()
-    .split('')
-    .map(c => String.fromCodePoint(0x1F1E6 - 65 + c.charCodeAt(0)))
-    .join('');
 };
 
   const handleMediaTypeChange = (type) => {
