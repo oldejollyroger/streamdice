@@ -518,15 +518,19 @@ const unwatchedMedia = transformedMedia.filter(m =>
   }
 
   if (selected) {
-    setTimeout(() => {
-      setSelectedMedia(selected);
-      addToRecentHistory(selected.id);
-      setIsDiscovering(false);
-    }, 1500);
-  } else {
+      setTimeout(() => {
+        setSelectedMedia(selected);
+        addToRecentHistory(selected.id);
+        setIsDiscovering(false);
+      }, 1500);
+    } else {
       addToast(t.noMoviesFound, 'info');
       setIsDiscovering(false);
     }
+  } else {
+    addToast(t.noMoviesFound, 'info');
+    setIsDiscovering(false);
+  }
   } catch (err) {
     console.error("Error discovering:", err);
     setError(err.message);
