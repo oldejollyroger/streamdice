@@ -89,8 +89,8 @@ const SettingsDropdown = ({ mode, setMode, accent, setAccent, language, setLangu
               <div style={{ marginBottom: '1.5rem' }}>
                 <p style={sectionLabel}>Theme</p>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-                  <button onClick={() => setMode('light')} style={{ padding: '0.625rem', borderRadius: '0.625rem', backgroundColor: mode === 'light' ? 'var(--color-accent)' : '#1f2937', border: `1.5px solid ${mode === 'light' ? 'transparent' : '#374151'}`, color: mode === 'light' ? 'white' : '#9ca3af', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>☀️ Light</button>
-                  <button onClick={() => setMode('dark')} style={{ padding: '0.625rem', borderRadius: '0.625rem', backgroundColor: mode === 'dark' ? 'var(--color-accent)' : '#1f2937', border: `1.5px solid ${mode === 'dark' ? 'transparent' : '#374151'}`, color: mode === 'dark' ? 'white' : '#9ca3af', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>🌙 Dark</button>
+                 <button onClick={() => setMode('light')} style={{ padding: '0.625rem', borderRadius: '0.625rem', backgroundColor: mode === 'light' ? 'var(--color-accent)' : 'var(--bg-tertiary)', border: `1.5px solid ${mode === 'light' ? 'transparent' : 'var(--border-color)'}`, color: mode === 'light' ? 'white' : 'var(--text-muted)', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>☀️ Light</button>
+<button onClick={() => setMode('dark')} style={{ padding: '0.625rem', borderRadius: '0.625rem', backgroundColor: mode === 'dark' ? 'var(--color-accent)' : 'var(--bg-tertiary)', border: `1.5px solid ${mode === 'dark' ? 'transparent' : 'var(--border-color)'}`, color: mode === 'dark' ? 'white' : 'var(--text-muted)', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>🌙 Dark</button>
                 </div>
               </div>
 
@@ -98,10 +98,10 @@ const SettingsDropdown = ({ mode, setMode, accent, setAccent, language, setLangu
               <div style={{ marginBottom: '1.5rem' }}>
                 <p style={sectionLabel}>{t.siteLanguage}</p>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-                  <button onClick={() => { setLanguage('en'); setTmdbLanguage('en-US'); }} style={{ padding: '0.625rem', borderRadius: '0.625rem', backgroundColor: language === 'en' ? 'var(--color-accent)' : '#1f2937', border: `1.5px solid ${language === 'en' ? 'transparent' : '#374151'}`, color: language === 'en' ? 'white' : '#9ca3af', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                  <button onClick={() => { setLanguage('en'); setTmdbLanguage('en-US'); }} style={{ padding: '0.625rem', borderRadius: '0.625rem', backgroundColor: language === 'en' ? 'var(--color-accent)' : 'var(--bg-tertiary)', border: `1.5px solid ${language === 'en' ? 'transparent' : 'var(--border-color)'}`, color: language === 'en' ? 'white' : 'var(--text-muted)', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
   <img src="https://flagcdn.com/24x18/gb.png" alt="" style={{ width: '20px', height: '15px', borderRadius: '2px' }} />English
 </button>
-<button onClick={() => { setLanguage('es'); setTmdbLanguage('es-ES'); }} style={{ padding: '0.625rem', borderRadius: '0.625rem', backgroundColor: language === 'es' ? 'var(--color-accent)' : '#1f2937', border: `1.5px solid ${language === 'es' ? 'transparent' : '#374151'}`, color: language === 'es' ? 'white' : '#9ca3af', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+<button onClick={() => { setLanguage('es'); setTmdbLanguage('es-ES'); }} style={{ padding: '0.625rem', borderRadius: '0.625rem', backgroundColor: language === 'es' ? 'var(--color-accent)' : 'var(--bg-tertiary)', border: `1.5px solid ${language === 'es' ? 'transparent' : 'var(--border-color)'}`, color: language === 'es' ? 'white' : 'var(--text-muted)', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
   <img src="https://flagcdn.com/24x18/es.png" alt="" style={{ width: '20px', height: '15px', borderRadius: '2px' }} />Español
 </button>
                   </div>

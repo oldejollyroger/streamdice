@@ -794,12 +794,12 @@ const handleActorClick = async (actorId) => {
     <input type="range" min="0" max="9" step="0.5" value={filters.minRating} onChange={(e) => handleFilterChange('minRating', e.target.value)} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
   </div>
   <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem', padding: '0.75rem' }}>
-    <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.5rem' }}>{t.duration}: <span style={{ color: '#e5e7eb', fontWeight: 800 }}>{durationOptions[filters.duration].label}</span></label>
+    <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.5rem' }}>{t.duration}: <span style={{ color: 'var(--color-accent)', fontWeight: 800 }}>{durationOptions[filters.duration].label}</span></label>
     <input type="range" min="0" max="3" value={filters.duration} onChange={(e) => handleFilterChange('duration', e.target.value)} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
   </div>
   <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem', padding: '0.75rem' }}>
     <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.5rem' }}>
-      {t.ageRating}: <span style={{ color: '#e5e7eb', fontWeight: 800 }}>{filters.ageRatingMin === 0 && filters.ageRatingMax === 0 ? t.any : `${ageRatingOptions[filters.ageRatingMin || 1]} → ${ageRatingOptions[filters.ageRatingMax || 1]}`}</span>
+      {t.ageRating}: <span style={{ color: 'var(--color-accent)', fontWeight: 800 }}>{filters.ageRatingMin === 0 && filters.ageRatingMax === 0 ? t.any : `${ageRatingOptions[filters.ageRatingMin || 1]} → ${ageRatingOptions[filters.ageRatingMax || 1]}`}</span>
     </label>
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
       <input type="range" min="1" max={ageRatingOptions.length - 1} value={filters.ageRatingMin || 1} onChange={(e) => {

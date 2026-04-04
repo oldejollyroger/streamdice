@@ -650,11 +650,21 @@ button {
 
 /* Toast notifications theme */
 .light-mode .toast {
-  background-color: var(--card-bg);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
-  box-shadow: 0 4px 12px var(--shadow);
+  background: linear-gradient(135deg, rgba(255,255,255,0.97), rgba(240,240,240,0.97)) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
 }
+
+.light-mode .toast-message {
+  color: var(--text-primary) !important;
+}
+
+.light-mode .toast-success .toast-icon,
+.light-mode .toast-watched .toast-icon { background: #059669; }
+.light-mode .toast-error .toast-icon { background: #dc2626; }
+.light-mode .toast-info .toast-icon { background: #2563eb; }
+.light-mode .toast-watchlist .toast-icon { background: #db2777; }
 
 /* Confetti stays colorful in both modes */
 .confetti-particle {
