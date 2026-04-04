@@ -459,7 +459,7 @@ if (filters.ageRatingMin > 0 || filters.ageRatingMax > 0) {
       sort_by: 'popularity.desc'
     };
 
-    const initialData = await fetchApi(`discover/${mediaType}`, queryParams);
+const initialData = await fetchApi(`discover/${mediaType}`, { ...queryParams, append_to_response: 'release_dates' });
     const totalPages = Math.min(initialData.total_pages, 200);
 
     if (totalPages === 0) {
@@ -471,9 +471,21 @@ if (filters.ageRatingMin > 0 || filters.ageRatingMax > 0) {
     }
 
     const randomPage = Math.floor(Math.pow(Math.random(), 2) * (totalPages - 1)) + 1;
-    const data = randomPage === 1 ? initialData : await fetchApi(`discover/${mediaType}`, { ...queryParams, page: randomPage });
-    const transformedMedia = data.results.map(m => normalizeMediaData(m, mediaType, genresMap)).filter(Boolean);
-    
+const data = randomPage === 1 ? initialData : await fetchApi(`discover/${mediaType}`, { ...queryParams, page: randomPage, append_to_response: 'release_dates' });let transformedMedia = data.results.map(m => normalizeMediaData(m, mediaType, genresMap)).filter(Boolean);
+
+if (filters.ageRatingMin > 0 || filters.ageRatingMax > 0) {
+  const min = Math.max(1, Math.min(filters.ageRatingMin || 1, filters.ageRatingMax || 1));
+  const max = Math.max(filters.ageRatingMin || 1, filters.ageRatingMax || 1);
+  const allowedRatings = new Set(ageRatingOptions.slice(min, max + 1).filter(r => r !== t.any));
+  transformedMedia = transformedMedia.filter(m => {
+    const rawResult = data.results.find(r => r.id.toString() === m.id);
+    if (!rawResult) return true;
+    const releaseDates = rawResult.release_dates?.results?.find(r => r.iso_3166_1 === userRegion);
+    const cert = releaseDates?.release_dates?.find(rd => rd.certification)?.certification;
+    if (!cert) return true;
+    return allowedRatings.has(cert);
+  });
+}    
     const recentSet = new Set(recentlyShownIds);
 const unwatchedMedia = transformedMedia.filter(m => 
   !watchedMedia[m.id] && !recentSet.has(m.id)
