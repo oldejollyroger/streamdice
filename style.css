@@ -786,3 +786,60 @@ button {
 input[type="range"] {
   accent-color: var(--color-accent);
 }
+
+/* Filter card select in dark mode */
+.dark-mode .filter-select,
+select option {
+  background-color: #1f2937;
+  color: #e5e7eb;
+}
+
+/* Filter cards in dark mode - prevent light bleed */
+.dark-mode [style*="rgba(255,255,255,0.05)"] {
+  background-color: rgba(255,255,255,0.05) !important;
+}
+
+/* Filter value highlight text in light mode */
+.light-mode [style*="color: #fbbf24"] {
+  color: #b45309 !important;
+}
+.light-mode [style*="color: #e5e7eb"] {
+  color: var(--text-primary) !important;
+}
+
+/* Force select background in dark mode */
+.dark-mode select {
+  background-color: rgba(0,0,0,0.3) !important;
+  color: #e5e7eb !important;
+  border-color: rgba(255,255,255,0.1) !important;
+}
+
+/* Force select background in light mode */
+.light-mode select {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Modal backgrounds via CSS variables */
+.light-mode [style*="var(--modal-bg)"],
+.light-mode [style*="var(--card-bg)"] {
+  color: var(--text-primary);
+}
+
+/* Settings and filter panel text in light mode */
+.light-mode [style*="color: '#9ca3af'"],
+.light-mode [style*="color: #9ca3af"] {
+  color: var(--text-muted) !important;
+}
+
+/* Filter pill borders in light mode */
+.light-mode [style*="borderColor: '#374151'"],
+.light-mode [style*="border-color: #374151"] {
+  border-color: var(--border-color) !important;
+}
+
+/* Menu row buttons in light mode */
+.light-mode [style*="var(--card-bg)"] button {
+  color: var(--text-primary) !important;
+}

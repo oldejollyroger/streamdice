@@ -53,7 +53,7 @@ const SettingsDropdown = ({ mode, setMode, accent, setAccent, language, setLangu
   const [isOpen, setIsOpen] = React.useState(false);
 
   const sectionLabel = { fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.625rem' };
-  const menuRow = { width: '100%', padding: '0.75rem 0.875rem', display: 'flex', alignItems: 'center', gap: '0.75rem', backgroundColor: '#1f2937', border: 'none', borderRadius: '0.625rem', color: '#e5e7eb', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', marginBottom: '0.375rem', textAlign: 'left' };
+  const menuRow = { width: '100%', padding: '0.75rem 0.875rem', display: 'flex', alignItems: 'center', gap: '0.75rem', backgroundColor: 'var(--card-bg)', border: 'none', borderRadius: '0.625rem', color: '#e5e7eb', fontWeight: 600, fontSize: '0.9rem', cursor: 'pointer', marginBottom: '0.375rem', textAlign: 'left' };
 
   return (
     <>
@@ -63,12 +63,12 @@ const SettingsDropdown = ({ mode, setMode, accent, setAccent, language, setLangu
 
       {isOpen && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.75)' }} onClick={() => setIsOpen(false)}>
-          <div style={{ width: '100%', maxWidth: '540px', backgroundColor: '#111827', borderRadius: '1.25rem 1.25rem 0 0', overflow: 'hidden', animation: 'slideUp 0.90s cubic-bezier(0.32, 0.72, 0, 1)', maxHeight: '90vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+          <div style={{ width: '100%', maxWidth: '540px', backgroundColor: 'var(--modal-bg)', borderRadius: '1.25rem 1.25rem 0 0', overflow: 'hidden', animation: 'slideUp 0.90s cubic-bezier(0.32, 0.72, 0, 1)', maxHeight: '90vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
 
             {/* Header */}
-            <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>{t.settings}</h2>
-              <button onClick={() => setIsOpen(false)} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#1f2937', border: '1px solid #374151', color: '#9ca3af', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+              <button onClick={() => setIsOpen(false)} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', color: '#9ca3af', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
             </div>
 
             <div style={{ padding: '1.25rem 1.5rem 2rem' }}>
@@ -110,13 +110,13 @@ const SettingsDropdown = ({ mode, setMode, accent, setAccent, language, setLangu
               {/* Content Language */}
               <div style={{ marginBottom: '1.5rem' }}>
                 <p style={sectionLabel}>{t.contentLanguage}</p>
-                <select value={tmdbLanguage} onChange={e => setTmdbLanguage(e.target.value)} style={{ width: '100%', padding: '0.625rem 0.875rem', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '0.625rem', color: '#e5e7eb', fontSize: '0.875rem' }}>
+                <select value={tmdbLanguage} onChange={e => setTmdbLanguage(e.target.value)} style={{ width: '100%', padding: '0.625rem 0.875rem', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: '0.625rem', color: '#e5e7eb', fontSize: '0.875rem' }}>
                   {tmdbLanguages.map(l => <option key={l.code} value={l.code}>{l.name}</option>)}
                 </select>
               </div>
 
               {/* Menu rows */}
-              <div style={{ borderTop: '1px solid #1f2937', paddingTop: '1rem' }}>
+              <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
                 <button onClick={() => { setIsOpen(false); openWatchlistModal(); }} style={menuRow}>
                   <span style={{ fontSize: '1.1rem' }}>📑</span><span style={{ flex: 1 }}>{t.watchList}</span><span style={{ color: '#6b7280' }}>›</span>
                 </button>
@@ -141,16 +141,16 @@ const WatchedMediaModal = ({ isOpen, close, watchedMedia, handleUnwatchMedia, me
   const watchedArray = Object.values(watchedMedia).filter(m => m.mediaType === mediaType);
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.75)' }} onClick={close}>
-      <div style={{ width: '100%', maxWidth: '540px', maxHeight: '88vh', display: 'flex', flexDirection: 'column', backgroundColor: '#111827', borderRadius: '1.25rem 1.25rem 0 0', overflow: 'hidden', animation: 'slideUp 0.90s cubic-bezier(0.32, 0.72, 0, 1)' }} onClick={e => e.stopPropagation()}>
-        <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+      <div style={{ width: '100%', maxWidth: '540px', maxHeight: '88vh', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--modal-bg)', borderRadius: '1.25rem 1.25rem 0 0', overflow: 'hidden', animation: 'slideUp 0.90s cubic-bezier(0.32, 0.72, 0, 1)' }} onClick={e => e.stopPropagation()}>
+        <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <div>
             <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>{t.watchedList}</h2>
 {watchedArray.length > 0 && <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.2rem' }}>{watchedArray.length} {watchedArray.length > 1 ? t.titlesPlural : t.titles}</p>}          </div>
-          <button onClick={close} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#1f2937', border: '1px solid #374151', color: '#9ca3af', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+          <button onClick={close} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', color: '#9ca3af', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
         </div>
         <div style={{ overflowY: 'auto', padding: '1rem 1.5rem', flex: 1 }}>
           {watchedArray.length > 0 ? watchedArray.map(media => (
-            <div key={media.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', backgroundColor: '#1f2937', borderRadius: '0.75rem', marginBottom: '0.5rem' }}>
+            <div key={media.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', backgroundColor: 'var(--card-bg)', borderRadius: '0.75rem', marginBottom: '0.5rem' }}>
               <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : FALLBACK_POSTER} alt="" style={{ width: '2.75rem', height: '4rem', objectFit: 'cover', borderRadius: '0.375rem', flexShrink: 0 }} />
               <div style={{ flex: 1, overflow: 'hidden' }}>
                 <p style={{ fontWeight: 700, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontSize: '0.9rem' }}>{media.title}</p>
@@ -166,7 +166,7 @@ const WatchedMediaModal = ({ isOpen, close, watchedMedia, handleUnwatchMedia, me
             </div>
           )}
         </div>
-        <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid #1f2937', flexShrink: 0 }}>
+        <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid var(--border-color)', flexShrink: 0 }}>
 <button onClick={close} style={{ width: '100%', padding: '0.75rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: '#fff', borderRadius: '0.75rem', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem', border: 'none' }}>{t.done}</button>        </div>
       </div>
     </div>
@@ -178,22 +178,22 @@ const WatchlistModal = ({ isOpen, close, watchlist, handleToggleWatchlist, handl
   const watchlistArray = Object.values(watchlist).filter(m => m.mediaType === mediaType);
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.75)' }} onClick={close}>
-      <div style={{ width: '100%', maxWidth: '540px', maxHeight: '88vh', display: 'flex', flexDirection: 'column', backgroundColor: '#111827', borderRadius: '1.25rem 1.25rem 0 0', overflow: 'hidden', animation: 'slideUp 0.90s cubic-bezier(0.32, 0.72, 0, 1)' }} onClick={e => e.stopPropagation()}>
-        <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+      <div style={{ width: '100%', maxWidth: '540px', maxHeight: '88vh', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--modal-bg)', borderRadius: '1.25rem 1.25rem 0 0', overflow: 'hidden', animation: 'slideUp 0.90s cubic-bezier(0.32, 0.72, 0, 1)' }} onClick={e => e.stopPropagation()}>
+        <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <div>
             <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>{t.watchList}</h2>
             {watchlistArray.length > 0 && <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.2rem' }}>{watchlistArray.length} title{watchlistArray.length > 1 ? 's' : ''}</p>}
           </div>
-          <button onClick={close} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#1f2937', border: '1px solid #374151', color: '#9ca3af', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+          <button onClick={close} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', color: '#9ca3af', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
         </div>
         <div style={{ overflowY: 'auto', padding: '1rem 1.5rem', flex: 1 }}>
           {watchlistArray.length > 0 ? watchlistArray.map(media => (
-<div key={media.id} onClick={() => handleSimilarMediaClick(media)} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', backgroundColor: '#1f2937', borderRadius: '0.75rem', marginBottom: '0.5rem', cursor: 'pointer' }}>              <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : FALLBACK_POSTER} alt="" style={{ width: '2.75rem', height: '4rem', objectFit: 'cover', borderRadius: '0.375rem', flexShrink: 0 }} />
+<div key={media.id} onClick={() => handleSimilarMediaClick(media)} style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.75rem', backgroundColor: 'var(--card-bg)', borderRadius: '0.75rem', marginBottom: '0.5rem', cursor: 'pointer' }}>              <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : FALLBACK_POSTER} alt="" style={{ width: '2.75rem', height: '4rem', objectFit: 'cover', borderRadius: '0.375rem', flexShrink: 0 }} />
               <div style={{ flex: 1, overflow: 'hidden' }}>
                 <p style={{ fontWeight: 700, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontSize: '0.9rem' }}>{media.title}</p>
                 <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.15rem' }}>{media.year}</p>
               </div>
-              <button onClick={() => handleToggleWatchlist(media)} style={{ flexShrink: 0, padding: '0.25rem 0.625rem', backgroundColor: 'rgba(75,85,99,0.4)', border: '1px solid #374151', color: '#9ca3af', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}>{t.removeFromList}</button>
+              <button onClick={() => handleToggleWatchlist(media)} style={{ flexShrink: 0, padding: '0.25rem 0.625rem', backgroundColor: 'rgba(75,85,99,0.4)', border: '1px solid var(--border-color)', color: '#9ca3af', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer' }}>{t.removeFromList}</button>
             </div>
           )) : (
             <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#4b5563' }}>
@@ -203,7 +203,7 @@ const WatchlistModal = ({ isOpen, close, watchlist, handleToggleWatchlist, handl
             </div>
           )}
         </div>
-        <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid #1f2937', flexShrink: 0 }}>
+        <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid var(--border-color)', flexShrink: 0 }}>
           <button onClick={close} style={{ width: '100%', padding: '0.75rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: '#fff', borderRadius: '0.75rem', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem', border: 'none' }}>Done</button>
         </div>
       </div>
@@ -238,7 +238,7 @@ const ActorDetailsModal = ({ isOpen, close, actorDetails, isFetching, t }) => {
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.8)' }} onClick={close}>
-      <div style={{ width: '100%', maxWidth: '42rem', maxHeight: '90vh', overflowY: 'auto', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem', position: 'relative' }} onClick={e => e.stopPropagation()}>
+      <div style={{ width: '100%', maxWidth: '42rem', maxHeight: '90vh', overflowY: 'auto', backgroundColor: 'var(--modal-bg)', border: '1px solid var(--border-color)', borderRadius: '1rem', padding: '1.5rem', position: 'relative' }} onClick={e => e.stopPropagation()}>
         <button onClick={close} style={{ position: 'absolute', top: '1rem', right: '1rem', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
         {isFetching || !actorDetails ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}><span className="loader"></span></div>
@@ -388,13 +388,13 @@ const RegionPicker = ({ regions, onSelect, t }) => {
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Search country..."
-          style={{ width: '100%', padding: '0.625rem 0.875rem 0.625rem 2.25rem', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '0.625rem', color: '#e5e7eb', fontSize: '0.875rem', boxSizing: 'border-box' }}
+          style={{ width: '100%', padding: '0.625rem 0.875rem 0.625rem 2.25rem', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: '0.625rem', color: '#e5e7eb', fontSize: '0.875rem', boxSizing: 'border-box' }}
         />
         <span style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#6b7280', fontSize: '0.875rem' }}>🔍</span>
       </div>
-      <div style={{ maxHeight: '240px', overflowY: 'auto', borderRadius: '0.625rem', border: '1px solid #374151' }}>
+      <div style={{ maxHeight: '240px', overflowY: 'auto', borderRadius: '0.625rem', border: '1px solid var(--border-color)' }}>
         {filtered.map(region => (
-          <button key={region.iso_3166_1} onClick={() => onSelect(region.iso_3166_1)} style={{ width: '100%', padding: '0.625rem 0.875rem', backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid #1f2937', color: '#e5e7eb', fontSize: '0.9rem', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.625rem' }}
+          <button key={region.iso_3166_1} onClick={() => onSelect(region.iso_3166_1)} style={{ width: '100%', padding: '0.625rem 0.875rem', backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid var(--border-color)', color: '#e5e7eb', fontSize: '0.9rem', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: '0.625rem' }}
             onMouseEnter={e => e.currentTarget.style.backgroundColor = '#1f2937'}
             onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
           >
@@ -458,17 +458,17 @@ const ShareModal = ({ isOpen, close, media, details, t, addToast }) => {
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.75)' }} onClick={close}>
-      <div style={{ width: '100%', maxWidth: '400px', backgroundColor: '#111827', borderRadius: '1.25rem', overflow: 'hidden', animation: 'modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)' }} onClick={e => e.stopPropagation()}>
+      <div style={{ width: '100%', maxWidth: '400px', backgroundColor: 'var(--modal-bg)', borderRadius: '1.25rem', overflow: 'hidden', animation: 'modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)' }} onClick={e => e.stopPropagation()}>
 
         {/* Header with movie info */}
-        <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <img src={media.poster ? `${TMDB_THUMBNAIL_BASE_URL}${media.poster}` : FALLBACK_POSTER} alt="" style={{ width: '3rem', height: '4.5rem', objectFit: 'cover', borderRadius: '0.375rem', flexShrink: 0 }} />
           <div style={{ flex: 1, overflow: 'hidden' }}>
             <p style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.25rem' }}>{t.shareTitle}</p>
             <p style={{ fontWeight: 800, color: '#fff', fontSize: '1rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{media.title}</p>
             <p style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '0.15rem' }}>{media.year}{details?.certification ? ` · ${details.certification}` : ''}{details?.duration ? ` · ${formatDuration(details.duration)}` : ''}</p>
           </div>
-          <button onClick={close} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#1f2937', border: '1px solid #374151', color: '#9ca3af', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>✕</button>
+          <button onClick={close} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', color: '#9ca3af', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>✕</button>
         </div>
 
         {/* Share options */}
@@ -499,13 +499,13 @@ const FilterModal = ({ isOpen, close, handleClearFilters, filters, handleGenreCh
   const sectionTitleStyle = { fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.75rem' };
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.75)', padding: '1rem' }} onClick={close}>
-<div style={{ width: '100%', maxWidth: '540px', maxHeight: '88vh', display: 'flex', flexDirection: 'column', backgroundColor: '#111827', borderRadius: '1.25rem 1.25rem 0 0', overflow: 'hidden', animation: 'slideUp 0.90s cubic-bezier(0.32, 0.72, 0, 1)' }} onClick={e => e.stopPropagation()}>        <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid #1f2937', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+<div style={{ width: '100%', maxWidth: '540px', maxHeight: '88vh', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--modal-bg)', borderRadius: '1.25rem 1.25rem 0 0', overflow: 'hidden', animation: 'slideUp 0.90s cubic-bezier(0.32, 0.72, 0, 1)' }} onClick={e => e.stopPropagation()}>        <div style={{ padding: '1.25rem 1.5rem 1rem', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <div>
             <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>{t.advancedFilters}</h2>
             {activeCount > 0 && (
 <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.2rem' }}>{activeCount} {activeCount > 1 ? t.activeFilters : t.activeFilter}</p>            )}
           </div>
-          <button onClick={close} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#1f2937', border: '1px solid #374151', color: '#9ca3af', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+          <button onClick={close} style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', color: '#9ca3af', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
         </div>
         <div style={{ overflowY: 'auto', padding: '1.5rem', flex: 1 }}>
           <div style={{ marginBottom: '1.5rem' }}>
@@ -526,7 +526,7 @@ const FilterModal = ({ isOpen, close, handleClearFilters, filters, handleGenreCh
           </div>
           <div style={{ marginBottom: '1.5rem' }}>
             <p style={sectionTitleStyle}>{t.platform}</p>
-            <input type="text" value={platformSearchQuery} onChange={e => setPlatformSearchQuery(e.target.value)} placeholder={t.platformSearchPlaceholder} style={{ width: '100%', padding: '0.625rem 0.875rem', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '0.625rem', color: '#e5e7eb', fontSize: '0.875rem', marginBottom: '0.75rem', boxSizing: 'border-box' }} />
+            <input type="text" value={platformSearchQuery} onChange={e => setPlatformSearchQuery(e.target.value)} placeholder={t.platformSearchPlaceholder} style={{ width: '100%', padding: '0.625rem 0.875rem', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: '0.625rem', color: '#e5e7eb', fontSize: '0.875rem', marginBottom: '0.75rem', boxSizing: 'border-box' }} />
             <div style={{ display: 'flex', flexWrap: 'wrap' }}>
               {filteredPlatforms.map(p => (
                 <span key={p.id} style={filters.platform.includes(p.id) ? pillActive : pillInactive} onClick={() => handlePlatformChange(p.id)}>{p.name}</span>
@@ -534,8 +534,8 @@ const FilterModal = ({ isOpen, close, handleClearFilters, filters, handleGenreCh
             </div>
           </div>
         </div>
-        <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid #1f2937', display: 'flex', gap: '0.75rem', flexShrink: 0 }}>
-          <button onClick={() => { handleClearFilters(); close(); }} style={{ flex: 1, padding: '0.75rem', backgroundColor: '#1f2937', border: '1px solid #374151', color: '#9ca3af', borderRadius: '0.75rem', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}>{t.clearFilters}</button>
+        <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid var(--border-color)', display: 'flex', gap: '0.75rem', flexShrink: 0 }}>
+          <button onClick={() => { handleClearFilters(); close(); }} style={{ flex: 1, padding: '0.75rem', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', color: '#9ca3af', borderRadius: '0.75rem', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem' }}>{t.clearFilters}</button>
           <button onClick={close} style={{ flex: 2, padding: '0.75rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: '#fff', borderRadius: '0.75rem', fontWeight: 700, cursor: 'pointer', fontSize: '0.9rem', border: 'none' }}>{t.applyFilters}</button>
         </div>
       </div>
@@ -574,7 +574,7 @@ const SimilarMediaModal = ({ media, close, fetchFullMediaDetails, handleActorCli
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backgroundColor: 'rgba(0,0,0,0.8)' }} onClick={close}>
-  <div style={{ width: '100%', maxWidth: '42rem', maxHeight: '90vh', overflowY: 'auto', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '1rem', padding: '1.5rem', position: 'relative' }} onClick={e => e.stopPropagation()}>
+  <div style={{ width: '100%', maxWidth: '42rem', maxHeight: '90vh', overflowY: 'auto', backgroundColor: 'var(--modal-bg)', border: '1px solid var(--border-color)', borderRadius: '1rem', padding: '1.5rem', position: 'relative' }} onClick={e => e.stopPropagation()}>
     <button onClick={close} style={{ position: 'absolute', top: '1rem', right: '1rem', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'; e.target.style.color = '#fff'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.1)'; e.target.style.color = '#9ca3af'; }}>✕</button>
     {isFetching ? (
       <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}><span className="loader"></span></div>
@@ -604,7 +604,7 @@ const CookieConsentModal = ({ isOpen, onAccept, t }) => {
   
   return (
     <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50, padding: '1rem' }}>
-      <div style={{ maxWidth: '42rem', margin: '0 auto', backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '1rem', padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+      <div style={{ maxWidth: '42rem', margin: '0 auto', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: '1rem', padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
         <p style={{ color: '#9ca3af', fontSize: '0.875rem', flex: 1 }}>{t.cookieMessage}</p>
         <button onClick={onAccept} style={{ padding: '0.5rem 1.5rem', background: 'linear-gradient(to right, #a855f7, #ec4899)', color: 'white', borderRadius: '9999px', fontWeight: 'bold' }}>{t.cookieAccept}</button>
       </div>
@@ -614,7 +614,7 @@ const CookieConsentModal = ({ isOpen, onAccept, t }) => {
 
 // Skeleton Card
 const SkeletonMediaCard = () => (
-  <div style={{ width: '100%', maxWidth: '28rem', margin: '0 auto', padding: '1.5rem', backgroundColor: '#1f2937', borderRadius: '1rem' }}>
+  <div style={{ width: '100%', maxWidth: '28rem', margin: '0 auto', padding: '1.5rem', backgroundColor: 'var(--card-bg)', borderRadius: '1rem' }}>
     <div style={{ display: 'flex', gap: '1.5rem' }}>
       <div style={{ width: '12rem', height: '18rem', backgroundColor: '#374151', borderRadius: '0.5rem' }}></div>
       <div style={{ flex: 1 }}>
