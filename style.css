@@ -853,3 +853,53 @@ select option {
 .light-mode [style*="var(--card-bg)"] button {
   color: var(--text-primary) !important;
 }
+
+/* Movie info capsules in light mode */
+.light-mode [style*="rgba(255,255,255,0.07)"] {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Certification badge in light mode */
+.light-mode [style*="color: #9ca3af"][style*="fontWeight: 700"] {
+  color: var(--text-secondary) !important;
+}
+
+/* Genre purple pills in light mode */
+.light-mode [style*="rgba(168,85,247,0.15)"] {
+  background-color: rgba(124, 58, 237, 0.12) !important;
+}
+.light-mode [style*="color: #d8b4fe"] {
+  color: #6d28d9 !important;
+}
+
+/* Rating yellow pill in light mode */
+.light-mode [style*="rgba(251,191,36,0.15)"] {
+  background-color: rgba(217, 119, 6, 0.12) !important;
+}
+.light-mode [style*="color: #fbbf24"] {
+  color: #b45309 !important;
+}
+
+/* Advanced Filters button in light mode */
+.light-mode [style*="rgba(255,255,255,0.05)"][style*="cursor: pointer"] {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Advanced Filters button icon in light mode */
+.light-mode [style*="rgba(255,255,255,0.05)"] svg {
+  stroke: var(--text-primary) !important;
+}
+
+/* Advanced Filters button explicit class */
+.light-mode .filter-btn {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.light-mode .filter-btn svg {
+  stroke: var(--text-primary) !important;
+}
