@@ -840,13 +840,13 @@ const handleActorClick = async (actorId) => {
 </label>
 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
   <input type="range" min="0" max="10" value={filters.seasonsMin} onChange={(e) => {
-    const val = parseInt(e.target.value);
-    setFilters(f => ({ ...f, seasonsMin: val, seasonsMax: f.seasonsMax > 0 ? Math.max(val, f.seasonsMax) : f.seasonsMax }));
-  }} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
-  <input type="range" min="0" max="10" value={filters.seasonsMax} onChange={(e) => {
-    const val = parseInt(e.target.value);
-    setFilters(f => ({ ...f, seasonsMax: val, seasonsMin: val > 0 ? Math.min(f.seasonsMin, val) : f.seasonsMin }));
-  }} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
+  const val = parseInt(e.target.value);
+  setFilters(f => ({ ...f, seasonsMin: val, seasonsMax: f.seasonsMax > 0 && f.seasonsMax < val ? val : f.seasonsMax }));
+}} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
+<input type="range" min="0" max="10" value={filters.seasonsMax} onChange={(e) => {
+  const val = parseInt(e.target.value);
+  setFilters(f => ({ ...f, seasonsMax: val, seasonsMin: f.seasonsMin > val ? val : f.seasonsMin }));
+}} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
 </div>
   </div>
 )}
