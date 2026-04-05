@@ -438,7 +438,15 @@ if (filters.ageRatingMin > 0 || filters.ageRatingMax > 0) {
     ageRatingParams.certification_country = userRegion;
     ageRatingParams.certification = selectedRatings.join('|');
   }
-
+if (mediaType === 'tv' && filters.seasonsMax > 0) {
+  transformedMedia = transformedMedia.filter(m => {
+    const rawResult = data.results.find(r => r.id.toString() === m.id);
+    if (!rawResult) return true;
+    const numSeasons = rawResult.number_of_seasons;
+    if (!numSeasons) return true;
+    return numSeasons <= filters.seasonsMax;
+  });
+}
 }
 
     const queryParams = {
@@ -456,7 +464,7 @@ if (filters.ageRatingMin > 0 || filters.ageRatingMax > 0) {
 ...(filters.person && filters.person.role === 'actor' && { with_cast: filters.person.id }),
 ...(filters.person && filters.person.role !== 'actor' && { with_crew: filters.person.id }),
 ...(filters.duration > 0 && { [`${runtimeParam}.gte`]: selectedDuration.gte, [`${runtimeParam}.lte`]: selectedDuration.lte }),
-...(mediaType === 'tv' && filters.seasonsMax > 0 && { 'with_number_of_seasons': filters.seasonsMax }),
+...(mediaType === 'tv' && filters.seasonsMax > 0 && { 'with_number_of_seasons.lte': filters.seasonsMax }),
       ...ageRatingParams,
       sort_by: 'popularity.desc'
     };
@@ -814,10 +822,7 @@ const handleActorClick = async (actorId) => {
       }} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
     </div>
   </div>
-  <button onClick={() => setIsFilterModalOpen(true)} className="filter-btn" style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem', padding: '0.75rem', color: '#e5e7eb', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontSize: '0.875rem' }}>
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '1.1rem', height: '1.1rem' }}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg>
-    {t.advancedFilters}
-  </button>
+  
   {mediaType === 'tv' && (
   <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem', padding: '0.75rem' }}>
     <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.5rem' }}>
@@ -826,6 +831,11 @@ const handleActorClick = async (actorId) => {
     <input type="range" min="0" max="10" value={filters.seasonsMax} onChange={(e) => handleFilterChange('seasonsMax', parseInt(e.target.value))} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
   </div>
 )}
+  <button onClick={() => setIsFilterModalOpen(true)} className="filter-btn" style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem', padding: '0.75rem', color: '#e5e7eb', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontSize: '0.875rem' }}>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '1.1rem', height: '1.1rem' }}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg>
+    {t.advancedFilters}
+  </button>
+  
 </div>
 
       {/* Surprise Me Button */}
