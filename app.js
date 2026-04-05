@@ -441,6 +441,7 @@ if (filters.ageRatingMin > 0 || filters.ageRatingMax > 0) {
 
 }
 
+
     const queryParams = {
       language: tmdbLanguage,
       'vote_count.gte': mediaType === 'movie' ? 200 : 100,
@@ -512,6 +513,7 @@ if (needsDetailsCheck) {
     const idx = Math.floor(Math.random() * pool.length);
     const candidate = pool.splice(idx, 1)[0];
     const details = await fetchFullMediaDetails(candidate.id, candidate.mediaType);
+    console.log('candidate:', candidate.title, '| seasons:', details?.seasons, '| min:', filters.seasonsMin, '| max:', filters.seasonsMax);
     const certOk = !needsCertCheck || !details?.certification || allowedRatings.has(details.certification);
 const needsSeasonsCheck = mediaType === 'tv' && (filters.seasonsMin > 0 || filters.seasonsMax > 0);    if (certOk && seasonsOk) {
       selected = candidate;
