@@ -519,7 +519,8 @@ const needsSeasonsCheck = mediaType === 'tv' && (filters.seasonsMin > 0 || filte
       selected = candidate;
       break;
     }
-    const seasonsOk = !needsSeasonsCheck || !details?.seasons || (
+    const seasonsOk = !needsSeasonsCheck || (
+  details?.seasons != null &&
   (filters.seasonsMin === 0 || details.seasons >= filters.seasonsMin) &&
   (filters.seasonsMax === 0 || details.seasons <= filters.seasonsMax)
 );
