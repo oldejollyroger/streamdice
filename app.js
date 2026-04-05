@@ -4,7 +4,7 @@
     { code: 'de-DE', name: 'Deutsch' }, { code: 'it-IT', name: 'Italiano' }, { code: 'pt-PT', name: 'Português' },
     { code: 'ru-RU', name: 'Русский' }, { code: 'ja-JP', name: '日本語' }, { code: 'ko-KR', name: '한국어' }, { code: 'zh-CN', name: '中文' }
   ];
-const initialFilters = { genre: [], excludeGenres: [], decade: 'todos', platform: [], minRating: 0, person: null, duration: 0, ageRatingMin: 0, ageRatingMax: 0, seasonsMax: 0 };
+const initialFilters = { genre: [], excludeGenres: [], decade: 'todos', platform: [], minRating: 0, person: null, duration: 0, ageRatingMin: 0, ageRatingMax: 0, seasonsMin: 0, seasonsMax: 0 };
   // Theme-aware background getter
 const getThemedBg = (mode, darkBg, lightBg) => mode === 'light' ? lightBg : darkBg;
 const getThemedText = (mode, darkText, lightText) => mode === 'light' ? lightText : darkText;
@@ -456,8 +456,8 @@ if (filters.ageRatingMin > 0 || filters.ageRatingMax > 0) {
 ...(filters.person && filters.person.role === 'actor' && { with_cast: filters.person.id }),
 ...(filters.person && filters.person.role !== 'actor' && { with_crew: filters.person.id }),
 ...(filters.duration > 0 && { [`${runtimeParam}.gte`]: selectedDuration.gte, [`${runtimeParam}.lte`]: selectedDuration.lte }),
-...(mediaType === 'tv' && filters.seasonsMax > 0 && { 'with_number_of_seasons.lte': filters.seasonsMax }),
-      ...ageRatingParams,
+...(mediaType === 'tv' && filters.seasonsMin > 0 && { 'with_number_of_seasons.gte': filters.seasonsMin }),
+...(mediaType === 'tv' && filters.seasonsMax > 0 && { 'with_number_of_seasons.lte': filters.seasonsMax }),      ...ageRatingParams,
       sort_by: 'popularity.desc'
     };
 
@@ -513,11 +513,14 @@ if (needsDetailsCheck) {
     const candidate = pool.splice(idx, 1)[0];
     const details = await fetchFullMediaDetails(candidate.id, candidate.mediaType);
     const certOk = !needsCertCheck || !details?.certification || allowedRatings.has(details.certification);
-    const seasonsOk = !needsSeasonsCheck || !details?.seasons || details.seasons <= filters.seasonsMax;
-    if (certOk && seasonsOk) {
+const needsSeasonsCheck = mediaType === 'tv' && (filters.seasonsMin > 0 || filters.seasonsMax > 0);    if (certOk && seasonsOk) {
       selected = candidate;
       break;
     }
+    const seasonsOk = !needsSeasonsCheck || !details?.seasons || (
+  (filters.seasonsMin === 0 || details.seasons >= filters.seasonsMin) &&
+  (filters.seasonsMax === 0 || details.seasons <= filters.seasonsMax)
+);
   }
 } else {
   selected = pool[Math.floor(Math.random() * pool.length)];
@@ -822,9 +825,26 @@ const handleActorClick = async (actorId) => {
   {mediaType === 'tv' && (
   <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem', padding: '0.75rem' }}>
     <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.5rem' }}>
-      {t.seasonFilter}: <span style={{ color: 'var(--color-accent)', fontWeight: 800 }}>{filters.seasonsMax === 0 ? t.anySeasons : `≤ ${filters.seasonsMax}`}</span>
-    </label>
-    <input type="range" min="0" max="10" value={filters.seasonsMax} onChange={(e) => handleFilterChange('seasonsMax', parseInt(e.target.value))} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
+  {t.seasonFilter}: <span style={{ color: 'var(--color-accent)', fontWeight: 800 }}>
+    {filters.seasonsMin === 0 && filters.seasonsMax === 0
+      ? t.anySeasons
+      : filters.seasonsMin === 0
+      ? `≤ ${filters.seasonsMax}`
+      : filters.seasonsMax === 0
+      ? `≥ ${filters.seasonsMin}`
+      : `${filters.seasonsMin} → ${filters.seasonsMax}`}
+  </span>
+</label>
+<div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+  <input type="range" min="0" max="10" value={filters.seasonsMin} onChange={(e) => {
+    const val = parseInt(e.target.value);
+    setFilters(f => ({ ...f, seasonsMin: val, seasonsMax: f.seasonsMax > 0 ? Math.max(val, f.seasonsMax) : f.seasonsMax }));
+  }} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
+  <input type="range" min="0" max="10" value={filters.seasonsMax} onChange={(e) => {
+    const val = parseInt(e.target.value);
+    setFilters(f => ({ ...f, seasonsMax: val, seasonsMin: val > 0 ? Math.min(f.seasonsMin, val) : f.seasonsMin }));
+  }} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
+</div>
   </div>
 )}
   <button onClick={() => setIsFilterModalOpen(true)} className="filter-btn" style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem', padding: '0.75rem', color: '#e5e7eb', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontSize: '0.875rem' }}>
