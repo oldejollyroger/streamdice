@@ -438,15 +438,7 @@ if (filters.ageRatingMin > 0 || filters.ageRatingMax > 0) {
     ageRatingParams.certification_country = userRegion;
     ageRatingParams.certification = selectedRatings.join('|');
   }
-if (mediaType === 'tv' && filters.seasonsMax > 0) {
-  transformedMedia = transformedMedia.filter(m => {
-    const rawResult = data.results.find(r => r.id.toString() === m.id);
-    if (!rawResult) return true;
-    const numSeasons = rawResult.number_of_seasons;
-    if (!numSeasons) return true;
-    return numSeasons <= filters.seasonsMax;
-  });
-}
+
 }
 
     const queryParams = {
@@ -512,20 +504,21 @@ const unwatchedMedia = transformedMedia.filter(m =>
   let selected = null;
   const pool = [...unwatchedMedia];
 
-  if (needsCertCheck) {
-    while (pool.length > 0) {
-      const idx = Math.floor(Math.random() * pool.length);
-      const candidate = pool.splice(idx, 1)[0];
-      const details = await fetchFullMediaDetails(candidate.id, candidate.mediaType);
-      const cert = details?.certification;
-      if (!cert || allowedRatings.has(cert)) {
-        selected = candidate;
-        break;
-      }
+if (needsDetailsCheck) {
+  while (pool.length > 0) {
+    const idx = Math.floor(Math.random() * pool.length);
+    const candidate = pool.splice(idx, 1)[0];
+    const details = await fetchFullMediaDetails(candidate.id, candidate.mediaType);
+    const certOk = !needsCertCheck || !details?.certification || allowedRatings.has(details.certification);
+    const seasonsOk = !needsSeasonsCheck || !details?.seasons || details.seasons <= filters.seasonsMax;
+    if (certOk && seasonsOk) {
+      selected = candidate;
+      break;
     }
-  } else {
-    selected = pool[Math.floor(Math.random() * pool.length)];
   }
+} else {
+  selected = pool[Math.floor(Math.random() * pool.length)];
+}
 
   if (selected) {
       setTimeout(() => {
