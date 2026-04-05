@@ -310,8 +310,8 @@ const MediaCardContent = ({ media, details, isFetching, t, userRegion, handleAct
           <span style={{ padding: '0.25rem 0.625rem', backgroundColor: 'rgba(255,255,255,0.07)', borderRadius: '9999px', color: '#e5e7eb', fontSize: '0.8rem' }}>⏱ {formatDuration(displayDetails.duration)}</span>
         )}
         {displayDetails.seasons && (
-          <span style={{ padding: '0.25rem 0.625rem', backgroundColor: 'rgba(255,255,255,0.07)', borderRadius: '9999px', color: '#e5e7eb', fontSize: '0.8rem' }}>📺 {displayDetails.seasons} {t.cardSeasons}</span>
-        )}
+  <span style={{ padding: '0.25rem 0.625rem', backgroundColor: 'rgba(255,255,255,0.07)', borderRadius: '9999px', color: '#e5e7eb', fontSize: '0.8rem' }}>📺 {displayDetails.seasons} {t.cardSeasons}</span>
+)}
         {media.genres?.length > 0 && media.genres.map(genre => (
           <span key={genre} style={{ padding: '0.25rem 0.625rem', backgroundColor: 'rgba(168,85,247,0.15)', borderRadius: '9999px', color: '#d8b4fe', fontSize: '0.8rem' }}>{genre}</span>
         ))}
@@ -323,6 +323,20 @@ const MediaCardContent = ({ media, details, isFetching, t, userRegion, handleAct
           🎬 <span style={{ color: '#e5e7eb', fontWeight: 600 }}>{t.cardDirectorLabel}:</span> {displayDetails.director.name}
         </p>
       )}
+
+      {displayDetails.seasonsList?.length > 0 && (
+  <div>
+    <p style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.5rem' }}>{t.seasonsList}</p>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', maxHeight: '8rem', overflowY: 'auto' }}>
+      {displayDetails.seasonsList.map(s => (
+        <div key={s.season_number} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.375rem 0.625rem', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '0.375rem' }}>
+          <span style={{ fontSize: '0.8rem', color: '#e5e7eb', fontWeight: 600 }}>{s.name || `Season ${s.season_number}`}</span>
+          <span style={{ fontSize: '0.75rem', color: '#6b7280', backgroundColor: 'rgba(255,255,255,0.07)', padding: '0.1rem 0.5rem', borderRadius: '9999px' }}>{s.episode_count} {t.episodes}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
 
       {/* Streaming providers */}
       {displayDetails.providers?.length > 0 && (

@@ -4,7 +4,7 @@
     { code: 'de-DE', name: 'Deutsch' }, { code: 'it-IT', name: 'Italiano' }, { code: 'pt-PT', name: 'Português' },
     { code: 'ru-RU', name: 'Русский' }, { code: 'ja-JP', name: '日本語' }, { code: 'ko-KR', name: '한국어' }, { code: 'zh-CN', name: '中文' }
   ];
-const initialFilters = { genre: [], excludeGenres: [], decade: 'todos', platform: [], minRating: 0, person: null, duration: 0, ageRatingMin: 0, ageRatingMax: 0 };
+const initialFilters = { genre: [], excludeGenres: [], decade: 'todos', platform: [], minRating: 0, person: null, duration: 0, ageRatingMin: 0, ageRatingMax: 0, seasonsMax: 0 };
   // Theme-aware background getter
 const getThemedBg = (mode, darkBg, lightBg) => mode === 'light' ? lightBg : darkBg;
 const getThemedText = (mode, darkText, lightText) => mode === 'light' ? lightText : darkText;
@@ -351,6 +351,7 @@ const addToRecentHistory = useCallback((mediaId) => {
         cast: data.credits?.cast?.slice(0, 10) || [],
         director,
         seasons: data.number_of_seasons,
+seasonsList: (data.seasons || []).filter(s => s.season_number > 0),
         trailerKey: data.videos?.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube')?.key || null,
         similar: similarMedia,
         certification
@@ -455,6 +456,7 @@ if (filters.ageRatingMin > 0 || filters.ageRatingMax > 0) {
 ...(filters.person && filters.person.role === 'actor' && { with_cast: filters.person.id }),
 ...(filters.person && filters.person.role !== 'actor' && { with_crew: filters.person.id }),
 ...(filters.duration > 0 && { [`${runtimeParam}.gte`]: selectedDuration.gte, [`${runtimeParam}.lte`]: selectedDuration.lte }),
+...(mediaType === 'tv' && filters.seasonsMax > 0 && { 'with_number_of_seasons': filters.seasonsMax }),
       ...ageRatingParams,
       sort_by: 'popularity.desc'
     };
@@ -816,6 +818,14 @@ const handleActorClick = async (actorId) => {
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '1.1rem', height: '1.1rem' }}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg>
     {t.advancedFilters}
   </button>
+  {mediaType === 'tv' && (
+  <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem', padding: '0.75rem' }}>
+    <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.5rem' }}>
+      {t.seasonFilter}: <span style={{ color: 'var(--color-accent)', fontWeight: 800 }}>{filters.seasonsMax === 0 ? t.anySeasons : `≤ ${filters.seasonsMax}`}</span>
+    </label>
+    <input type="range" min="0" max="10" value={filters.seasonsMax} onChange={(e) => handleFilterChange('seasonsMax', parseInt(e.target.value))} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
+  </div>
+)}
 </div>
 
       {/* Surprise Me Button */}

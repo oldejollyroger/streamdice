@@ -99,6 +99,11 @@ const translations = {
     shareEmail: "Email",
     shareCopyLink: "Copy Link",
     shareLinkCopied: "Link copied!",
+    seasons: "Seasons",
+episodes: "ep",
+seasonFilter: "Seasons",
+anySeasons: "Any",
+seasonsList: "Season breakdown",
   },
 
 
@@ -200,6 +205,11 @@ const translations = {
     shareEmail: "Email",
     shareCopyLink: "Copiar enlace",
     shareLinkCopied: "¡Enlace copiado!",
+    seasons: "Temporadas",
+episodes: "ep",
+seasonFilter: "Temporadas",
+anySeasons: "Cualquiera",
+seasonsList: "Desglose por temporada",
   }
 };
 
