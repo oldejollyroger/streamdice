@@ -504,6 +504,9 @@ const unwatchedMedia = transformedMedia.filter(m =>
   let selected = null;
   const pool = [...unwatchedMedia];
 
+const needsSeasonsCheck = mediaType === 'tv' && filters.seasonsMax > 0;
+const needsDetailsCheck = needsCertCheck || needsSeasonsCheck;
+
 if (needsDetailsCheck) {
   while (pool.length > 0) {
     const idx = Math.floor(Math.random() * pool.length);
