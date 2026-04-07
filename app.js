@@ -524,7 +524,7 @@ const needsSeasonsCheck = mediaType === 'tv' && (filters.seasonsMin > 0 || filte
   : typeof details?.seasons === 'number' ? details.seasons 
   : typeof details?.number_of_seasons === 'number' ? details.number_of_seasons 
   : null;
-console.log('seasonCount resolved:', seasonCount, 'for:', candidate.title);
+console.log('seasonCount resolved:', seasonCount, '| certOk:', certOk, '| seasonsOk:', seasonsOk, '| ageMin:', filters.ageRatingMin, '| ageMax:', filters.ageRatingMax, 'for:', candidate.title);
 const seasonsOk = !needsSeasonsCheck || (
   seasonCount != null &&
   (filters.seasonsMin === 0 || seasonCount >= filters.seasonsMin) &&
