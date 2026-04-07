@@ -163,8 +163,8 @@ const swipeHandlers = useSwipeGesture(
 const resetAndClearFilters = () => {
   resetAllState();
   setFilters(initialFilters);
-  // Clear recent history when filters are cleared
   setRecentlyShownIds([]);
+  detailsCache.current = {};
 };
 
 // Track recently shown media to prevent duplicates
@@ -350,7 +350,8 @@ const addToRecentHistory = useCallback((mediaId) => {
         rentalProviders: uniquePayProviders,
         cast: data.credits?.cast?.slice(0, 10) || [],
         director,
-        seasons: data.number_of_seasons,
+        seasonCount: data.number_of_seasons,
+seasons: data.number_of_seasons,
 seasonsList: (data.seasons || []).filter(s => s.season_number > 0),
         trailerKey: data.videos?.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube')?.key || null,
         similar: similarMedia,
@@ -519,10 +520,15 @@ const needsSeasonsCheck = mediaType === 'tv' && (filters.seasonsMin > 0 || filte
       selected = candidate;
       break;
     }
-    const seasonsOk = !needsSeasonsCheck || (
-  details?.seasons != null &&
-  (filters.seasonsMin === 0 || details.seasons >= filters.seasonsMin) &&
-  (filters.seasonsMax === 0 || details.seasons <= filters.seasonsMax)
+    const seasonCount = typeof details?.seasonCount === 'number' ? details.seasonCount 
+  : typeof details?.seasons === 'number' ? details.seasons 
+  : typeof details?.number_of_seasons === 'number' ? details.number_of_seasons 
+  : null;
+console.log('seasonCount resolved:', seasonCount, 'for:', candidate.title);
+const seasonsOk = !needsSeasonsCheck || (
+  seasonCount != null &&
+  (filters.seasonsMin === 0 || seasonCount >= filters.seasonsMin) &&
+  (filters.seasonsMax === 0 || seasonCount <= filters.seasonsMax)
 );
   }
 } else {
