@@ -4,7 +4,7 @@
     { code: 'de-DE', name: 'Deutsch' }, { code: 'it-IT', name: 'Italiano' }, { code: 'pt-PT', name: 'Português' },
     { code: 'ru-RU', name: 'Русский' }, { code: 'ja-JP', name: '日本語' }, { code: 'ko-KR', name: '한국어' }, { code: 'zh-CN', name: '中文' }
   ];
-const initialFilters = { genre: [], excludeGenres: [], decade: 'todos', platform: [], minRating: 0, person: null, duration: 0, ageRatingMin: 0, ageRatingMax: 0, seasonsMin: 0, seasonsMax: 0 };
+const initialFilters = { genre: [], excludeGenres: [], decade: 'todos', platform: [], minRating: 0, person: null, duration: 0, ageRatingMin: 0, ageRatingMax: 0, seasonsCount: 0, seasonsMode: 'max' };
   // Theme-aware background getter
 const getThemedBg = (mode, darkBg, lightBg) => mode === 'light' ? lightBg : darkBg;
 const getThemedText = (mode, darkText, lightText) => mode === 'light' ? lightText : darkText;
@@ -458,8 +458,8 @@ if (filters.ageRatingMin > 0 || filters.ageRatingMax > 0) {
 ...(filters.person && filters.person.role === 'actor' && { with_cast: filters.person.id }),
 ...(filters.person && filters.person.role !== 'actor' && { with_crew: filters.person.id }),
 ...(filters.duration > 0 && { [`${runtimeParam}.gte`]: selectedDuration.gte, [`${runtimeParam}.lte`]: selectedDuration.lte }),
-...(mediaType === 'tv' && filters.seasonsMin > 0 && { 'with_number_of_seasons.gte': filters.seasonsMin }),
-...(mediaType === 'tv' && filters.seasonsMax > 0 && { 'with_number_of_seasons.lte': filters.seasonsMax }),      ...ageRatingParams,
+...(mediaType === 'tv' && Number(filters.seasonsCount) > 0 && filters.seasonsMode === 'max' && { 'with_number_of_seasons.lte': filters.seasonsCount }),
+...(mediaType === 'tv' && Number(filters.seasonsCount) > 0 && filters.seasonsMode === 'exact' && { 'with_number_of_seasons': filters.seasonsCount }),      ...ageRatingParams,
       sort_by: 'popularity.desc'
     };
 
@@ -506,32 +506,32 @@ const unwatchedMedia = transformedMedia.filter(m =>
   let selected = null;
   const pool = [...unwatchedMedia];
 
-const needsSeasonsCheck = mediaType === 'tv' && filters.seasonsMax > 0;
-const needsDetailsCheck = needsCertCheck || needsSeasonsCheck;
+  const seasonCount = Number(details?.seasonCount || details?.number_of_seasons) || null;
+const sCount = Number(filters.seasonsCount);
+const seasonsOk = !needsSeasonsCheck || (
+  seasonCount != null && (
+    filters.seasonsMode === 'exact' ? seasonCount === sCount : seasonCount <= sCount
+  )
+);
 
 if (needsDetailsCheck) {
   while (pool.length > 0) {
     const idx = Math.floor(Math.random() * pool.length);
     const candidate = pool.splice(idx, 1)[0];
     const details = await fetchFullMediaDetails(candidate.id, candidate.mediaType);
-    console.log('candidate:', candidate.title, '| seasons:', details?.seasons, '| min:', filters.seasonsMin, '| max:', filters.seasonsMax);
     const certOk = !needsCertCheck || !details?.certification || allowedRatings.has(details.certification);
-const needsSeasonsCheck = mediaType === 'tv' && (Number(filters.seasonsMin) > 0 || Number(filters.seasonsMax) > 0);    if (certOk && seasonsOk) {
+    const seasonCount = Number(details?.seasonCount || details?.number_of_seasons) || null;
+    const sMin = Number(filters.seasonsMin) || 0;
+    const sMax = Number(filters.seasonsMax) || 0;
+    const seasonsOk = !needsSeasonsCheck || (
+      seasonCount != null &&
+      (sMin === 0 || seasonCount >= sMin) &&
+      (sMax === 0 || seasonCount <= sMax)
+    );
+    if (certOk && seasonsOk) {
       selected = candidate;
       break;
     }
-    const seasonCount = typeof details?.seasonCount === 'number' ? details.seasonCount 
-  : typeof details?.seasons === 'number' ? details.seasons 
-  : typeof details?.number_of_seasons === 'number' ? details.number_of_seasons 
-  : null;
-const sMin = Number(filters.seasonsMin) || 0;
-const sMax = Number(filters.seasonsMax) || 0;
-const seasonsOk = !needsSeasonsCheck || (
-  seasonCount != null &&
-  (sMin === 0 || seasonCount >= sMin) &&
-  (sMax === 0 || seasonCount <= sMax)
-);
-console.log('seasonCount:', seasonCount, '| sMin:', sMin, '| sMax:', sMax, '| seasonsOk:', seasonsOk, 'for:', candidate.title);
   }
 } else {
   selected = pool[Math.floor(Math.random() * pool.length)];
