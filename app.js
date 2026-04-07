@@ -516,7 +516,7 @@ if (needsDetailsCheck) {
     const details = await fetchFullMediaDetails(candidate.id, candidate.mediaType);
     console.log('candidate:', candidate.title, '| seasons:', details?.seasons, '| min:', filters.seasonsMin, '| max:', filters.seasonsMax);
     const certOk = !needsCertCheck || !details?.certification || allowedRatings.has(details.certification);
-const needsSeasonsCheck = mediaType === 'tv' && (filters.seasonsMin > 0 || filters.seasonsMax > 0);    if (certOk && seasonsOk) {
+const needsSeasonsCheck = mediaType === 'tv' && (Number(filters.seasonsMin) > 0 || Number(filters.seasonsMax) > 0);    if (certOk && seasonsOk) {
       selected = candidate;
       break;
     }
@@ -524,12 +524,14 @@ const needsSeasonsCheck = mediaType === 'tv' && (filters.seasonsMin > 0 || filte
   : typeof details?.seasons === 'number' ? details.seasons 
   : typeof details?.number_of_seasons === 'number' ? details.number_of_seasons 
   : null;
-console.log('seasonCount resolved:', seasonCount, '| certOk:', certOk, '| seasonsOk:', seasonsOk, '| ageMin:', filters.ageRatingMin, '| ageMax:', filters.ageRatingMax, 'for:', candidate.title);
+const sMin = Number(filters.seasonsMin) || 0;
+const sMax = Number(filters.seasonsMax) || 0;
 const seasonsOk = !needsSeasonsCheck || (
   seasonCount != null &&
-  (filters.seasonsMin === 0 || seasonCount >= filters.seasonsMin) &&
-  (filters.seasonsMax === 0 || seasonCount <= filters.seasonsMax)
+  (sMin === 0 || seasonCount >= sMin) &&
+  (sMax === 0 || seasonCount <= sMax)
 );
+console.log('seasonCount:', seasonCount, '| sMin:', sMin, '| sMax:', sMax, '| seasonsOk:', seasonsOk, 'for:', candidate.title);
   }
 } else {
   selected = pool[Math.floor(Math.random() * pool.length)];
