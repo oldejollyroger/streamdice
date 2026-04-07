@@ -506,13 +506,8 @@ const unwatchedMedia = transformedMedia.filter(m =>
   let selected = null;
   const pool = [...unwatchedMedia];
 
-  const seasonCount = Number(details?.seasonCount || details?.number_of_seasons) || null;
-const sCount = Number(filters.seasonsCount);
-const seasonsOk = !needsSeasonsCheck || (
-  seasonCount != null && (
-    filters.seasonsMode === 'exact' ? seasonCount === sCount : seasonCount <= sCount
-  )
-);
+const needsSeasonsCheck = mediaType === 'tv' && Number(filters.seasonsCount) > 0;
+const needsDetailsCheck = needsCertCheck || needsSeasonsCheck;
 
 if (needsDetailsCheck) {
   while (pool.length > 0) {
@@ -520,14 +515,14 @@ if (needsDetailsCheck) {
     const candidate = pool.splice(idx, 1)[0];
     const details = await fetchFullMediaDetails(candidate.id, candidate.mediaType);
     const certOk = !needsCertCheck || !details?.certification || allowedRatings.has(details.certification);
-    const seasonCount = Number(details?.seasonCount || details?.number_of_seasons) || null;
-    const sMin = Number(filters.seasonsMin) || 0;
-    const sMax = Number(filters.seasonsMax) || 0;
-    const seasonsOk = !needsSeasonsCheck || (
-      seasonCount != null &&
-      (sMin === 0 || seasonCount >= sMin) &&
-      (sMax === 0 || seasonCount <= sMax)
-    );
+   const seasonCount = Number(details?.seasonCount || details?.number_of_seasons) || null;
+const sCount = Number(filters.seasonsCount);
+const seasonsOk = !needsSeasonsCheck || (
+  seasonCount != null && (
+    filters.seasonsMode === 'exact' ? seasonCount === sCount : seasonCount <= sCount
+  )
+);
+
     if (certOk && seasonsOk) {
       selected = candidate;
       break;
