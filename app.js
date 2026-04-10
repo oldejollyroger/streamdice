@@ -1038,7 +1038,7 @@ const handleActorClick = async (actorId) => {
       ) : (
         <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '0.75rem', padding: '0.875rem', marginBottom: '0.75rem' }}>
           <p style={{ fontSize: '0.8rem', color: '#9ca3af' }}>
-            {isIos ? `📲 ${t.installInstructions}` : /Android/i.test(navigator.userAgent) ? '📲 Open in Chrome and tap the menu to install' : '💻 Open in Chrome to install'}
+            {isIos ? `📲 ${t.installInstructions}` : /Android/i.test(navigator.userAgent) ? '📲 Tap the ⋮ menu in Chrome and select "Add to Home Screen"' : '💻 Open in Chrome to install'}
           </p>
         </div>
       )}
