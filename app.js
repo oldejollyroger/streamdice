@@ -988,25 +988,27 @@ const handleActorClick = async (actorId) => {
                 <p style={{ fontSize: '1.25rem', color: '#9ca3af', marginBottom: '1rem' }}>{t.noMoviesFound}</p>
                 <button onClick={resetAndClearFilters} style={{ padding: '0.5rem 1.5rem', backgroundColor: 'var(--color-accent)', color: 'white', fontWeight: 'bold', borderRadius: '9999px', border: 'none', cursor: 'pointer' }}>{t.clearAllFilters}</button>
               </div>
-           ) : !hasSearched && (
+          ) : !hasSearched && (
   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
     <p style={{ fontSize: '1.25rem', color: '#9ca3af' }}>{t.welcomeMessage}</p>
-    {(showInstallButton || showIosInstallInstructions) && (
+    {!isStandalone && (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-        {showInstallButton && (
+        {installPrompt ? (
           <button onClick={handleInstallClick} style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', padding: '0.75rem 1.5rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', fontWeight: 700, borderRadius: '9999px', border: 'none', cursor: 'pointer', fontSize: '0.95rem' }}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" style={{ width: '1.1rem', height: '1.1rem' }}><path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V2.25" /></svg>
             {t.installApp}
           </button>
-        )}
-        {showIosInstallInstructions && (
-          <p style={{ fontSize: '0.8rem', color: '#6b7280', textAlign: 'center', maxWidth: '260px' }}>📲 {t.installInstructions}</p>
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', padding: '0.625rem 1.25rem', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '9999px' }}>
+            <span style={{ fontSize: '1rem' }}>📲</span>
+            <p style={{ fontSize: '0.8rem', color: '#6b7280', margin: 0 }}>{isIos ? t.installInstructions : 'Open in Chrome to install the app'}</p>
+          </div>
         )}
       </div>
     )}
   </div>
 )}
-          </div>
+   </div>
         )}
       </main>
 
