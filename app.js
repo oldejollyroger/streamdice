@@ -1000,9 +1000,15 @@ const handleActorClick = async (actorId) => {
           </button>
         ) : (
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', padding: '0.625rem 1.25rem', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '9999px' }}>
-            <span style={{ fontSize: '1rem' }}>📲</span>
-            <p style={{ fontSize: '0.8rem', color: '#6b7280', margin: 0 }}>{isIos ? t.installInstructions : 'Open in Chrome to install the app'}</p>
-          </div>
+  <span style={{ fontSize: '1rem' }}>📲</span>
+  <p style={{ fontSize: '0.8rem', color: '#6b7280', margin: 0 }}>
+    {isIos
+      ? t.installInstructions
+      : /Android/i.test(navigator.userAgent)
+      ? 'Open in Chrome and tap the menu to install'
+      : 'Open in Chrome to install the app'}
+  </p>
+</div>
         )}
       </div>
     )}
