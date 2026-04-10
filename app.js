@@ -459,7 +459,8 @@ if (filters.ageRatingMin > 0 || filters.ageRatingMax > 0) {
 ...(filters.person && filters.person.role !== 'actor' && { with_crew: filters.person.id }),
 ...(filters.duration > 0 && { [`${runtimeParam}.gte`]: selectedDuration.gte, [`${runtimeParam}.lte`]: selectedDuration.lte }),
 ...(mediaType === 'tv' && Number(filters.seasonsCount) > 0 && filters.seasonsMode === 'max' && { 'with_number_of_seasons.lte': filters.seasonsCount }),
-...(mediaType === 'tv' && Number(filters.seasonsCount) > 0 && filters.seasonsMode === 'exact' && { 'with_number_of_seasons': filters.seasonsCount }),      ...ageRatingParams,
+...(mediaType === 'tv' && Number(filters.seasonsCount) > 0 && filters.seasonsMode === 'exact' && { 'with_number_of_seasons': filters.seasonsCount }),
+...(mediaType === 'tv' && Number(filters.seasonsCount) > 0 && filters.seasonsMode === 'min' && { 'with_number_of_seasons.gte': filters.seasonsCount }),      ...ageRatingParams,
       sort_by: 'popularity.desc'
     };
 
@@ -519,7 +520,9 @@ if (needsDetailsCheck) {
 const sCount = Number(filters.seasonsCount);
 const seasonsOk = !needsSeasonsCheck || (
   seasonCount != null && (
-    filters.seasonsMode === 'exact' ? seasonCount === sCount : seasonCount <= sCount
+    filters.seasonsMode === 'exact' ? seasonCount === sCount :
+    filters.seasonsMode === 'min' ? seasonCount >= sCount :
+    seasonCount <= sCount
   )
 );
 
@@ -832,14 +835,15 @@ const handleActorClick = async (actorId) => {
   <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem', padding: '0.75rem' }}>
     <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.5rem' }}>
       {t.seasonFilter}: <span style={{ color: 'var(--color-accent)', fontWeight: 800 }}>
-        {Number(filters.seasonsCount) === 0 ? t.anySeasons : filters.seasonsMode === 'exact' ? `= ${filters.seasonsCount}` : `≤ ${filters.seasonsCount}`}
+        {Number(filters.seasonsCount) === 0 ? t.anySeasons : filters.seasonsMode === 'exact' ? `= ${filters.seasonsCount}` : filters.seasonsMode === 'min' ? `≥ ${filters.seasonsCount}` : `≤ ${filters.seasonsCount}`}
       </span>
     </label>
     <div style={{ display: 'flex', gap: '0.375rem', marginBottom: '0.5rem' }}>
-      <button onClick={() => handleFilterChange('seasonsMode', 'max')} style={{ flex: 1, padding: '0.25rem', fontSize: '0.7rem', fontWeight: 700, borderRadius: '0.375rem', border: '1px solid', borderColor: filters.seasonsMode !== 'exact' ? 'var(--color-accent)' : '#374151', backgroundColor: filters.seasonsMode !== 'exact' ? 'rgba(168,85,247,0.2)' : 'transparent', color: filters.seasonsMode !== 'exact' ? 'var(--color-accent)' : '#6b7280', cursor: 'pointer' }}>≤ Max</button>
-      <button onClick={() => handleFilterChange('seasonsMode', 'exact')} style={{ flex: 1, padding: '0.25rem', fontSize: '0.7rem', fontWeight: 700, borderRadius: '0.375rem', border: '1px solid', borderColor: filters.seasonsMode === 'exact' ? 'var(--color-accent)' : '#374151', backgroundColor: filters.seasonsMode === 'exact' ? 'rgba(168,85,247,0.2)' : 'transparent', color: filters.seasonsMode === 'exact' ? 'var(--color-accent)' : '#6b7280', cursor: 'pointer' }}>= Exact</button>
+      <button onClick={() => handleFilterChange('seasonsMode', 'max')} style={{ flex: 1, padding: '0.25rem', fontSize: '0.65rem', fontWeight: 700, borderRadius: '0.375rem', border: '1px solid', borderColor: filters.seasonsMode === 'max' ? 'var(--color-accent)' : '#374151', backgroundColor: filters.seasonsMode === 'max' ? 'rgba(168,85,247,0.2)' : 'transparent', color: filters.seasonsMode === 'max' ? 'var(--color-accent)' : '#6b7280', cursor: 'pointer' }}>≤ Max</button>
+      <button onClick={() => handleFilterChange('seasonsMode', 'exact')} style={{ flex: 1, padding: '0.25rem', fontSize: '0.65rem', fontWeight: 700, borderRadius: '0.375rem', border: '1px solid', borderColor: filters.seasonsMode === 'exact' ? 'var(--color-accent)' : '#374151', backgroundColor: filters.seasonsMode === 'exact' ? 'rgba(168,85,247,0.2)' : 'transparent', color: filters.seasonsMode === 'exact' ? 'var(--color-accent)' : '#6b7280', cursor: 'pointer' }}>= Exact</button>
+      <button onClick={() => handleFilterChange('seasonsMode', 'min')} style={{ flex: 1, padding: '0.25rem', fontSize: '0.65rem', fontWeight: 700, borderRadius: '0.375rem', border: '1px solid', borderColor: filters.seasonsMode === 'min' ? 'var(--color-accent)' : '#374151', backgroundColor: filters.seasonsMode === 'min' ? 'rgba(168,85,247,0.2)' : 'transparent', color: filters.seasonsMode === 'min' ? 'var(--color-accent)' : '#6b7280', cursor: 'pointer' }}>≥ Min</button>
     </div>
-    <input type="range" min="0" max="10" value={Number(filters.seasonsCount) || 0} onChange={(e) => handleFilterChange('seasonsCount', parseInt(e.target.value))} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
+    <input type="range" min="0" max="20" value={Number(filters.seasonsCount) || 0} onChange={(e) => handleFilterChange('seasonsCount', parseInt(e.target.value))} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
   </div>
 )}
   <button onClick={() => setIsFilterModalOpen(true)} className="filter-btn" style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem', padding: '0.75rem', color: '#e5e7eb', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontSize: '0.875rem' }}>
