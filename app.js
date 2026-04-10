@@ -26,7 +26,7 @@ const App = () => {
   const [mediaType, setMediaType] = useLocalStorageState('mediaPickerType_v1', 'movie');
   const [showRegionSelector, setShowRegionSelector] = useState(() => 
     {try {return !localStorage.getItem('movieRandomizerRegion');} catch (e) {return true;}});
-  const [filters, setFilters] = useLocalStorageState('mediaPickerFilters_v4', initialFilters);
+  const [filters, setFilters] = useLocalStorageState(initialFilters);
   const [cookieConsent, setCookieConsent] = useLocalStorageState('cookieConsent_v1', false);
   const WATCHED_KEY = 'mediaPickerWatched_v2';
   const WATCHLIST_KEY = 'mediaPickerWatchlist_v2';
@@ -831,26 +831,15 @@ const handleActorClick = async (actorId) => {
   {mediaType === 'tv' && (
   <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem', padding: '0.75rem' }}>
     <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#6b7280', marginBottom: '0.5rem' }}>
-  {t.seasonFilter}: <span style={{ color: 'var(--color-accent)', fontWeight: 800 }}>
-    {filters.seasonsMin === 0 && filters.seasonsMax === 0
-      ? t.anySeasons
-      : filters.seasonsMin === 0
-      ? `≤ ${filters.seasonsMax}`
-      : filters.seasonsMax === 0
-      ? `≥ ${filters.seasonsMin}`
-      : `${filters.seasonsMin} → ${filters.seasonsMax}`}
-  </span>
-</label>
-<div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-  <input type="range" min="0" max="10" value={filters.seasonsMin} onChange={(e) => {
-  const val = parseInt(e.target.value);
-  setFilters(f => ({ ...f, seasonsMin: val, seasonsMax: f.seasonsMax > 0 && f.seasonsMax < val ? val : f.seasonsMax }));
-}} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
-<input type="range" min="0" max="10" value={filters.seasonsMax} onChange={(e) => {
-  const val = parseInt(e.target.value);
-  setFilters(f => ({ ...f, seasonsMax: val, seasonsMin: f.seasonsMin > val ? val : f.seasonsMin }));
-}} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
-</div>
+      {t.seasonFilter}: <span style={{ color: 'var(--color-accent)', fontWeight: 800 }}>
+        {Number(filters.seasonsCount) === 0 ? t.anySeasons : filters.seasonsMode === 'exact' ? `= ${filters.seasonsCount}` : `≤ ${filters.seasonsCount}`}
+      </span>
+    </label>
+    <div style={{ display: 'flex', gap: '0.375rem', marginBottom: '0.5rem' }}>
+      <button onClick={() => handleFilterChange('seasonsMode', 'max')} style={{ flex: 1, padding: '0.25rem', fontSize: '0.7rem', fontWeight: 700, borderRadius: '0.375rem', border: '1px solid', borderColor: filters.seasonsMode !== 'exact' ? 'var(--color-accent)' : '#374151', backgroundColor: filters.seasonsMode !== 'exact' ? 'rgba(168,85,247,0.2)' : 'transparent', color: filters.seasonsMode !== 'exact' ? 'var(--color-accent)' : '#6b7280', cursor: 'pointer' }}>≤ Max</button>
+      <button onClick={() => handleFilterChange('seasonsMode', 'exact')} style={{ flex: 1, padding: '0.25rem', fontSize: '0.7rem', fontWeight: 700, borderRadius: '0.375rem', border: '1px solid', borderColor: filters.seasonsMode === 'exact' ? 'var(--color-accent)' : '#374151', backgroundColor: filters.seasonsMode === 'exact' ? 'rgba(168,85,247,0.2)' : 'transparent', color: filters.seasonsMode === 'exact' ? 'var(--color-accent)' : '#6b7280', cursor: 'pointer' }}>= Exact</button>
+    </div>
+    <input type="range" min="0" max="10" value={Number(filters.seasonsCount) || 0} onChange={(e) => handleFilterChange('seasonsCount', parseInt(e.target.value))} style={{ width: '100%', accentColor: 'var(--color-accent)' }} />
   </div>
 )}
   <button onClick={() => setIsFilterModalOpen(true)} className="filter-btn" style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem', padding: '0.75rem', color: '#e5e7eb', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontSize: '0.875rem' }}>
