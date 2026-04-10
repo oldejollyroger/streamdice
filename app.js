@@ -26,7 +26,7 @@ const App = () => {
   const [mediaType, setMediaType] = useLocalStorageState('mediaPickerType_v1', 'movie');
   const [showRegionSelector, setShowRegionSelector] = useState(() => 
     {try {return !localStorage.getItem('movieRandomizerRegion');} catch (e) {return true;}});
-  const [filters, setFilters] = useLocalStorageState(initialFilters);
+  const [filters, setFilters] = useLocalStorageState('mediaPickerFilters_v4', initialFilters);
   const [cookieConsent, setCookieConsent] = useLocalStorageState('cookieConsent_v1', false);
   const WATCHED_KEY = 'mediaPickerWatched_v2';
   const WATCHLIST_KEY = 'mediaPickerWatchlist_v2';
