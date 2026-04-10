@@ -1000,22 +1000,19 @@ const handleActorClick = async (actorId) => {
     {!isStandalone && (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
         {installPrompt ? (
-          <button onClick={handleInstallClick} style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', padding: '0.75rem 1.5rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', fontWeight: 700, borderRadius: '9999px', border: 'none', cursor: 'pointer', fontSize: '0.95rem' }}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" style={{ width: '1.1rem', height: '1.1rem' }}><path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V2.25" /></svg>
-            {t.installApp}
-          </button>
-        ) : (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', padding: '0.625rem 1.25rem', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '9999px' }}>
-  <span style={{ fontSize: '1rem' }}>📲</span>
-  <p style={{ fontSize: '0.8rem', color: '#6b7280', margin: 0 }}>
-    {isIos
-      ? t.installInstructions
-      : /Android/i.test(navigator.userAgent)
-      ? 'Open in Chrome and tap the menu to install'
-      : 'Open in Chrome to install the app'}
-  </p>
-</div>
-        )}
+  <button onClick={() => { handleInstallClick(); setShowInstallBanner(false); }} style={{ width: '100%', padding: '0.875rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', fontWeight: 700, borderRadius: '0.75rem', border: 'none', cursor: 'pointer', fontSize: '1rem', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" style={{ width: '1.1rem', height: '1.1rem' }}><path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V2.25" /></svg>
+    {t.installApp}
+  </button>
+) : isIos ? (
+  <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '0.75rem', padding: '0.875rem', marginBottom: '0.75rem' }}>
+    <p style={{ fontSize: '0.8rem', color: '#9ca3af' }}>📲 {t.installInstructions}</p>
+  </div>
+) : (
+  <button onClick={() => { window.open('https://support.google.com/chrome/answer/9658361', '_blank'); setShowInstallBanner(false); }} style={{ width: '100%', padding: '0.875rem', backgroundColor: 'rgba(255,255,255,0.07)', color: '#e5e7eb', fontWeight: 700, borderRadius: '0.75rem', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', fontSize: '0.875rem', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+    📲 How to install on Android/Desktop
+  </button>
+)}
       </div>
     )}
   </div>
