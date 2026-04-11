@@ -385,7 +385,7 @@ seasonsList: (data.seasons || []).filter(s => s.season_number > 0),
   if (!isStandalone) {
     const newCount = surpriseCount + 1;
     setSurpriseCount(newCount);
-    if (newCount === 5) setShowInstallBanner(true);
+    if (newCount === 1) setShowInstallBanner(true);
   }
   setIsDiscovering(true);
   setError(null);
@@ -673,11 +673,14 @@ addToast(`${getFlagEmoji(newRegion)} Region set to ${newRegion}`, 'success');  }
 }, [selectedMedia]);
 
   const handleInstallClick = async () => {
-    if (!installPrompt) return;
+  if (installPrompt) {
     await installPrompt.prompt();
-    setInstallPrompt(null);
-  };
-
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === 'accepted') setInstallPrompt(null);
+  } else if (navigator.share) {
+    navigator.share({ title: 'StreamDice', url: window.location.href });
+  }
+};
 const handleActorClick = async (actorId) => {
   setModalMedia(null);
   setIsTrailerModalOpen(false);
@@ -1009,9 +1012,38 @@ const handleActorClick = async (actorId) => {
     <p style={{ fontSize: '0.8rem', color: '#9ca3af' }}>📲 {t.installInstructions}</p>
   </div>
 ) : (
-  <button onClick={() => { window.open('https://support.google.com/chrome/answer/9658361', '_blank'); setShowInstallBanner(false); }} style={{ width: '100%', padding: '0.875rem', backgroundColor: 'rgba(255,255,255,0.07)', color: '#e5e7eb', fontWeight: 700, borderRadius: '0.75rem', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', fontSize: '0.875rem', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-    📲 How to install on Android/Desktop
-  </button>
+  <div style={{ width: '100%', marginBottom: '0.75rem' }}>
+    {/Android/i.test(navigator.userAgent) ? (
+      <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '0.75rem', padding: '1rem', textAlign: 'left' }}>
+        <p style={{ fontSize: '0.8rem', fontWeight: 700, color: '#e5e7eb', marginBottom: '0.625rem' }}>📲 Install on Android</p>
+        {[
+          'Open this site in Chrome',
+          'Tap the ⋮ menu in the top right',
+          'Tap "Add to Home Screen"',
+          'Tap "Install" to confirm'
+        ].map((step, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.375rem' }}>
+            <span style={{ width: '18px', height: '18px', borderRadius: '50%', background: 'var(--color-accent)', color: 'white', fontSize: '0.65rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>{i + 1}</span>
+            <p style={{ fontSize: '0.78rem', color: '#9ca3af', margin: 0 }}>{step}</p>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '0.75rem', padding: '1rem', textAlign: 'left' }}>
+        <p style={{ fontSize: '0.8rem', fontWeight: 700, color: '#e5e7eb', marginBottom: '0.625rem' }}>💻 Install on Desktop</p>
+        {[
+          'Open this site in Chrome',
+          'Click the ⊕ icon in the address bar',
+          'Click "Install" to confirm'
+        ].map((step, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.375rem' }}>
+            <span style={{ width: '18px', height: '18px', borderRadius: '50%', background: 'var(--color-accent)', color: 'white', fontSize: '0.65rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>{i + 1}</span>
+            <p style={{ fontSize: '0.78rem', color: '#9ca3af', margin: 0 }}>{step}</p>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
 )}
       </div>
     )}
@@ -1027,18 +1059,13 @@ const handleActorClick = async (actorId) => {
       <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎲</div>
       <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', marginBottom: '0.5rem' }}>Enjoying StreamDice?</h2>
       <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1.5rem' }}>Install the app for a faster, fullscreen experience with no browser bars.</p>
-      {installPrompt ? (
-        <button onClick={() => { handleInstallClick(); setShowInstallBanner(false); }} style={{ width: '100%', padding: '0.875rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', fontWeight: 700, borderRadius: '0.75rem', border: 'none', cursor: 'pointer', fontSize: '1rem', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" style={{ width: '1.1rem', height: '1.1rem' }}><path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V2.25" /></svg>
-          {t.installApp}
-        </button>
-      ) : (
-        <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '0.75rem', padding: '0.875rem', marginBottom: '0.75rem' }}>
-          <p style={{ fontSize: '0.8rem', color: '#9ca3af' }}>
-            {isIos ? `📲 ${t.installInstructions}` : /Android/i.test(navigator.userAgent) ? '📲 Tap the ⋮ menu in Chrome and select "Add to Home Screen"' : '💻 Open in Chrome to install'}
-          </p>
-        </div>
-      )}
+     <button onClick={() => { handleInstallClick(); setShowInstallBanner(false); }} style={{ width: '100%', padding: '0.875rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', fontWeight: 700, borderRadius: '0.75rem', border: 'none', cursor: 'pointer', fontSize: '1rem', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" style={{ width: '1.1rem', height: '1.1rem' }}><path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V2.25" /></svg>
+  {t.installApp}
+</button>
+{!installPrompt && isIos && (
+  <p style={{ fontSize: '0.78rem', color: '#6b7280', marginBottom: '0.75rem' }}>📲 {t.installInstructions}</p>
+)}
       <button onClick={() => { setShowInstallBanner(false); setSurpriseCount(0); }} style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', fontSize: '0.875rem' }}>Maybe later</button>
     </div>
   </div>
