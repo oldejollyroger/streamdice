@@ -68,8 +68,6 @@ const App = () => {
   const [pendingPerson, setPendingPerson] = useState(null);
   const [pendingRegionLanguages, setPendingRegionLanguages] = useState(null);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const [surpriseCount, setSurpriseCount] = useLocalStorageState('surpriseCount', 0);
-  const [showInstallBanner, setShowInstallBanner] = useState(false);
   
 
 
@@ -382,16 +380,7 @@ seasonsList: (data.seasons || []).filter(s => s.season_number > 0),
   // ============================================
   const handleSurpriseMe = useCallback(async () => {
   if (!userRegion || !Object.keys(genresMap).length) return;
-  if (!isStandalone) {
-    const newCount = surpriseCount + 1;
-    setSurpriseCount(newCount);
-    if (newCount === 1) setShowInstallBanner(true);
-  }
   setIsDiscovering(true);
-  setError(null);
-  if (selectedMedia) setMediaHistory(prev => [...prev, selectedMedia]);
-  setSelectedMedia(null);
-  setHasSearched(true);
 
   try {
     // If a person filter is active, fetch their credits directly
@@ -673,14 +662,11 @@ addToast(`${getFlagEmoji(newRegion)} Region set to ${newRegion}`, 'success');  }
 }, [selectedMedia]);
 
   const handleInstallClick = async () => {
-  if (installPrompt) {
-    await installPrompt.prompt();
-    const { outcome } = await installPrompt.userChoice;
-    if (outcome === 'accepted') setInstallPrompt(null);
-  } else if (navigator.share) {
-    navigator.share({ title: 'StreamDice', url: window.location.href });
-  }
+  if (!installPrompt) return;
+  await installPrompt.prompt();
+  setInstallPrompt(null);
 };
+
 const handleActorClick = async (actorId) => {
   setModalMedia(null);
   setIsTrailerModalOpen(false);
@@ -998,78 +984,12 @@ const handleActorClick = async (actorId) => {
                 <button onClick={resetAndClearFilters} style={{ padding: '0.5rem 1.5rem', backgroundColor: 'var(--color-accent)', color: 'white', fontWeight: 'bold', borderRadius: '9999px', border: 'none', cursor: 'pointer' }}>{t.clearAllFilters}</button>
               </div>
           ) : !hasSearched && (
-  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
-    <p style={{ fontSize: '1.25rem', color: '#9ca3af' }}>{t.welcomeMessage}</p>
-    {!isStandalone && (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-        {installPrompt ? (
-  <button onClick={() => { handleInstallClick(); setShowInstallBanner(false); }} style={{ width: '100%', padding: '0.875rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', fontWeight: 700, borderRadius: '0.75rem', border: 'none', cursor: 'pointer', fontSize: '1rem', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" style={{ width: '1.1rem', height: '1.1rem' }}><path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V2.25" /></svg>
-    {t.installApp}
-  </button>
-) : isIos ? (
-  <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '0.75rem', padding: '0.875rem', marginBottom: '0.75rem' }}>
-    <p style={{ fontSize: '0.8rem', color: '#9ca3af' }}>📲 {t.installInstructions}</p>
-  </div>
-) : (
-  <div style={{ width: '100%', marginBottom: '0.75rem' }}>
-    {/Android/i.test(navigator.userAgent) ? (
-      <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '0.75rem', padding: '1rem', textAlign: 'left' }}>
-        <p style={{ fontSize: '0.8rem', fontWeight: 700, color: '#e5e7eb', marginBottom: '0.625rem' }}>📲 Install on Android</p>
-        {[
-          'Open this site in Chrome',
-          'Tap the ⋮ menu in the top right',
-          'Tap "Add to Home Screen"',
-          'Tap "Install" to confirm'
-        ].map((step, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.375rem' }}>
-            <span style={{ width: '18px', height: '18px', borderRadius: '50%', background: 'var(--color-accent)', color: 'white', fontSize: '0.65rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>{i + 1}</span>
-            <p style={{ fontSize: '0.78rem', color: '#9ca3af', margin: 0 }}>{step}</p>
-          </div>
-        ))}
-      </div>
-    ) : (
-      <div style={{ backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '0.75rem', padding: '1rem', textAlign: 'left' }}>
-        <p style={{ fontSize: '0.8rem', fontWeight: 700, color: '#e5e7eb', marginBottom: '0.625rem' }}>💻 Install on Desktop</p>
-        {[
-          'Open this site in Chrome',
-          'Click the ⊕ icon in the address bar',
-          'Click "Install" to confirm'
-        ].map((step, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.375rem' }}>
-            <span style={{ width: '18px', height: '18px', borderRadius: '50%', background: 'var(--color-accent)', color: 'white', fontSize: '0.65rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>{i + 1}</span>
-            <p style={{ fontSize: '0.78rem', color: '#9ca3af', margin: 0 }}>{step}</p>
-          </div>
-        ))}
-      </div>
-    )}
-  </div>
-)}
-      </div>
-    )}
-  </div>
+  <p style={{ fontSize: '1.25rem', color: '#9ca3af' }}>{t.welcomeMessage}</p>
 )}
    </div>
         )}
       </main>
 
-{showInstallBanner && !isStandalone && (
-  <div style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.75)', padding: '1rem' }} onClick={() => setShowInstallBanner(false)}>
-    <div style={{ width: '100%', maxWidth: '360px', backgroundColor: '#111827', borderRadius: '1.25rem', padding: '2rem', textAlign: 'center', animation: 'modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)' }} onClick={e => e.stopPropagation()}>
-      <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎲</div>
-      <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', marginBottom: '0.5rem' }}>Enjoying StreamDice?</h2>
-      <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1.5rem' }}>Install the app for a faster, fullscreen experience with no browser bars.</p>
-     <button onClick={() => { handleInstallClick(); setShowInstallBanner(false); }} style={{ width: '100%', padding: '0.875rem', background: 'linear-gradient(to right, var(--color-accent-gradient-from), var(--color-accent-gradient-to))', color: 'white', fontWeight: 700, borderRadius: '0.75rem', border: 'none', cursor: 'pointer', fontSize: '1rem', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" style={{ width: '1.1rem', height: '1.1rem' }}><path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V2.25" /></svg>
-  {t.installApp}
-</button>
-{!installPrompt && isIos && (
-  <p style={{ fontSize: '0.78rem', color: '#6b7280', marginBottom: '0.75rem' }}>📲 {t.installInstructions}</p>
-)}
-      <button onClick={() => { setShowInstallBanner(false); setSurpriseCount(0); }} style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', fontSize: '0.875rem' }}>Maybe later</button>
-    </div>
-  </div>
-)}
       {/* Modals */}
       <TrailerModal isOpen={isTrailerModalOpen} close={closeModal} trailerKey={modalTrailerKey} />
       <FilterModal isOpen={isFilterModalOpen} close={() => setIsFilterModalOpen(false)} handleClearFilters={resetAndClearFilters} filters={filters} handleGenreChangeInModal={handleGenreChangeInModal} handlePlatformChange={handlePlatformChange} genresMap={genresMap} allPlatformOptions={allPlatformOptions} platformSearchQuery={platformSearchQuery} setPlatformSearchQuery={setPlatformSearchQuery} t={t} />
