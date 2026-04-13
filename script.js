@@ -104,6 +104,8 @@ episodes: "ep",
 seasonFilter: "Seasons",
 anySeasons: "Any",
 seasonsList: "Season breakdown",
+findInCinemas: "Find in cinemas near you",
+inCinemasNow: "In cinemas now",
   },
 
 
@@ -210,6 +212,8 @@ episodes: "ep",
 seasonFilter: "Temporadas",
 anySeasons: "Cualquiera",
 seasonsList: "Desglose por temporada",
+findInCinemas: "Buscar cines cercanos",
+inCinemasNow: "En cines ahora",
   }
 };
 
